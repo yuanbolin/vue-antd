@@ -1,31 +1,47 @@
 <template>
-  <div>
-    <div style="margin-bottom: 20px">
-      <span>当前选择的节点ID:{{ currentId }}</span>
-      <br>
-      <el-button @click="showData">保存数据</el-button>
-      <el-button @click="getCanvas">获取canvas</el-button>
-      <el-button @click="renderSVG">绘制svg</el-button>
-      <br>
-      <el-button
-        :disabled="currentId.length == 0"
-        @click="delnode"
-      >删除节点</el-button>
-      <br>
-      <el-input v-model="nodeName" placeholder="请输入节点名称" />
-      <el-button @click="handleAddNode">添加节点（默认根节点）</el-button>
-    </div>
-    <butterfly-vue
-      :canvas-data="mockData"
-      :canvas-conf="defaultOptions"
-      @onLoaded="finishLoaded"
-      @onCreateEdge="logEvent"
-      @onChangeEdges="logEvent"
-      @onDeleteEdge="logEvent"
-      @onOtherEvent="logEvent"
-    />
-  </div>
+  <el-container>
+    <el-aside width="300px">
+      <div>
+        <span>当前选择的节点ID:{{ currentId }}</span>
+        <br>
+        <el-button @click="showData">保存数据</el-button>
+        <el-button @click="getCanvas">获取canvas</el-button>
+        <br>
+        <el-button
+          :disabled="currentId.length == 0"
+          @click="delnode"
+        >删除节点</el-button>
+        <br>
+        <el-input v-model="nodeName" placeholder="请输入节点名称" />
+        <el-button @click="handleAddNode">添加节点（默认根节点）</el-button>
+      </div>
+    </el-aside>
+    <el-main >
+      <div class="draw">
+        <butterfly-vue
+          :canvas-data="mockData"
+          :canvas-conf="defaultOptions"
+          @onLoaded="finishLoaded"
+          @onCreateEdge="logEvent"
+          @onChangeEdges="logEvent"
+          @onDeleteEdge="logEvent"
+          @onOtherEvent="logEvent"
+        />
+      </div>
+    </el-main>
+  </el-container>
 </template>
+
+<style>
+.draw {
+  min-height: calc(100vh - 126px);
+  padding: 10px;
+  border: 1px solid #333;
+  background-image: url("../../assets/drawbg.jpg");
+  /*background-image: url("../../assets/404_images/404.png");*/
+  background-size: 35px 35px;
+}
+</style>
 
 <script>
 import { ButterflyVue } from 'butterfly-vue'
@@ -151,7 +167,9 @@ export default {
           nodes,
           edges
         }
-      } catch (e) { console.log(e) }
+      } catch (e) {
+        console.log(e)
+      }
     },
     dataHandle(key, arr) {
       const dataArr = []

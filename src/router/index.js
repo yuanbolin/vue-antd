@@ -6,6 +6,9 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
+/* Router Modules */
+import tableRouter from './modules/table'
+
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -91,10 +94,11 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/butterfly/index'),
         name: 'butterfly',
-        meta: { title: 'butterfly', icon: 'icon', noCache: true}
+        meta: { title: 'butterfly', icon: 'icon', noCache: true }
       }
     ]
   },
+  tableRouter,
   {
     path: '/icon',
     component: Layout,
