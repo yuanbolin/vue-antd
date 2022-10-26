@@ -1,45 +1,104 @@
 <template>
   <el-container>
     <el-aside width="300px">
+      <b>当前选择的节点类型:</b>
+      <el-radio-group v-model="type">
+        <el-radio label="node">普通节点</el-radio>
+        <el-radio label="node_info">详细描述节点</el-radio>
+        <el-radio label="node_file">附件节点</el-radio>
+        <el-radio label="node_link">流程跳转节点</el-radio>
+      </el-radio-group>
+      <el-divider />
       <div>
         <span>当前选择的节点ID:{{ currentId }}</span>
         <br>
-        <el-button @click="showData">保存数据</el-button>
-        <el-button @click="getCanvas">获取canvas</el-button>
-        <br>
-        <el-button
-          :disabled="currentId.length == 0"
-          @click="delnode"
-        >删除节点</el-button>
-        <br>
         <el-input v-model="nodeName" placeholder="请输入节点名称" />
-        <el-button @click="handleAddNode">添加节点（默认根节点）</el-button>
+        <el-button-group>
+          <el-button>添加节点</el-button>
+          <el-button
+            :disabled="currentId.length == 0"
+            icon="el-icon-delete"
+            @click="delnode"
+          >删除节点</el-button>
+        </el-button-group>
+        <el-scrollbar style="height: 50vh">
+          <el-row>
+            <el-col
+              v-for="(o, index) in 20"
+              :key="o"
+              :span="11"
+              :offset="index % 2 > 0 ? 2 : 0"
+            >
+              <el-card
+                :body-style="{ padding: '0px' }"
+                style="margin-top: 10px"
+              >
+                <img
+                  src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                  class="image"
+                >
+                <div style="padding: 0 10px; text-align: center">
+                  <div class="bottom clearfix">
+                    <el-button
+                      type="text"
+                      class="button"
+                      @click="handleAddNode"
+                    >使用该节点</el-button>
+                  </div>
+                </div>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-scrollbar>
       </div>
     </el-aside>
-    <el-main >
-      <div class="draw">
-        <butterfly-vue
-          :canvas-data="mockData"
-          :canvas-conf="defaultOptions"
-          @onLoaded="finishLoaded"
-          @onCreateEdge="logEvent"
-          @onChangeEdges="logEvent"
-          @onDeleteEdge="logEvent"
-          @onOtherEvent="logEvent"
-        />
-      </div>
-    </el-main>
+    <el-container>
+      <el-header class="action_box">
+        <el-button-group>
+          <el-button
+            icon="el-icon-download"
+            @click="getCanvas"
+          >下载流程图</el-button>
+          <el-button
+            icon="el-icon-circle-check"
+            @click="showData"
+          >保存</el-button>
+        </el-button-group>
+      </el-header>
+      <el-main>
+        <div class="draw">
+          <butterfly-vue
+            :canvas-data="mockData"
+            :canvas-conf="defaultOptions"
+            @onLoaded="finishLoaded"
+            @onCreateEdge="logEvent"
+            @onChangeEdges="logEvent"
+            @onDeleteEdge="logEvent"
+            @onOtherEvent="logEvent"
+          />
+        </div>
+      </el-main>
+    </el-container>
   </el-container>
 </template>
 
 <style>
 .draw {
-  min-height: calc(100vh - 126px);
+  min-height: calc(100vh - 186px);
   padding: 10px;
   border: 1px solid #333;
   background-image: url("../../assets/drawbg.jpg");
   /*background-image: url("../../assets/404_images/404.png");*/
-  background-size: 35px 35px;
+  background-size: 50px 50px;
+}
+.action_box {
+  height: 50px !important;
+  padding: 20px 20px 0 20px;
+}
+.image {
+  width: 100%;
+  height: auto;
+  vertical-align: top;
 }
 </style>
 
@@ -79,6 +138,7 @@ export default {
   },
   data() {
     return {
+      type: 'node',
       currentId: '',
       nodeName: '',
       mockData: {
@@ -102,6 +162,7 @@ export default {
     }
   },
   beforeMount: function() {
+    console.log('beforeMount is run')
     try {
       const mockDataObj = JSON.parse(localStorage.getItem('mockData'))
       const mockData = {

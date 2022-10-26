@@ -75,7 +75,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: '系统主页', icon: 'dashboard', affix: false }
       }
     ]
   }
@@ -93,8 +93,8 @@ export const asyncRoutes = [
       {
         path: 'index',
         component: () => import('@/views/butterfly/index'),
-        name: 'butterfly',
-        meta: { title: 'butterfly', icon: 'icon', noCache: true }
+        name: 'ButterFly',
+        meta: { title: '流程图绘制', icon: 'el-icon-edit', noCache: false }
       }
     ]
   },
@@ -119,7 +119,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/theme/index'),
         name: 'Theme',
-        meta: { title: 'Theme', icon: 'theme' }
+        meta: { title: 'Theme', icon: 'theme', noCache: false }
       }
     ]
   },
@@ -127,11 +127,12 @@ export const asyncRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
 
 const router = createRouter()
 

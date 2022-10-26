@@ -1,25 +1,26 @@
 <template>
   <div class="dashboard-editor-container">
     <div class=" clearfix">
+      <pan-thumb :image="avatar" style="float: left">
+        Your roles:
+        <span v-for="item in roles" :key="item" class="pan-info-roles">{{ item }}</span>
+      </pan-thumb>
       <div class="info-container">
         <span class="display_name">{{ name }}</span>
         <span style="font-size:20px;padding-top:20px;display:inline-block;">Editor's Dashboard</span>
       </div>
-    </div>
-    <div>
-      <img :src="emptyGif" class="emptyGif">
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
+import PanThumb from '@/components/PanThumb'
 export default {
   name: 'DashboardEditor',
+  components: { PanThumb },
   data() {
     return {
-      emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'
     }
   },
   computed: {
@@ -40,8 +41,7 @@ export default {
   }
 
   .dashboard-editor-container {
-    background-color: #e3e3e3;
-    min-height: 100vh;
+    min-height: 60vh;
     padding: 50px 60px 0px;
     .pan-info-roles {
       font-size: 12px;
