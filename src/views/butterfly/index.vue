@@ -1,56 +1,93 @@
 <template>
   <el-container>
-    <el-aside width="300px">
-      <b>当前选择的节点类型:</b>
-      <el-radio-group v-model="type">
-        <el-radio label="node">普通节点</el-radio>
-        <el-radio label="node_info">详细描述节点</el-radio>
-        <el-radio label="node_file">附件节点</el-radio>
-        <el-radio label="node_link">流程跳转节点</el-radio>
-      </el-radio-group>
+    <el-aside width="320px">
+      <div class="title_box">
+        <b>流程图名称</b>
+      </div>
+      <el-input v-model="mapName" placeholder="请输入流程图名称" />
       <el-divider />
-      <div>
-        <span>当前选择的节点ID:{{ currentId }}</span>
-        <br>
-        <el-input v-model="nodeName" placeholder="请输入节点名称" />
-        <el-button-group>
-          <el-button>添加节点</el-button>
-          <el-button
-            :disabled="currentId.length == 0"
-            icon="el-icon-delete"
-            @click="delnode"
-          >删除节点</el-button>
-        </el-button-group>
-        <el-scrollbar style="height: 50vh">
+      <div class="title_box">
+        <b>节点内容</b>
+      </div>
+      <el-form ref="form" :model="form" label-width="70px">
+        <el-form-item label="节点类型">
+          <el-select v-model="type" size="small" placeholder="请选择节点类型">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="节点名称">
+          <el-input v-model="form.nodeName" placeholder="请输入节点名称" />
+        </el-form-item>
+        <el-form-item v-if="type==='node_info'" label="详细描述">
+          <el-input
+            v-model="form.textarea"
+            type="textarea"
+            autosize
+            placeholder="请输入详细描述"
+          />
+        </el-form-item>
+        <el-form-item v-if="type==='node_file'" label="附件上传">
+          <el-upload
+            ref="upload"
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :file-list="form.fileList"
+            accept=".txt,.doc,.docx,.pdf,.xls,.xlsx,.jpg,.jpeg,.png,.zip,.rar"
+            :auto-upload="false"
+          >
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item v-if="type==='node_link'" label="跳转节点">
+          <el-cascader
+            v-model="form.linkValue"
+            :options="linkOptions"
+            :props="{ expandTrigger: 'hover' }"
+            @change="linkHandleChange"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleAddNode">添加节点</el-button>
+        </el-form-item>
+      </el-form>
+      <el-divider />
+      <div class="title_box">
+        <b>节点样式</b>
+        <el-color-picker v-model="nodeColor" />
+      </div>
+      <el-scrollbar class="style_box" style="height: 50vh">
+        <div style="background: #fff; padding: 10px 5px">
           <el-row>
             <el-col
-              v-for="(o, index) in 20"
+              v-for="(o, index) in nodeImgs"
               :key="o"
               :span="11"
               :offset="index % 2 > 0 ? 2 : 0"
             >
-              <el-card
-                :body-style="{ padding: '0px' }"
-                style="margin-top: 10px"
-              >
+              <div :class="{ active: nodeStyle === o }" class="img_box">
                 <img
-                  src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                  :src="require(`@/assets/node_img/${o}.jpg`)"
                   class="image"
+                  @click="
+                    () => {
+                      changeStyle(o);
+                    }
+                  "
                 >
-                <div style="padding: 0 10px; text-align: center">
-                  <div class="bottom clearfix">
-                    <el-button
-                      type="text"
-                      class="button"
-                      @click="handleAddNode"
-                    >使用该节点</el-button>
-                  </div>
-                </div>
-              </el-card>
+              </div>
             </el-col>
           </el-row>
-        </el-scrollbar>
-      </div>
+        </div>
+      </el-scrollbar>
     </el-aside>
     <el-container>
       <el-header class="action_box">
@@ -58,11 +95,13 @@
           <el-button
             icon="el-icon-download"
             @click="getCanvas"
-          >下载流程图</el-button>
+          >下载流程图
+          </el-button>
           <el-button
             icon="el-icon-circle-check"
             @click="showData"
-          >保存</el-button>
+          >保存
+          </el-button>
         </el-button-group>
       </el-header>
       <el-main>
@@ -91,22 +130,55 @@
   /*background-image: url("../../assets/404_images/404.png");*/
   background-size: 50px 50px;
 }
+
 .action_box {
   height: 50px !important;
   padding: 20px 20px 0 20px;
 }
+
 .image {
-  width: 100%;
+  width: 80px;
   height: auto;
   vertical-align: top;
+  max-height: 80px;
+}
+
+.img_box {
+  overflow: hidden;
+  margin: 5px;
+  padding: 5px;
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #eee;
+}
+
+.img_box.active {
+  border: 1px solid #666;
+  -moz-box-shadow: 1px 1px 5px #666;
+  -webkit-box-shadow: 1px 1px 5px #666;
+  box-shadow: 1px 1px 5px #666;
+}
+
+.title_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.style_box .el-scrollbar__wrap {
+  overflow-x: hidden;
 }
 </style>
 
 <script>
 import { ButterflyVue } from 'butterfly-vue'
-import gridNode from './GridNode.vue'
-import gridGroup from './GridGroup.vue'
+import gridNode from './components/GridNode.vue'
+import gridGroup from './components/GridGroup.vue'
 import { v4 as uuidv4 } from 'uuid'
+
 const endpoints_row = [
   {
     id: 'top',
@@ -138,9 +210,231 @@ export default {
   },
   data() {
     return {
+      options: [
+        {
+          label: '普通节点',
+          value: 'node'
+        },
+        {
+          label: '详细描述节点',
+          value: 'node_info'
+        },
+        {
+          label: '附件节点',
+          value: 'node_file'
+        },
+        {
+          label: '流程跳转节点',
+          value: 'node_link'
+        }
+      ],
+      mapName: '',
+      nodeImgs: [], // 节点样式数组
+      nodeStyle: 'circle',
+      nodeColor: '#409EFF',
       type: 'node',
       currentId: '',
-      nodeName: '',
+      linkOptions: [{
+        value: 'zhinan',
+        label: '指南',
+        children: [{
+          value: 'shejiyuanze',
+          label: '设计原则',
+          children: [{
+            value: 'yizhi',
+            label: '一致'
+          }, {
+            value: 'fankui',
+            label: '反馈'
+          }, {
+            value: 'xiaolv',
+            label: '效率'
+          }, {
+            value: 'kekong',
+            label: '可控'
+          }]
+        }, {
+          value: 'daohang',
+          label: '导航',
+          children: [{
+            value: 'cexiangdaohang',
+            label: '侧向导航'
+          }, {
+            value: 'dingbudaohang',
+            label: '顶部导航'
+          }]
+        }]
+      }, {
+        value: 'zujian',
+        label: '组件',
+        children: [{
+          value: 'basic',
+          label: 'Basic',
+          children: [{
+            value: 'layout',
+            label: 'Layout 布局'
+          }, {
+            value: 'color',
+            label: 'Color 色彩'
+          }, {
+            value: 'typography',
+            label: 'Typography 字体'
+          }, {
+            value: 'icon',
+            label: 'Icon 图标'
+          }, {
+            value: 'button',
+            label: 'Button 按钮'
+          }]
+        }, {
+          value: 'form',
+          label: 'Form',
+          children: [{
+            value: 'radio',
+            label: 'Radio 单选框'
+          }, {
+            value: 'checkbox',
+            label: 'Checkbox 多选框'
+          }, {
+            value: 'input',
+            label: 'Input 输入框'
+          }, {
+            value: 'input-number',
+            label: 'InputNumber 计数器'
+          }, {
+            value: 'select',
+            label: 'Select 选择器'
+          }, {
+            value: 'cascader',
+            label: 'Cascader 级联选择器'
+          }, {
+            value: 'switch',
+            label: 'Switch 开关'
+          }, {
+            value: 'slider',
+            label: 'Slider 滑块'
+          }, {
+            value: 'time-picker',
+            label: 'TimePicker 时间选择器'
+          }, {
+            value: 'date-picker',
+            label: 'DatePicker 日期选择器'
+          }, {
+            value: 'datetime-picker',
+            label: 'DateTimePicker 日期时间选择器'
+          }, {
+            value: 'upload',
+            label: 'Upload 上传'
+          }, {
+            value: 'rate',
+            label: 'Rate 评分'
+          }, {
+            value: 'form',
+            label: 'Form 表单'
+          }]
+        }, {
+          value: 'data',
+          label: 'Data',
+          children: [{
+            value: 'table',
+            label: 'Table 表格'
+          }, {
+            value: 'tag',
+            label: 'Tag 标签'
+          }, {
+            value: 'progress',
+            label: 'Progress 进度条'
+          }, {
+            value: 'tree',
+            label: 'Tree 树形控件'
+          }, {
+            value: 'pagination',
+            label: 'Pagination 分页'
+          }, {
+            value: 'badge',
+            label: 'Badge 标记'
+          }]
+        }, {
+          value: 'notice',
+          label: 'Notice',
+          children: [{
+            value: 'alert',
+            label: 'Alert 警告'
+          }, {
+            value: 'loading',
+            label: 'Loading 加载'
+          }, {
+            value: 'message',
+            label: 'Message 消息提示'
+          }, {
+            value: 'message-box',
+            label: 'MessageBox 弹框'
+          }, {
+            value: 'notification',
+            label: 'Notification 通知'
+          }]
+        }, {
+          value: 'navigation',
+          label: 'Navigation',
+          children: [{
+            value: 'menu',
+            label: 'NavMenu 导航菜单'
+          }, {
+            value: 'tabs',
+            label: 'Tabs 标签页'
+          }, {
+            value: 'breadcrumb',
+            label: 'Breadcrumb 面包屑'
+          }, {
+            value: 'dropdown',
+            label: 'Dropdown 下拉菜单'
+          }, {
+            value: 'steps',
+            label: 'Steps 步骤条'
+          }]
+        }, {
+          value: 'others',
+          label: 'Others',
+          children: [{
+            value: 'dialog',
+            label: 'Dialog 对话框'
+          }, {
+            value: 'tooltip',
+            label: 'Tooltip 文字提示'
+          }, {
+            value: 'popover',
+            label: 'Popover 弹出框'
+          }, {
+            value: 'card',
+            label: 'Card 卡片'
+          }, {
+            value: 'carousel',
+            label: 'Carousel 走马灯'
+          }, {
+            value: 'collapse',
+            label: 'Collapse 折叠面板'
+          }]
+        }]
+      }, {
+        value: 'ziyuan',
+        label: '资源',
+        children: [{
+          value: 'axure',
+          label: 'Axure Components'
+        }, {
+          value: 'sketch',
+          label: 'Sketch Templates'
+        }, {
+          value: 'jiaohu',
+          label: '组件交互文档'
+        }]
+      }],
+      form: {
+        nodeName: '',
+        textarea: '',
+        linkValue: [],
+        fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }]
+      },
       mockData: {
         groups: [],
         nodes: [],
@@ -162,7 +456,18 @@ export default {
     }
   },
   beforeMount: function() {
-    console.log('beforeMount is run')
+    // https://webpack.js.org/guides/dependency-management/#requirecontext
+    const imgFiles = require.context('@/assets/node_img', true, /\.jpg$/)
+
+    // you do not need `import jpg from '@/assets/node_img'`
+    // it will auto require all vuex module from modules file
+    const modules = imgFiles.keys().reduce((modules, modulePath, index) => {
+      // set './app.jpg' => 'app'
+      const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
+      modules[index] = moduleName
+      return modules
+    }, [])
+    this.nodeImgs = modules
     try {
       const mockDataObj = JSON.parse(localStorage.getItem('mockData'))
       const mockData = {
@@ -183,6 +488,25 @@ export default {
     }
   },
   methods: {
+    // 级联选择
+    handleChange(value) {
+      console.log(value)
+    },
+    // 文件上传
+    submitUpload() {
+      this.$refs.upload.submit()
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    // 节点类型切换事件
+    changeStyle(type) {
+      if (type) this.nodeStyle = type
+    },
+    // 绘制插件加载完成事件
     finishLoaded(ref) {
       this.canvasRef = ref
       console.log('finish')
