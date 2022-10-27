@@ -1,17 +1,17 @@
 // grid-node.vue
 <template>
-  <div
-    :class="{ 'grid-node': true, action: itemData.currentId === itemData.id }"
-    @click="getId"
-  >
-    {{ itemData.label }}
-    <div class="add" @click="addChildren">+</div>
+  <div style="position: relative">
+    <component :is="node" :action="action" :node-name="itemData.nodeName" :node-color="nodeColor" @clickchild="getId" />
+<!--    <div class="add" @click="addChildren">+</div>-->
+    <div>{{node}}</div>
   </div>
 </template>
 
 <script>
+import { actor, add, alarm, car, circlenode, callout, diamond, download, downloadfile, datanode, error, elipse, home, hexagon, linknode, note, parallelogram, rectangle, square, success, upload, warn } from './nodes'
 export default {
   name: 'GridNode',
+  components: { actor, add, alarm, car, circlenode, callout, diamond, download, downloadfile, datanode, error, elipse, home, hexagon, linknode, note, parallelogram, rectangle, square, success, upload, warn },
   props: {
     // 这里可以拿到mockdata里的当前节点的数据
     itemData: {
@@ -20,6 +20,20 @@ export default {
     // 原生的节点数据（不推荐使用这个）
     canvasNode: {
       type: Object
+    }
+  },
+  computed: {
+    action() {
+      return this.itemData.currentId === this.itemData.id
+    },
+    nodeColor() {
+      return this.itemData.nodeColor
+    },
+    nodeStyle() {
+      return this.itemData.nodeStyle
+    },
+    node() {
+      return this.itemData.nodeStyle.substring(1)
     }
   },
   watch: {
@@ -32,6 +46,7 @@ export default {
   },
   methods: {
     getId() {
+      console.log(12312321)
       this.itemData.changeCurrentNode(this.itemData.id)
       // console.log(this.itemData.id)
     },
@@ -43,17 +58,6 @@ export default {
 </script>
 
 <style scoped>
-.grid-node {
-  width: 100px;
-  height: 100px;
-  line-height: 96px;
-  text-align: center;
-  border-radius: 50%;
-  border: 2px solid #aaa;
-  color: #fff;
-  background-color: #f66902;
-  position: relative;
-}
 .add {
   position: absolute;
   bottom: -10px;

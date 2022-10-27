@@ -9,9 +9,9 @@
       <div class="title_box">
         <b>节点内容</b>
       </div>
-      <el-form ref="form" :model="form" label-width="70px">
-        <el-form-item label="节点类型">
-          <el-select v-model="type" size="small" placeholder="请选择节点类型">
+      <el-form ref="form" :rules="rules" :model="form" label-width="80px">
+        <el-form-item label="节点类型" prop="type">
+          <el-select v-model="form.type" size="small" placeholder="请选择节点类型">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -20,10 +20,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="节点名称">
+        <el-form-item label="节点名称" prop="nodeName">
           <el-input v-model="form.nodeName" placeholder="请输入节点名称" />
         </el-form-item>
-        <el-form-item v-if="type==='node_info'" label="详细描述">
+        <el-form-item v-if="form.type==='node_info'" label="详细描述" prop="textarea">
           <el-input
             v-model="form.textarea"
             type="textarea"
@@ -31,41 +31,31 @@
             placeholder="请输入详细描述"
           />
         </el-form-item>
-        <el-form-item v-if="type==='node_file'" label="附件上传">
-          <el-upload
-            ref="upload"
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :file-list="form.fileList"
-            accept=".txt,.doc,.docx,.pdf,.xls,.xlsx,.jpg,.jpeg,.png,.zip,.rar"
-            :auto-upload="false"
-          >
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
+        <el-form-item v-if="form.type==='node_file'" label="附件上传" prop="file">
+          <my-upload v-model="form.file" />
         </el-form-item>
-        <el-form-item v-if="type==='node_link'" label="跳转节点">
+        <el-form-item v-if="form.type==='node_link'" label="跳转节点" prop="linkValue">
           <el-cascader
             v-model="form.linkValue"
             :options="linkOptions"
+            placeholder="请选择跳转节点"
             :props="{ expandTrigger: 'hover' }"
             @change="linkHandleChange"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleAddNode">添加节点</el-button>
+          <el-button type="primary" @click="handleAddNode('form')">添加节点</el-button>
         </el-form-item>
       </el-form>
       <el-divider />
       <div class="title_box">
         <b>节点样式</b>
-        <el-color-picker v-model="nodeColor" />
+        <el-tooltip class="item" effect="dark" content="设置节点背景色" placement="right">
+          <el-color-picker v-model="nodeColor" />
+        </el-tooltip>
       </div>
-      <el-scrollbar class="style_box" style="height: 50vh">
-        <div style="background: #fff; padding: 10px 5px">
+      <el-scrollbar class="style_box" style="height: 315px;border: 5px inset #409ee5;">
+        <div class="style_content">
           <el-row>
             <el-col
               v-for="(o, index) in nodeImgs"
@@ -73,15 +63,18 @@
               :span="11"
               :offset="index % 2 > 0 ? 2 : 0"
             >
-              <div :class="{ active: nodeStyle === o }" class="img_box">
+              <div
+                :class="{ action: nodeStyle === o }"
+                class="img_box"
+                @click="
+                  () => {
+                    changeStyle(o);
+                  }
+                "
+              >
                 <img
-                  :src="require(`@/assets/node_img/${o}.jpg`)"
+                  :src="require(`@/assets/node_img/${o}.png`)"
                   class="image"
-                  @click="
-                    () => {
-                      changeStyle(o);
-                    }
-                  "
                 >
               </div>
             </el-col>
@@ -107,6 +100,7 @@
       <el-main>
         <div class="draw">
           <butterfly-vue
+            class-name="draw_box"
             :canvas-data="mockData"
             :canvas-conf="defaultOptions"
             @onLoaded="finishLoaded"
@@ -124,11 +118,19 @@
 <style>
 .draw {
   min-height: calc(100vh - 186px);
-  padding: 10px;
   border: 1px solid #333;
   background-image: url("../../assets/drawbg.jpg");
   /*background-image: url("../../assets/404_images/404.png");*/
   background-size: 50px 50px;
+}
+
+.draw_box{
+  min-height: calc(100vh - 186px);
+  min-width: 500px;
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
 }
 
 .action_box {
@@ -137,24 +139,33 @@
 }
 
 .image {
-  width: 80px;
+  max-width: 80px;
   height: auto;
   vertical-align: top;
-  max-height: 80px;
+  max-height: 60px;
 }
 
 .img_box {
   overflow: hidden;
   margin: 5px;
-  padding: 5px;
+  padding: 15px;
   height: 90px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 4px;
   border: 1px solid #eee;
+  cursor: pointer;
 }
 
-.img_box.active {
+.img_box:hover{
+  border: 1px solid #666;
+  -moz-box-shadow: 1px 1px 5px #666;
+  -webkit-box-shadow: 1px 1px 5px #666;
+  box-shadow: 1px 1px 5px #666;
+}
+
+.img_box.action {
   border: 1px solid #666;
   -moz-box-shadow: 1px 1px 5px #666;
   -webkit-box-shadow: 1px 1px 5px #666;
@@ -171,12 +182,18 @@
 .style_box .el-scrollbar__wrap {
   overflow-x: hidden;
 }
+
+.style_content{
+  background: #fff;
+  padding: 10px 5px;
+}
 </style>
 
 <script>
 import { ButterflyVue } from 'butterfly-vue'
 import gridNode from './components/GridNode.vue'
 import gridGroup from './components/GridGroup.vue'
+import MyUpload from '@/components/MyUpload'
 import { v4 as uuidv4 } from 'uuid'
 
 const endpoints_row = [
@@ -206,7 +223,8 @@ const endpoints_row = [
 export default {
   name: 'ButterFly',
   components: {
-    ButterflyVue
+    ButterflyVue,
+    MyUpload
   },
   data() {
     return {
@@ -232,208 +250,31 @@ export default {
       nodeImgs: [], // 节点样式数组
       nodeStyle: 'circle',
       nodeColor: '#409EFF',
-      type: 'node',
       currentId: '',
-      linkOptions: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }, {
-          value: 'daohang',
-          label: '导航',
-          children: [{
-            value: 'cexiangdaohang',
-            label: '侧向导航'
-          }, {
-            value: 'dingbudaohang',
-            label: '顶部导航'
-          }]
-        }]
-      }, {
-        value: 'zujian',
-        label: '组件',
-        children: [{
-          value: 'basic',
-          label: 'Basic',
-          children: [{
-            value: 'layout',
-            label: 'Layout 布局'
-          }, {
-            value: 'color',
-            label: 'Color 色彩'
-          }, {
-            value: 'typography',
-            label: 'Typography 字体'
-          }, {
-            value: 'icon',
-            label: 'Icon 图标'
-          }, {
-            value: 'button',
-            label: 'Button 按钮'
-          }]
-        }, {
-          value: 'form',
-          label: 'Form',
-          children: [{
-            value: 'radio',
-            label: 'Radio 单选框'
-          }, {
-            value: 'checkbox',
-            label: 'Checkbox 多选框'
-          }, {
-            value: 'input',
-            label: 'Input 输入框'
-          }, {
-            value: 'input-number',
-            label: 'InputNumber 计数器'
-          }, {
-            value: 'select',
-            label: 'Select 选择器'
-          }, {
-            value: 'cascader',
-            label: 'Cascader 级联选择器'
-          }, {
-            value: 'switch',
-            label: 'Switch 开关'
-          }, {
-            value: 'slider',
-            label: 'Slider 滑块'
-          }, {
-            value: 'time-picker',
-            label: 'TimePicker 时间选择器'
-          }, {
-            value: 'date-picker',
-            label: 'DatePicker 日期选择器'
-          }, {
-            value: 'datetime-picker',
-            label: 'DateTimePicker 日期时间选择器'
-          }, {
-            value: 'upload',
-            label: 'Upload 上传'
-          }, {
-            value: 'rate',
-            label: 'Rate 评分'
-          }, {
-            value: 'form',
-            label: 'Form 表单'
-          }]
-        }, {
-          value: 'data',
-          label: 'Data',
-          children: [{
-            value: 'table',
-            label: 'Table 表格'
-          }, {
-            value: 'tag',
-            label: 'Tag 标签'
-          }, {
-            value: 'progress',
-            label: 'Progress 进度条'
-          }, {
-            value: 'tree',
-            label: 'Tree 树形控件'
-          }, {
-            value: 'pagination',
-            label: 'Pagination 分页'
-          }, {
-            value: 'badge',
-            label: 'Badge 标记'
-          }]
-        }, {
-          value: 'notice',
-          label: 'Notice',
-          children: [{
-            value: 'alert',
-            label: 'Alert 警告'
-          }, {
-            value: 'loading',
-            label: 'Loading 加载'
-          }, {
-            value: 'message',
-            label: 'Message 消息提示'
-          }, {
-            value: 'message-box',
-            label: 'MessageBox 弹框'
-          }, {
-            value: 'notification',
-            label: 'Notification 通知'
-          }]
-        }, {
-          value: 'navigation',
-          label: 'Navigation',
-          children: [{
-            value: 'menu',
-            label: 'NavMenu 导航菜单'
-          }, {
-            value: 'tabs',
-            label: 'Tabs 标签页'
-          }, {
-            value: 'breadcrumb',
-            label: 'Breadcrumb 面包屑'
-          }, {
-            value: 'dropdown',
-            label: 'Dropdown 下拉菜单'
-          }, {
-            value: 'steps',
-            label: 'Steps 步骤条'
-          }]
-        }, {
-          value: 'others',
-          label: 'Others',
-          children: [{
-            value: 'dialog',
-            label: 'Dialog 对话框'
-          }, {
-            value: 'tooltip',
-            label: 'Tooltip 文字提示'
-          }, {
-            value: 'popover',
-            label: 'Popover 弹出框'
-          }, {
-            value: 'card',
-            label: 'Card 卡片'
-          }, {
-            value: 'carousel',
-            label: 'Carousel 走马灯'
-          }, {
-            value: 'collapse',
-            label: 'Collapse 折叠面板'
-          }]
-        }]
-      }, {
-        value: 'ziyuan',
-        label: '资源',
-        children: [{
-          value: 'axure',
-          label: 'Axure Components'
-        }, {
-          value: 'sketch',
-          label: 'Sketch Templates'
-        }, {
-          value: 'jiaohu',
-          label: '组件交互文档'
-        }]
-      }],
+      linkOptions: [],
+      rules: {
+        nodeName: [
+          { required: true, message: '请输入节点名称', trigger: 'blur' }
+        ],
+        linkValue: [
+          { type: 'array', required: true, message: '请选择跳转节点', trigger: 'change' }
+        ],
+        type: [
+          { required: true, message: '请选择节点类型', trigger: 'change' }
+        ],
+        textarea: [
+          { required: true, message: '请填写详细描述', trigger: 'blur' }
+        ],
+        file: [
+          { required: true, message: '请上传附件', trigger: 'change' }
+        ]
+      },
       form: {
+        type: 'node',
         nodeName: '',
         textarea: '',
         linkValue: [],
-        fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }]
+        file: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
       },
       mockData: {
         groups: [],
@@ -457,12 +298,12 @@ export default {
   },
   beforeMount: function() {
     // https://webpack.js.org/guides/dependency-management/#requirecontext
-    const imgFiles = require.context('@/assets/node_img', true, /\.jpg$/)
+    const imgFiles = require.context('@/assets/node_img', true, /\.png$/)
 
     // you do not need `import jpg from '@/assets/node_img'`
     // it will auto require all vuex module from modules file
     const modules = imgFiles.keys().reduce((modules, modulePath, index) => {
-      // set './app.jpg' => 'app'
+      // set './app.png' => 'app'
       const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
       modules[index] = moduleName
       return modules
@@ -489,18 +330,8 @@ export default {
   },
   methods: {
     // 级联选择
-    handleChange(value) {
+    linkHandleChange(value) {
       console.log(value)
-    },
-    // 文件上传
-    submitUpload() {
-      this.$refs.upload.submit()
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
     },
     // 节点类型切换事件
     changeStyle(type) {
@@ -516,17 +347,26 @@ export default {
       console.log(JSON.stringify(this.mockData))
       localStorage.setItem('mockData', JSON.stringify(this.mockData))
     },
-    handleAddNode() {
-      this.mockData.nodes.push({
-        id: uuidv4(),
-        top: 10,
-        left: 10,
-        label: this.nodeName,
-        render: gridNode,
-        endpoints: endpoints_row,
-        addChildren: this.addChildren,
-        changeCurrentNode: this.changeCurrentNode,
-        currentId: this.currentId
+    handleAddNode(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.mockData.nodes.push({
+            id: uuidv4(),
+            top: 10,
+            left: 10,
+            render: gridNode,
+            endpoints: endpoints_row,
+            addChildren: this.addChildren,
+            changeCurrentNode: this.changeCurrentNode,
+            currentId: this.currentId,
+            nodeColor: this.nodeColor,
+            nodeStyle: this.nodeStyle,
+            ...this.form
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
       this.nodeName = ''
     },
