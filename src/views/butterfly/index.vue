@@ -20,6 +20,18 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="连接方向" prop="direction">
+          <el-select v-model="form.direction" size="small" placeholder="请选择连接方向">
+            <el-option
+              label="横向连接"
+              value="row"
+            />
+            <el-option
+              label="竖向连接"
+              value="column"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="节点名称" prop="nodeName">
           <el-input v-model="form.nodeName" placeholder="请输入节点名称" />
         </el-form-item>
@@ -208,18 +220,18 @@ const endpoints_row = [
     pos: [0, 0.5]
   }
 ]
-// const endpoints_cloum = [
-//   {
-//     id: 'top',
-//     orientation: [0, 0],
-//     pos: [0.5, 0]
-//   },
-//   {
-//     id: 'bottom',
-//     orientation: [0, 0],
-//     pos: [0.5, 1]
-//   }
-// ]
+const endpoints_column = [
+  {
+    id: 'top',
+    orientation: [0, 0],
+    pos: [0.5, 0]
+  },
+  {
+    id: 'bottom',
+    orientation: [0, 0],
+    pos: [0.5, 1]
+  }
+]
 export default {
   name: 'ButterFly',
   components: {
@@ -248,13 +260,16 @@ export default {
       ],
       mapName: '',
       nodeImgs: [], // 节点样式数组
-      nodeStyle: 'circle',
+      nodeStyle: '1circlenode',
       nodeColor: '#409EFF',
       currentId: '',
       linkOptions: [],
       rules: {
         nodeName: [
           { required: true, message: '请输入节点名称', trigger: 'blur' }
+        ],
+        direction: [
+          { required: true, message: '请选择连接方向', trigger: 'change' }
         ],
         linkValue: [
           { type: 'array', required: true, message: '请选择跳转节点', trigger: 'change' }
@@ -271,6 +286,7 @@ export default {
       },
       form: {
         type: 'node',
+        direction: 'row',
         nodeName: '',
         textarea: '',
         linkValue: [],
@@ -355,7 +371,7 @@ export default {
             top: 10,
             left: 10,
             render: gridNode,
-            endpoints: endpoints_row,
+            endpoints: this.form.direction === 'row' ? endpoints_row : endpoints_column,
             addChildren: this.addChildren,
             changeCurrentNode: this.changeCurrentNode,
             currentId: this.currentId,

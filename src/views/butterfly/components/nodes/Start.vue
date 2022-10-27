@@ -1,20 +1,19 @@
 <template>
   <div @click="clickChildren">
-    <svg t="1666859977717" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4981" width="100" height="100">
-      <path
-        :stroke="action?'#000':nodeColor"
-        stroke-width="15"
-        :fill="nodeColor"
-        d="M512 64C264.58 64 64 264.58 64 512s200.58 448 448 448 448-200.58 448-448S759.42 64 512 64z m214.47 479.73h-183v183a32 32 0 0 1-64 0v-183h-183a32 32 0 0 1 0-64h183v-183a32 32 0 0 1 64 0v183h183a32 32 0 0 1 0 64z"
-        p-id="4982"
-      /></svg>
+    <svg t="1666864806555" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2461" width="100" height="100"><path
+      d="M510.9 60.7c-245.6 0-446.7 199.8-446.7 446.7C64.2 753 263.9 954 510.8 954s446.6-199.7 446.6-446.6c0.1-245.6-199.6-446.7-446.5-446.7zM692 525.9l-272.1 157c-10.7 6.2-24-1.5-24-13.9V354.9c0-12.3 13.3-20 24-13.9L692 498.1c10.6 6.2 10.6 21.6 0 27.8z"
+      :stroke="action?'#000':nodeColor"
+      stroke-width="15"
+      :fill="nodeColor"
+      p-id="2462"
+    /></svg>
     <el-tag class="bottom-center">{{ nodeName }}</el-tag>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Add',
+  name: 'Start',
   props: {
     nodeColor: {
       type: String,

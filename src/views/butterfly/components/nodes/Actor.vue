@@ -18,7 +18,7 @@
         p-id="4790"
       />
     </svg>
-    <div>{{ nodeName }}</div>
+    <el-tag class="bottom-center">{{ nodeName }}</el-tag>
   </div>
 </template>
 
@@ -47,4 +47,11 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.bottom-center{
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+</style>

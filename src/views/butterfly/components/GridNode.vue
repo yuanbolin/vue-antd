@@ -2,16 +2,15 @@
 <template>
   <div style="position: relative">
     <component :is="node" :action="action" :node-name="itemData.nodeName" :node-color="nodeColor" @clickchild="getId" />
-<!--    <div class="add" @click="addChildren">+</div>-->
-    <div>{{node}}</div>
+    <!--    <div class="add" @click="addChildren">+</div>-->
   </div>
 </template>
 
 <script>
-import { actor, add, alarm, car, circlenode, callout, diamond, download, downloadfile, datanode, error, elipse, home, hexagon, linknode, note, parallelogram, rectangle, square, success, upload, warn } from './nodes'
+import { actor, add, alarm, car, circlenode, callout, contract, diamond, download, downloadfile, datanode, error, elipse, forbid, home, hexagon, linknode, linknodetwo, money, note, parallelogram, pause, rectangle, square, success, start, upload, warn } from './nodes'
 export default {
   name: 'GridNode',
-  components: { actor, add, alarm, car, circlenode, callout, diamond, download, downloadfile, datanode, error, elipse, home, hexagon, linknode, note, parallelogram, rectangle, square, success, upload, warn },
+  components: { actor, add, alarm, car, circlenode, callout, contract, diamond, download, downloadfile, datanode, error, elipse, forbid, home, hexagon, linknode, linknodetwo, money, note, parallelogram, pause, rectangle, square, success, start, upload, warn },
   props: {
     // 这里可以拿到mockdata里的当前节点的数据
     itemData: {
