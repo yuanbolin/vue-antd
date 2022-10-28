@@ -94,7 +94,31 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/butterfly/index'),
         name: 'ButterFly',
-        meta: { title: '流程图绘制', icon: 'el-icon-edit', noCache: false }
+        meta: { title: '流程图绘制', icon: 'el-icon-edit', noCache: false, roles: ['admin'] }
+      }
+    ]
+  },
+  {
+    path: '/butterfly-show',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/butterfly-show/index'),
+        name: 'ButterFlyShow',
+        meta: { title: '流程图查看', icon: 'el-icon-set-up', noCache: true, roles: ['editor'] }
+      }
+    ]
+  },
+  {
+    path: '/user-list',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/user/index'),
+        name: 'UserList',
+        meta: { title: '用户列表', icon: 'el-icon-user', noCache: false, roles: ['admin'] }
       }
     ]
   },

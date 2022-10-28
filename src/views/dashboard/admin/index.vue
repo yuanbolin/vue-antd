@@ -7,18 +7,20 @@
       </pan-thumb>
       <div class="info-container">
         <span class="display_name">{{ name }}</span>
-        <span style="font-size:20px;padding-top:20px;display:inline-block;">Admin's Dashboard</span>
+        <span style="font-size:20px;padding-top:20px;display:inline-block;">欢迎使用流程图管理平台系统</span>
       </div>
     </div>
+    <panel-group />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import PanelGroup from '../components/PanelGroup'
 import PanThumb from '@/components/PanThumb'
 export default {
   name: 'DashboardAdmin',
-  components: { PanThumb },
+  components: { PanThumb, PanelGroup, },
   data() {
     return {
     }

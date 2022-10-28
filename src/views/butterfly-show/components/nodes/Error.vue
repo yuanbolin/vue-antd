@@ -1,0 +1,90 @@
+<template>
+  <div>
+    <svg t="1666860366674" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6413" width="100" height="100">
+      <defs>
+        <filter id="f4" x="0" y="0" width="200%" height="200%">
+          <feOffset
+            result="offOut"
+            in="SourceGraphic"
+            dx="20"
+            dy="20"
+          />
+          <feColorMatrix
+            result="matrixOut"
+            in="offOut"
+            type="matrix"
+            values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0
+1 0"
+          />
+          <feGaussianBlur
+            result="blurOut"
+            in="matrixOut"
+            stdDeviation="10"
+          />
+          <feBlend
+            in="SourceGraphic"
+            in2="blurOut"
+            mode="normal"
+          />
+        </filter>
+      </defs>
+      <path
+        filter="url(#f4)"
+        d="M511.996418 64.266699c-246.859317 0-447.730231 200.842261-447.730231 447.728184 0 246.895133 200.843284 447.737394 447.730231 447.737394 246.864434 0 447.736371-200.842261 447.736371-447.737394C959.732789 265.10896 758.890528 64.266699 511.996418 64.266699L511.996418 64.266699zM694.642249 649.903813c12.472056 12.537548 12.438287 32.743752-0.064468 45.214784-6.237051 6.209422-14.390755 9.342786-22.578228 9.342786-8.219195 0-16.405645-3.133364-22.642696-9.403161L511.840876 557.124733 373.870548 693.617407c-6.237051 6.144954-14.355963 9.242502-22.482037 9.242502-8.251941 0-16.470113-3.166109-22.735817-9.495258-12.409634-12.56927-12.317537-32.783661 0.25378-45.220924l137.807622-136.301316L329.41915 374.096187c-12.472056-12.502755-12.437264-32.748868 0.064468-45.220924 12.503778-12.503778 32.715099-12.440333 45.221948 0.066515l137.486304 137.901767L650.157081 330.346777c12.536524-12.438287 32.813337-12.311397 45.220924 0.25378 12.438287 12.571317 12.31242 32.813337-0.257873 45.221948L557.31558 512.128937 694.642249 649.903813 694.642249 649.903813zM694.642249 649.903813"
+        :stroke="action?'#666':'#eee'"
+        stroke-width="15"
+        :opacity="action?1:0.9"
+        :fill="nodeColor"
+        p-id="6414"
+      /></svg>
+    <div class="bottom-center">
+      <el-tag class="tag">{{ nodeName }}</el-tag>
+    </div>
+
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Error',
+  props: {
+    nodeColor: {
+      type: String,
+      default: '#000'
+    },
+    nodeName: {
+      type: String,
+      default: ''
+    },
+    action: {
+      type: Boolean,
+      default: false
+    }
+  }
+
+}
+</script>
+
+<style scoped>
+.bottom-center {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 110%;
+}
+.tag {
+  white-space: pre-wrap;
+  height: auto;
+  word-wrap:break-word;
+  transform: translateX(-50%);
+  text-align: center
+}
+.close_box{
+  position: absolute;
+  left: 90%;
+  bottom: 90%;
+  color: red;
+  font-size: 20px;
+  cursor: pointer;
+}
+</style>

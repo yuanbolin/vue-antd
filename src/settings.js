@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Á÷³ÌÍ¼¹ÜÀíÆ½Ì¨',
+  title: 'æµç¨‹å›¾ç®¡ç†å¹³å°',
 
   /**
    * @type {boolean} true | false

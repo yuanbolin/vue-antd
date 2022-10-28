@@ -226,12 +226,24 @@ const endpoints_column = [
   {
     id: 'top',
     orientation: [0, 0],
-    pos: [0.5, 0]
+    pos: [0.5, 0],
+    expandArea: {
+      left: 10,
+      right: 10,
+      top: 10,
+      botton: 10
+    }
   },
   {
     id: 'bottom',
     orientation: [0, 0],
-    pos: [0.5, 1]
+    pos: [0.5, 1],
+    expandArea: {
+      left: 10,
+      right: 10,
+      top: 10,
+      botton: 10
+    }
   }
 ]
 export default {

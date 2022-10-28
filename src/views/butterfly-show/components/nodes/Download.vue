@@ -1,0 +1,90 @@
+<template>
+  <div>
+    <svg t="1666860309919" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6105" width="100" height="100">
+      <defs>
+        <filter id="f4" x="0" y="0" width="200%" height="200%">
+          <feOffset
+            result="offOut"
+            in="SourceGraphic"
+            dx="20"
+            dy="20"
+          />
+          <feColorMatrix
+            result="matrixOut"
+            in="offOut"
+            type="matrix"
+            values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0
+1 0"
+          />
+          <feGaussianBlur
+            result="blurOut"
+            in="matrixOut"
+            stdDeviation="10"
+          />
+          <feBlend
+            in="SourceGraphic"
+            in2="blurOut"
+            mode="normal"
+          />
+        </filter>
+      </defs>
+      <path
+        filter="url(#f4)"
+        d="M512 64C264.58 64 64 264.58 64 512s200.58 448 448 448 448-200.58 448-448S759.42 64 512 64z m202.84 494.24L534.32 738.85l-0.28 0.26-0.84 0.81h-0.06l-0.56 0.48-0.58 0.6-0.11 0.09c-0.2 0.17-0.41 0.32-0.61 0.48l-0.46 0.35-0.17 0.13c-0.21 0.16-0.43 0.3-0.65 0.46l-0.42 0.29-0.21 0.15-0.67 0.42-0.44 0.27-0.24 0.15-0.63 0.35-0.5 0.28-0.24 0.14-0.6 0.29-0.58 0.29-0.23 0.11-0.54 0.24-0.68 0.29-0.21 0.09-0.48 0.19-0.8 0.3-0.18 0.06-0.43 0.14-0.9 0.29h-0.14l-0.4 0.11-1 0.26h-0.13l-0.38 0.09-1 0.22h-0.1l-0.42 0.07-1 0.17h-0.09l-0.51 0.06-0.94 0.11H514.1l-0.75 0.06h-3.12l-0.73-0.06h-0.83l-0.92-0.11-0.53-0.06h-0.09l-1-0.17-0.44-0.07h-0.1l-1-0.22-0.41-0.09h-0.08L503 747l-0.42-0.11h-0.14l-0.88-0.28-0.45-0.15-0.18-0.06-0.78-0.3-0.5-0.19-0.2-0.09-0.68-0.29-0.55-0.24-0.23-0.11-0.57-0.29c-0.2-0.1-0.41-0.19-0.61-0.3l-0.23-0.13-0.5-0.27-0.65-0.37-0.22-0.13-0.45-0.29c-0.23-0.14-0.45-0.27-0.67-0.42l-0.19-0.13-0.47-0.32-0.66-0.46-0.14-0.12-0.54-0.41c-0.19-0.15-0.4-0.3-0.59-0.46l-0.1-0.08-0.71-0.62-0.43-0.36c-0.4-0.36-0.79-0.73-1.17-1.12L308.62 558.23A32 32 0 0 1 353.9 513l125.77 125.9-0.08-331.39a32 32 0 0 1 32-32 32 32 0 0 1 32 32l0.08 331.49 125.9-126a32 32 0 0 1 45.27 45.25z"
+        :stroke="action?'#666':'#eee'"
+        stroke-width="15"
+        :opacity="action?1:0.9"
+        :fill="nodeColor"
+        p-id="6106"
+      /></svg>
+    <div class="bottom-center">
+      <el-tag class="tag">{{ nodeName }}</el-tag>
+    </div>
+
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Download',
+  props: {
+    nodeColor: {
+      type: String,
+      default: '#000'
+    },
+    nodeName: {
+      type: String,
+      default: ''
+    },
+    action: {
+      type: Boolean,
+      default: false
+    }
+  }
+
+}
+</script>
+
+<style scoped>
+.bottom-center {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 110%;
+}
+.tag {
+  white-space: pre-wrap;
+  height: auto;
+  word-wrap:break-word;
+  transform: translateX(-50%);
+  text-align: center
+}
+.close_box{
+  position: absolute;
+  left: 90%;
+  bottom: 90%;
+  color: red;
+  font-size: 20px;
+  cursor: pointer;
+}
+</style>
