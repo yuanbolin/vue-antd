@@ -1,13 +1,46 @@
 <template>
   <div @click="clickChildren">
-    <svg t="1666860619993" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7658" width="100" height="100"><path
-      d="M64 64h896v896H64z"
-      :stroke="action?'#000':nodeColor"
-      stroke-width="15"
-      :fill="nodeColor"
-      p-id="7659"
-    /></svg>
-    <el-tag class="bottom-center">{{ nodeName }}</el-tag>
+    <svg t="1666860619993" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7658" width="100" height="100">
+      <defs>
+        <filter id="f4" x="0" y="0" width="200%" height="200%">
+          <feOffset
+            result="offOut"
+            in="SourceGraphic"
+            dx="20"
+            dy="20"
+          />
+          <feColorMatrix
+            result="matrixOut"
+            in="offOut"
+            type="matrix"
+            values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0
+1 0"
+          />
+          <feGaussianBlur
+            result="blurOut"
+            in="matrixOut"
+            stdDeviation="10"
+          />
+          <feBlend
+            in="SourceGraphic"
+            in2="blurOut"
+            mode="normal"
+          />
+        </filter>
+      </defs>
+      <path
+        filter="url(#f4)"
+        d="M64 64h896v896H64z"
+        :stroke="action?'#666':'#eee'"
+        stroke-width="15"
+        :opacity="action?1:0.9"
+        :fill="nodeColor"
+        p-id="7659"
+      /></svg>
+    <div class="bottom-center">
+      <el-tag class="tag">{{ nodeName }}</el-tag>
+    </div>
+    <i v-if="action" class="el-icon-error close_box" @click.stop="delnode" />
   </div>
 </template>
 
@@ -31,16 +64,35 @@ export default {
   methods: {
     clickChildren() {
       this.$emit('clickchild')
+    },
+    delnode() {
+      this.$emit('delnode')
     }
   }
 }
 </script>
 
 <style scoped>
-.bottom-center{
+.bottom-center {
   position: absolute;
-  bottom: -20px;
+  top: 100%;
   left: 50%;
+  width: 110%;
+}
+.tag {
+  white-space: pre-wrap;
+  height: auto;
+  word-wrap:break-word;
   transform: translateX(-50%);
+  text-align: center
+}
+.close_box{
+  position: absolute;
+  left: 90%;
+  bottom: 90%;
+  color: red;
+  font-size: 20px;
+  cursor: pointer;
 }
 </style>
+

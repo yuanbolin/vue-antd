@@ -1,8 +1,7 @@
 // grid-node.vue
 <template>
   <div style="position: relative">
-    <component :is="node" :action="action" :node-name="itemData.nodeName" :node-color="nodeColor" @clickchild="getId" />
-    <!--    <div class="add" @click="addChildren">+</div>-->
+    <component :is="node" :action="action" :node-name="itemData.nodeName" :node-color="nodeColor" @clickchild="getId" @delnode="delnode"/>
   </div>
 </template>
 
@@ -45,35 +44,19 @@ export default {
   },
   methods: {
     getId() {
-      console.log(12312321)
       this.itemData.changeCurrentNode(this.itemData.id)
       // console.log(this.itemData.id)
     },
     addChildren() {
       this.itemData.addChildren('node', this.itemData.id)
+    },
+    delnode() {
+      this.itemData.delnode()
     }
   }
 }
 </script>
 
 <style scoped>
-.add {
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  text-align: center;
-  font-size: 18px;
-  line-height: 14px;
-  margin-left: -10px;
-  background: #fff;
-  border: 1px solid #aaaaaa;
-  color: #333333;
-  cursor: pointer;
-}
-.action {
-  border: 2px solid #000;
-}
+
 </style>

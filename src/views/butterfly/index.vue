@@ -33,13 +33,19 @@
           </el-select>
         </el-form-item>
         <el-form-item label="节点名称" prop="nodeName">
-          <el-input v-model="form.nodeName" placeholder="请输入节点名称" />
+          <el-input
+            v-model="form.nodeName"
+            autosize
+            clearable
+            placeholder="请输入节点名称"
+          />
         </el-form-item>
         <el-form-item v-if="form.type==='node_info'" label="详细描述" prop="textarea">
           <el-input
             v-model="form.textarea"
             type="textarea"
             autosize
+            clearable
             placeholder="请输入详细描述"
           />
         </el-form-item>
@@ -104,7 +110,7 @@
           </el-button>
           <el-button
             icon="el-icon-circle-check"
-            @click="showData"
+            @click="saveData"
           >保存
           </el-button>
         </el-button-group>
@@ -172,16 +178,12 @@
 
 .img_box:hover{
   border: 1px solid #666;
-  -moz-box-shadow: 1px 1px 5px #666;
-  -webkit-box-shadow: 1px 1px 5px #666;
-  box-shadow: 1px 1px 5px #666;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .22), 0 0 6px rgba(0, 0, 0, .14)
 }
 
 .img_box.action {
   border: 1px solid #666;
-  -moz-box-shadow: 1px 1px 5px #666;
-  -webkit-box-shadow: 1px 1px 5px #666;
-  box-shadow: 1px 1px 5px #666;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .22), 0 0 6px rgba(0, 0, 0, .14)
 }
 
 .title_box {
@@ -290,7 +292,7 @@ export default {
         nodeName: '',
         textarea: '',
         linkValue: [],
-        file: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        file: ''
       },
       mockData: {
         groups: [],
@@ -357,9 +359,8 @@ export default {
     finishLoaded(ref) {
       this.canvasRef = ref
       console.log('finish')
-      console.log(this.canvasRef)
     },
-    showData() {
+    saveData() {
       console.log(JSON.stringify(this.mockData))
       localStorage.setItem('mockData', JSON.stringify(this.mockData))
     },
@@ -373,12 +374,22 @@ export default {
             render: gridNode,
             endpoints: this.form.direction === 'row' ? endpoints_row : endpoints_column,
             addChildren: this.addChildren,
+            delnode: this.delnode,
             changeCurrentNode: this.changeCurrentNode,
             currentId: this.currentId,
             nodeColor: this.nodeColor,
             nodeStyle: this.nodeStyle,
             ...this.form
           })
+          console.log(this.$refs[formName])
+          this.form = {
+            ...this.form,
+            nodeName: '',
+            textarea: '',
+            linkValue: [],
+            file: ''
+          }
+          // this.$refs[formName].resetFields()
         } else {
           console.log('error submit!!')
           return false
@@ -433,6 +444,7 @@ export default {
               type: 'node',
               render: gridNode,
               addChildren: this.addChildren,
+              delnode: this.delnode,
               changeCurrentNode: this.changeCurrentNode,
               currentId: this.currentId
             })
@@ -459,6 +471,11 @@ export default {
       // console.log(type, id);
     },
     getCanvas() {
+      this.currentId = ''
+      this.mockData.nodes.forEach((item) => {
+        item.currentId = ''
+      })
+      this.canvasRef.redraw()
       const dom = this.canvasRef.canvas
       dom.focusCenterWithAnimate({ offest: [0, 0] }, () => {
         dom.zoom(1)
