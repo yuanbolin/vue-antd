@@ -95,7 +95,9 @@ export default {
     // 绘制插件加载完成事件
     finishLoaded(ref) {
       this.canvasRef = ref
+      this.canvas = ref.canvas
       console.log('finish')
+      this.canvas.setMinimap(true, {})
     },
     logEvent(e) {
       switch (e.type) {

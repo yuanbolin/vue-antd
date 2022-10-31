@@ -22,9 +22,8 @@ export default {
   },
   created() {},
   methods: {
-    getId(e) {
-      console.log(this.itemData)
-      // console.log(this.itemData.id)
+    getId() {
+      this.$emit('changecurrentnode', this.itemData.id)
     }
   }
 }
