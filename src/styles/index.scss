@@ -214,3 +214,11 @@ aside {
   stroke: #BFBFBF;
   stroke-width: 3px;
 }
+#app .butterflie-circle-endpoint {
+  width: 10px;
+  height: 10px;
+}
+#app .butterflie-circle-endpoint:hover {
+  background: #F66902;
+  border: 1px solid #fff;
+}

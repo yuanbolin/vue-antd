@@ -235,42 +235,47 @@ import { ButterflyVue } from 'butterfly-vue'
 import gridNode from './components/GridNode.vue'
 import gridGroup from './components/GridGroup.vue'
 import MyUpload from '@/components/MyUpload'
-// import Edge from './components/edge/index'
+import MyEndpoint from './components/MyEndpoint.js'
+// import Edge from './components/GridEdge.vue'
 import { v4 as uuidv4 } from 'uuid'
 const endpoints_row = [
   {
-    id: 'top',
+    id: 'right',
     orientation: [1, 0],
-    pos: [0, 0.5]
+    pos: [0, 0.5],
+    Class: MyEndpoint
   },
   {
-    id: 'bottom',
+    id: 'left',
     orientation: [-1, 0],
-    pos: [0, 0.5]
+    pos: [0, 0.5],
+    Class: MyEndpoint
   }
 ]
 const endpoints_column = [
   {
     id: 'top',
-    orientation: [0, 0],
+    orientation: [0, -1],
     pos: [0.5, 0],
     expandArea: {
       left: 10,
       right: 10,
       top: 10,
       botton: 10
-    }
+    },
+    Class: MyEndpoint
   },
   {
     id: 'bottom',
-    orientation: [0, 0],
-    pos: [0.5, 1],
+    orientation: [0, 1],
+    pos: [0.5, 0],
     expandArea: {
       left: 10,
       right: 10,
       top: 10,
       botton: 10
-    }
+    },
+    Class: MyEndpoint
   }
 ]
 export default {
@@ -531,7 +536,8 @@ export default {
               ...item,
               type: 'node',
               render: gridNode,
-              currentId: this.currentId
+              currentId: this.currentId,
+              endpoints: [{ ...item.endpoints[0], Class: MyEndpoint }, { ...item.endpoints[1], Class: MyEndpoint }]
             })
           })
           break

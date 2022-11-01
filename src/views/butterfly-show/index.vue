@@ -68,6 +68,7 @@
 import { ButterflyVue } from 'butterfly-vue'
 import gridNode from './components/GridNode.vue'
 import gridGroup from './components/GridGroup.vue'
+import MyEndpoint from './components/MyEndpoint.js'
 export default {
   name: 'ButterFlyShow',
   components: {
@@ -172,6 +173,7 @@ export default {
       this.canvasRef = ref
       this.canvas = ref.canvas
       console.log('finish')
+      this.canvas.focusCenterWithAnimate({ offest: [0, 0] })
       this.canvas.setMinimap(true, {})
     },
     logEvent(e) {
@@ -198,7 +200,8 @@ export default {
             dataArr.push({
               ...item,
               type: 'node',
-              render: gridNode
+              render: gridNode,
+              endpoints: [{ ...item.endpoints[0], Class: MyEndpoint }, { ...item.endpoints[1], Class: MyEndpoint }]
             })
           })
           break
