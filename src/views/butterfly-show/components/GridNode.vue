@@ -1,7 +1,7 @@
 // grid-node.vue
 <template>
   <div style="position: relative">
-    <component :is="node" :action="action" :node-name="itemData.nodeName" :node-color="nodeColor"/>
+    <component :is="node" :action="action" :node-type="itemData.nodeType" :textarea="itemData.textarea" :link-value="itemData.linkValue" :file="itemData.file" :node-name="itemData.nodeName" :node-color="nodeColor" />
   </div>
 </template>
 

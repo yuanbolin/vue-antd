@@ -29,7 +29,7 @@ module.exports = [
     response: config => {
       const { username } = config.body
       const token = tokens[username]
-
+      const info = users[token.token]
       // mock error
       if (!token) {
         return {
@@ -40,7 +40,10 @@ module.exports = [
 
       return {
         code: 20000,
-        data: token
+        data: {
+          ...token,
+          info
+        }
       }
     }
   },

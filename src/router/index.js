@@ -6,9 +6,6 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
-/* Router Modules */
-import tableRouter from './modules/table'
-
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -87,11 +84,24 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/butterfly',
+    path: '/catalogue',
     component: Layout,
     children: [
       {
         path: 'index',
+        component: () => import('@/views/catalogue/index'),
+        name: 'Catalogue',
+        meta: { title: '分级目录管理', icon: 'el-icon-s-grid', noCache: true, roles: ['admin'] }
+      }
+    ]
+  },
+  {
+    path: '/butterfly',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'index/:id(\\d*)',
         component: () => import('@/views/butterfly/index'),
         name: 'ButterFly',
         meta: { title: '流程图绘制', icon: 'el-icon-edit', noCache: false, roles: ['admin'] }
@@ -118,32 +128,19 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/user/index'),
         name: 'UserList',
-        meta: { title: '用户列表', icon: 'el-icon-user', noCache: false, roles: ['admin'] }
-      }
-    ]
-  },
-  tableRouter,
-  {
-    path: '/icon',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/icons/index'),
-        name: 'Icons',
-        meta: { title: 'Icons', icon: 'icon', noCache: true }
+        meta: { title: '用户管理', icon: 'user-manager', noCache: false, roles: ['admin'] }
       }
     ]
   },
   {
-    path: '/theme',
+    path: '/user-manager',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/theme/index'),
-        name: 'Theme',
-        meta: { title: 'Theme', icon: 'theme', noCache: false }
+        component: () => import('@/views/user-manger/index'),
+        name: 'UserManager',
+        meta: { title: '基本信息管理', icon: 'el-icon-user', noCache: false, roles: ['editor', 'admin'] }
       }
     ]
   },

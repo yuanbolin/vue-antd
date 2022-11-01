@@ -10,9 +10,9 @@
         <b>节点内容</b>
       </div>
       <el-form ref="form" :rules="rules" :model="form" label-width="80px">
-        <el-form-item label="节点类型" prop="type">
+        <el-form-item label="节点类型" prop="nodeType">
           <el-select
-            v-model="form.type"
+            v-model="form.nodeType"
             size="small"
             placeholder="请选择节点类型"
           >
@@ -43,7 +43,7 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="form.type === 'node_info'"
+          v-if="form.nodeType === 'node_info'"
           label="详细描述"
           prop="textarea"
         >
@@ -56,19 +56,20 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="form.type === 'node_file'"
+          v-if="form.nodeType === 'node_file'"
           label="附件上传"
           prop="file"
         >
           <my-upload v-model="form.file" />
         </el-form-item>
         <el-form-item
-          v-if="form.type === 'node_link'"
+          v-if="form.nodeType === 'node_link'"
           label="跳转节点"
           prop="linkValue"
         >
           <el-cascader
             v-model="form.linkValue"
+            :show-all-levels="false"
             :options="linkOptions"
             placeholder="请选择跳转节点"
             :props="{ expandTrigger: 'hover' }"
@@ -144,9 +145,9 @@
             :canvas-data="mockData"
             :canvas-conf="defaultOptions"
             @onLoaded="finishLoaded"
-            @onCreateEdge="linkConnect"
-            @onChangeEdges="linkReconnect"
-            @onDeleteEdge="linkDelete"
+            @onCreateEdge="onCreateEdgeHandle"
+            @onChangeEdges="onChangeEdgeHandle"
+            @onDeleteEdge="onDeleteEdgeHandle"
             @onOtherEvent="logEvent"
             @dblclick="changeEdgeShow"
             @inputedge="inputEdge"
@@ -160,7 +161,7 @@
   </el-container>
 </template>
 
-<style>
+<style scoped>
 .draw {
   min-height: calc(100vh - 186px);
   border: 1px solid #333;
@@ -227,11 +228,6 @@
   background: #fff;
   padding: 10px 5px;
 }
-.butterflies-link {
-  fill: none;
-  stroke: #000000;
-  stroke-width: 1px;
-}
 </style>
 
 <script>
@@ -239,7 +235,7 @@ import { ButterflyVue } from 'butterfly-vue'
 import gridNode from './components/GridNode.vue'
 import gridGroup from './components/GridGroup.vue'
 import MyUpload from '@/components/MyUpload'
-import Edge from './components/edge/index'
+// import Edge from './components/edge/index'
 import { v4 as uuidv4 } from 'uuid'
 const endpoints_row = [
   {
@@ -324,7 +320,7 @@ export default {
             trigger: 'change'
           }
         ],
-        type: [
+        nodeType: [
           { required: true, message: '请选择节点类型', trigger: 'change' }
         ],
         textarea: [
@@ -333,7 +329,7 @@ export default {
         file: [{ required: true, message: '请上传附件', trigger: 'change' }]
       },
       form: {
-        type: 'node',
+        nodeType: 'node',
         direction: 'row',
         nodeName: '',
         textarea: '',
@@ -356,7 +352,6 @@ export default {
             arrow: true,
             shapeType: 'AdvancedBezier',
             draggable: true,
-            label: '连接锚点',
             labelPosition: 0.5
           }
         }
@@ -433,6 +428,10 @@ export default {
       // })
     },
     saveData() {
+      this.currentId = ''
+      for (let i = 0; i < this.mockData.nodes.length; i++) {
+        this.mockData.nodes[i].currentId = ''
+      }
       console.log(JSON.stringify(this.mockData))
       localStorage.setItem('mockData', JSON.stringify(this.mockData))
     },
@@ -467,30 +466,32 @@ export default {
       this.nodeName = ''
     },
     logEvent(e) {
-      switch (e.type) {
-        case 'drag:end':
-          console.log(e)
-          break
-      }
+      console.log('logEvent', e)
     },
-    linkConnect(e) {
+    /**
+     * 通过拖拽创建了edge
+     * 还需对edge进行自定义开发，因插件未完全支持暂时搁置。
+     * @param e 创建的edge信息
+     */
+    onCreateEdgeHandle(e) {
       console.log('连线成功', e)
-      let index = 0
-      function checkId(item) {
-        return item.id === e.id
-      }
-      index = this.mockData.edges.findIndex(checkId)
-      this.mockData.edges[index].render = Edge
-      this.mockData.edges[index].isShow = false
-      this.mockData.edges[index].edgeLabel = ''
+      // const nodeInfo = this.mockData.nodes.filter(item => item.id === e.sourceNodeId)
+      // function checkId(item) {
+      //   return item.id === e.id
+      // }
+      // if (nodeInfo && nodeInfo.length > 0) {
+      //   let index = 0
+      //   index = this.mockData.edges.findIndex(checkId)
+      //   this.mockData.edges[index].render = Edge
+      //   this.mockData.edges[index].isShow = false
+      //   this.mockData.edges[index].edgeLabel = ''
+      // }
     },
-    linkReconnect(e) {
+    onChangeEdgeHandle(e) {
       console.log('修改连线成功', e)
-      console.log(JSON.parse(JSON.stringify(this.mockData)))
     },
-    linkDelete(e) {
+    onDeleteEdgeHandle(e) {
       console.log('删除连线成功', e)
-      console.log(JSON.parse(JSON.stringify(this.mockData)))
     },
     // 删除当前选择的节点
     delnode() {

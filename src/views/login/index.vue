@@ -109,6 +109,7 @@ export default {
       loading: false,
       showDialog: false,
       redirect: undefined,
+      roles: undefined,
       otherQuery: {}
     }
   },
@@ -157,8 +158,9 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+            .then(async(res) => {
+              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({ path: '/' })
               this.loading = false
             })
             .catch(() => {

@@ -77,9 +77,6 @@ export default {
     },
     delnode() {
       this.$emit('delnode')
-    },
-    delnode() {
-      this.$emit('delnode')
     }
   }
 }

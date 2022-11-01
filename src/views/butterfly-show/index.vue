@@ -1,34 +1,58 @@
 <template>
   <el-container>
-    <el-header class="action_box">
-      <b style="margin-right: 15px">流程图名称</b>
-      <el-button-group>
-        <el-button
-          icon="el-icon-download"
-          @click="getCanvas"
-        >下载流程图
-        </el-button>
-      </el-button-group>
-    </el-header>
-    <el-main>
-      <div class="draw">
-        <butterfly-vue
-          class-name="draw_box"
-          :canvas-data="mockData"
-          :canvas-conf="defaultOptions"
-          @onLoaded="finishLoaded"
-          @onCreateEdge="logEvent"
-          @onChangeEdges="logEvent"
-          @onDeleteEdge="logEvent"
-          @onOtherEvent="logEvent"
-        />
-      </div>
-    </el-main>
+    <el-aside width="320px">
+      <b style="margin-right: 15px"> 分级目录查询 </b>
+      <el-input
+        v-model="filterText"
+        placeholder="输入关键字进行过滤"
+      />
+
+      <el-tree
+        ref="tree"
+        accordion
+        class="filter-tree"
+        :data="data"
+        :props="defaultProps"
+        default-expand-all
+        :filter-node-method="filterNode"
+      />
+
+    </el-aside>
+    <el-container>
+      <el-header class="action_box">
+        <b style="margin-right: 15px">流程图名称</b>
+        <el-button-group>
+          <el-button
+            icon="el-icon-download"
+            @click="getCanvas"
+          >下载流程图
+          </el-button>
+        </el-button-group>
+      </el-header>
+      <el-main>
+        <div class="draw">
+          <butterfly-vue
+            class-name="draw_box"
+            :canvas-data="mockData"
+            :canvas-conf="defaultOptions"
+            @onLoaded="finishLoaded"
+            @onCreateEdge="logEvent"
+            @onChangeEdges="logEvent"
+            @onDeleteEdge="logEvent"
+            @onOtherEvent="logEvent"
+          />
+        </div>
+      </el-main>
+    </el-container>
   </el-container>
 </template>
 
-<style>
+<style scoped>
+.el-tree{
+  background: transparent;
+}
 .draw {
+  position: relative;
   min-height: calc(100vh - 186px);
   border: 1px solid #333;
   background-size: 50px 50px;
@@ -51,6 +75,46 @@ export default {
   },
   data() {
     return {
+      filterText: '',
+      data: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }, {
+        id: 2,
+        label: '一级 2',
+        children: [{
+          id: 5,
+          label: '二级 2-1'
+        }, {
+          id: 6,
+          label: '二级 2-2'
+        }]
+      }, {
+        id: 3,
+        label: '一级 3',
+        children: [{
+          id: 7,
+          label: '二级 3-1'
+        }, {
+          id: 8,
+          label: '二级 3-2'
+        }]
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
       mockData: {
         groups: [],
         nodes: [],
@@ -65,10 +129,17 @@ export default {
         theme: {
           edge: {
             arrow: true,
-            type: 'Straight'
+            shapeType: 'AdvancedBezier',
+            draggable: true,
+            labelPosition: 0.5
           }
         }
       }
+    }
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
     }
   },
   beforeMount: function() {
@@ -92,6 +163,10 @@ export default {
     }
   },
   methods: {
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
+    },
     // 绘制插件加载完成事件
     finishLoaded(ref) {
       this.canvasRef = ref
@@ -114,9 +189,7 @@ export default {
             dataArr.push({
               ...item,
               type: 'group',
-              render: gridGroup,
-              addChildren: this.addChildren,
-              currentId: this.currentId
+              render: gridGroup
             })
           })
           break
@@ -125,11 +198,7 @@ export default {
             dataArr.push({
               ...item,
               type: 'node',
-              render: gridNode,
-              addChildren: this.addChildren,
-              delnode: this.delnode,
-              changeCurrentNode: this.changeCurrentNode,
-              currentId: this.currentId
+              render: gridNode
             })
           })
           break
@@ -144,11 +213,6 @@ export default {
       return dataArr
     },
     getCanvas() {
-      this.currentId = ''
-      this.mockData.nodes.forEach((item) => {
-        item.currentId = ''
-      })
-      this.canvasRef.redraw()
       const dom = this.canvasRef.canvas
       dom.focusCenterWithAnimate({ offest: [0, 0] }, () => {
         dom.zoom(1)

@@ -134,7 +134,7 @@ aside {
 }
 
 .pagination-container {
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .text-center {
@@ -192,4 +192,25 @@ aside {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+
+.container {
+  padding: 20px 20px 0 20px;
+}
+
+#app .butterflies-link {
+  fill: none;
+  stroke: #000000;
+  stroke-width: 1px;
+}
+
+#app .butterflies-link:hover {
+  stroke: #F66902;
+}
+
+#app .butterflies-arrow {
+  fill: #000000;
+  stroke: #BFBFBF;
+  stroke-width: 3px;
 }

@@ -2,12 +2,12 @@
   <div class="container">
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
       <el-form-item label="审批人">
-        <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+        <el-input v-model="formInline.user" placeholder="审批人" />
       </el-form-item>
       <el-form-item label="活动区域">
         <el-select v-model="formInline.region" placeholder="活动区域">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option label="区域一" value="shanghai" />
+          <el-option label="区域二" value="beijing" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -61,12 +61,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <pagination v-show="Pagination.total>0" :total="Pagination.total" :page.sync="Pagination.currentPage" :limit.sync="Pagination.size" @pagination="getList" />
   </div>
 </template>
 
 <script>
+import Pagination from '@/components/Pagination'
 export default {
   name: 'UserList',
+  components: { Pagination },
   data() {
     return {
       formInline: {
@@ -122,7 +125,12 @@ export default {
         city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
         zip: 200333
-      }]
+      }],
+      Pagination: {
+        currentPage: 1,
+        size: 10,
+        total: 45
+      }
     }
   },
   methods: {
@@ -130,16 +138,16 @@ export default {
       rows.splice(index, 1)
     },
     onSubmit() {
-      console.log('submit!');
+      console.log('submit!')
+    },
+    getList(args) {
+      console.log('pagnation change==>', args)
     }
   }
 }
 </script>
 
 <style>
-.container {
-  padding: 20px 20px 0 20px;
-}
 .container .tr_style {
   background: #eee;
 }
