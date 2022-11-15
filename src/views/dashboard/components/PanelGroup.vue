@@ -1,42 +1,45 @@
 <template>
   <el-row :gutter="40" class="panel-group">
-    <template v-for="(item,index) in permission_routes">
-      <el-col v-if="item.meta" :key="index" :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel">
-          <div class="card-panel-icon-wrapper icon-people">
-            <item v-if="item.meta" :icon="item.meta.icon" />
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              {{ item.meta.title }}
-            </div>
-          </div>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel" @click="handleData('/butterfly/index')">
+        <div class="card-panel-icon-wrapper icon-message">
+          <svg-icon icon-class="documentation" class-name="card-panel-icon" />
         </div>
-      </el-col>
-    </template>
+        <div class="card-panel-description">
+          <div class="card-panel-text">
+            流程图数量
+          </div>
+          <count-to :start-val="0" :end-val="135" :duration="3000" class="card-panel-num" />
+        </div>
+      </div>
+    </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel" @click="handleData('/user-list/index')">
+        <div class="card-panel-icon-wrapper icon-people">
+          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">
+            用户数量
+          </div>
+          <count-to :start-val="0" :end-val="35" :duration="2600" class="card-panel-num" />
+        </div>
+      </div>
+    </el-col>
   </el-row>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Item from './Item'
+import CountTo from 'vue-count-to'
+
 export default {
-  name: 'PanelGroup',
-  components: [Item],
-  computed: {
-    ...mapGetters([
-      'permission_routes'
-    ])
-  },
-  mounted() {
-    for (let i = 0; i < this.permission_routes.length; i++) {
-      const item = this.permission_routes[i]
-      if (item.meta) {
-        console.log(item)
-      }
-    }
+  components: {
+    CountTo
   },
   methods: {
+    handleData(type) {
+      this.$router.push(type)
+    }
   }
 }
 </script>

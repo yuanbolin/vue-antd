@@ -1,17 +1,14 @@
 <template>
   <div class="container">
     <el-form :inline="true" :model="formInline" class="demo-form-inline">
-      <el-form-item label="审批人">
-        <el-input v-model="formInline.user" placeholder="审批人" />
-      </el-form-item>
-      <el-form-item label="活动区域">
-        <el-select v-model="formInline.region" placeholder="活动区域">
-          <el-option label="区域一" value="shanghai" />
-          <el-option label="区域二" value="beijing" />
-        </el-select>
+      <el-form-item label="名称">
+        <el-input v-model="formInline.user" placeholder="名称" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="handleAdd()">新增根目录</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -21,53 +18,105 @@
       border
       lazy
       :load="load"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
-      <el-table-column
-        prop="label"
-        label="名称"
-      />
-      <el-table-column
-        prop="message"
-        label="描述"
-      />
-      <el-table-column
-        prop="type"
-        label="类型"
-        width="180"
-      >
+      <el-table-column label="名称">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.type==='flowchart'">流程图</el-tag>
-          <el-tag v-else-if="scope.row.type==='catalogue'" type="success">目录</el-tag>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="查看详情"
+            placement="top"
+          >
+            <el-tag class="pointer" @click="handleInfo(scope.row)">
+              <svg-icon icon-class="tree-table" /> <span>{{ scope.row.label }}</span>
+            </el-tag>
+          </el-tooltip>
         </template>
       </el-table-column>
+      <el-table-column
+        prop="date"
+        label="创建日期"
+      />
+      <el-table-column
+        prop="date"
+        label="修改日期"
+      />
+      <el-table-column prop="message" label="描述" />
       <el-table-column width="280" label="操作">
         <template slot-scope="scope">
           <el-button
-            v-if="scope.row.type==='catalogue'"
+            v-if="scope.row.level<3"
+            type="text"
             size="mini"
             @click="handleAdd(scope.$index, scope.row)"
-          >新增</el-button>
+          >新增子目录</el-button>
           <el-button
+            type="text"
             size="mini"
             @click="handleEdit(scope.$index, scope.row)"
           >编辑</el-button>
-          <el-button
+          <el-popconfirm
             v-if="!scope.row.hasChildren"
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
+            style="margin-left: 10px"
+            confirm-button-text="好的"
+            cancel-button-text="不用了"
+            icon="el-icon-info"
+            icon-color="red"
+            title="这是一段内容确定删除吗？"
+            @confirm="handleDelete(scope.$index, scope.row)"
+          >
+            <el-button
+              slot="reference"
+              size="mini"
+              type="text"
+            >删除</el-button>
+          </el-popconfirm>
+          <el-tooltip
+            v-if="scope.row.status === 'true'"
+            class="item"
+            effect="dark"
+            content="用户可见"
+            placement="top"
+          >
+            <el-tag
+              style="margin-left: 10px"
+              type="success"
+              class="pointer"
+              @click="handleShow(scope.$index, scope.row)"
+            ><svg-icon icon-class="kejian" /> 可见</el-tag>
+          </el-tooltip>
+          <el-tooltip
+            v-else-if="scope.row.status === 'false'"
+            class="item"
+            effect="dark"
+            content="用户不可见"
+            placement="top"
+          >
+            <el-tag
+              style="margin-left: 10px"
+              type="danger"
+              class="pointer"
+              @click="handleHide(scope.$index, scope.row)"
+            >
+              <svg-icon icon-class="yincangbukejian" /> 不可见</el-tag>
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
-    <pagination v-show="Pagination.total>0" :total="Pagination.total" :page.sync="Pagination.currentPage" :limit.sync="Pagination.size" @pagination="getList" />
-
+    <pagination
+      v-show="Pagination.total > 0"
+      :total="Pagination.total"
+      :page.sync="Pagination.currentPage"
+      :limit.sync="Pagination.size"
+      @pagination="getList"
+    />
   </div>
 </template>
 <script>
 import Pagination from '@/components/Pagination'
 export default {
+  name: 'CatalogueList',
   components: { Pagination },
   data() {
     return {
@@ -80,50 +129,118 @@ export default {
         user: '',
         region: ''
       },
-      tableData: [{
-        id: 1,
-        type: 'catalogue',
-        message: '流程图描述',
-        label: '王小虎'
-      }, {
-        id: 2,
-        type: 'catalogue',
-        message: '流程图描述',
-        label: '王小虎',
-        children: [{
-          id: 31,
-          type: 'catalogue',
+      tableData: [
+        {
+          id: 1,
+          status: 'true',
           message: '流程图描述',
           label: '王小虎',
-          children: [{
-            id: 33,
-            type: 'catalogue',
-            message: '流程图描述',
-            label: '王小虎'
-          }, {
-            id: 34,
-            type: 'catalogue',
-            message: '流程图描述',
-            label: '王小虎'
-          }]
-        }, {
-          id: 32,
-          type: 'catalogue',
+          level: 1
+        },
+        {
+          id: 2,
+          status: 'true',
           message: '流程图描述',
+          label: '王小虎',
+          level: 1,
+          children: [
+            {
+              id: 31,
+              status: 'true',
+              message: '流程图描述',
+              label: '王小虎',
+              level: 2,
+              children: [
+                {
+                  id: 34,
+                  status: 'true',
+                  message: '流程图描述',
+                  label: '王小虎',
+                  level: 3
+                },
+                {
+                  id: 33,
+                  status: 'true',
+                  message: '流程图描述',
+                  label: '王小虎',
+                  level: 3
+                },
+                {
+                  id: 34,
+                  status: 'true',
+                  message: '流程图描述',
+                  label: '王小虎',
+                  level: 3
+                }
+              ]
+            },
+            {
+              id: 32,
+              status: 'true',
+              message: '流程图描述',
+              label: '王小虎',
+              level: 2
+            }
+          ]
+        },
+        {
+          id: 3,
+          status: 'false',
+          message: '流程图描述',
+          label: '王小虎',
+          level: 1,
+          hasChildren: true
+        },
+        {
+          id: 4,
+          status: 'true',
+          message: '流程图描述',
+          level: 1,
           label: '王小虎'
-        }]
-      }, {
-        id: 3,
-        type: 'catalogue',
-        message: '流程图描述',
-        label: '王小虎',
-        hasChildren: true
-      }, {
-        id: 4,
-        type: 'flowchart',
-        message: '流程图描述',
-        label: '王小虎'
-      }]
+        },
+        {
+          id: 37,
+          status: 'true',
+          message: '流程图描述',
+          level: 1,
+          label: '王小虎'
+        },
+        {
+          id: 38,
+          status: 'true',
+          message: '流程图描述',
+          level: 1,
+          label: '王小虎'
+        },
+        {
+          id: 39,
+          status: 'true',
+          message: '流程图描述',
+          level: 1,
+          label: '王小虎'
+        },
+        {
+          id: 40,
+          status: 'true',
+          message: '流程图描述',
+          label: '王小虎',
+          level: 1
+        },
+        {
+          id: 41,
+          status: 'true',
+          message: '流程图描述',
+          label: '王小虎',
+          level: 1
+        },
+        {
+          id: 42,
+          status: 'true',
+          message: '流程图描述',
+          label: '王小虎',
+          level: 1
+        }
+      ]
     }
   },
   methods: {
@@ -133,28 +250,41 @@ export default {
           {
             id: 35,
             type: 'catalogue',
+            status: 'true',
             message: '流程图描述',
             label: '王小虎',
-            hasChildren: true
-          }, {
+            level: 2
+          },
+          {
             id: 36,
             type: 'flowchart',
+            status: 'true',
             message: '流程图描述',
-            label: '王小虎'
+            label: '王小虎',
+            level: 2
           }
         ])
       }, 1000)
     },
     handleEdit(index, row) {
       console.log(index, row)
-      if (row.type === 'flowchart') {
-        this.$router.push(`/butterfly/index/${row.id}`)
-      }
+      this.$router.push(`/catalogue/edit/${row.id}`)
     },
-    handleAdd(index, row) {
-      console.log(index, row)
+    handleAdd(row = { id: '' }) {
+      console.log(row)
+      this.$router.push(`/catalogue/add/${row.id}`)
+    },
+    handleInfo(e) {
+      console.log(e)
+      this.$router.push(`/catalogue/info/${e.id}`)
     },
     handleDelete(index, row) {
+      console.log(index, row)
+    },
+    handleShow(index, row) {
+      console.log(index, row)
+    },
+    handleHide(index, row) {
       console.log(index, row)
     },
     onSubmit() {
@@ -167,7 +297,7 @@ export default {
 }
 </script>
 <style scoped>
-.container{
+.container {
   padding: 20px 20px 0 20px;
 }
 </style>

@@ -20,6 +20,9 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item @click.native="user">
+            <span style="display:block;">个人信息</span>
+          </el-dropdown-item>
           <el-dropdown-item @click.native="logout">
             <span style="display:block;">退出登录</span>
           </el-dropdown-item>
@@ -57,6 +60,9 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    user() {
+      this.$router.push('/user/index')
     }
   }
 }

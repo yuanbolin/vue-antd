@@ -11,7 +11,10 @@ export default {
   props: {
     // 这里可以拿到mockdata里的当前节点的数据
     itemData: {
-      type: Object
+      type: Object,
+      default: function() {
+        return {}
+      }
     },
     // 原生的节点数据（不推荐使用这个）
     canvasNode: {

@@ -90,21 +90,55 @@ export const asyncRoutes = [
       {
         path: 'index',
         component: () => import('@/views/catalogue/index'),
-        name: 'Catalogue',
+        name: 'CatalogueList',
         meta: { title: '分级目录管理', icon: 'el-icon-s-grid', noCache: true, roles: ['admin'] }
+      },
+      {
+        path: 'info/:id(\\d*)',
+        hidden: true,
+        component: () => import('@/views/catalogue/info'),
+        name: 'CatalogueInfo',
+        meta: { title: '目录信息', noCache: true, roles: ['admin'] }
+      },
+      {
+        path: 'add/:id(\\d*)',
+        hidden: true,
+        component: () => import('@/views/catalogue/add'),
+        name: 'CatalogueAdd',
+        meta: { title: '新增目录', noCache: false, roles: ['admin'] }
+      },
+      {
+        path: 'edit/:id(\\d*)',
+        hidden: true,
+        component: () => import('@/views/catalogue/edit'),
+        name: 'CatalogueEdit',
+        meta: { title: '编辑目录', noCache: false, roles: ['admin'] }
       }
     ]
   },
   {
     path: '/butterfly',
     component: Layout,
-    hidden: true,
     children: [
       {
-        path: 'index/:id(\\d*)',
+        path: 'index',
         component: () => import('@/views/butterfly/index'),
-        name: 'ButterFly',
-        meta: { title: '流程图绘制', icon: 'el-icon-edit', noCache: false, roles: ['admin'] }
+        name: 'ButterFlyList',
+        meta: { title: '流程图管理', icon: 'el-icon-s-management', noCache: false, roles: ['admin'] }
+      },
+      {
+        path: 'draw/:id(\\d*)',
+        hidden: true,
+        component: () => import('@/views/butterfly/draw/index'),
+        name: 'ButterFlyEdit',
+        meta: { title: '流程图编辑', noCache: false, roles: ['admin'] }
+      },
+      {
+        path: 'draw',
+        hidden: true,
+        component: () => import('@/views/butterfly/draw/index'),
+        name: 'ButterFlyAdd',
+        meta: { title: '流程图绘制', noCache: false, roles: ['admin'] }
       }
     ]
   },
@@ -121,26 +155,81 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/user-list',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/user/index'),
-        name: 'UserList',
-        meta: { title: '用户管理', icon: 'user-manager', noCache: false, roles: ['admin'] }
-      }
-    ]
-  },
-  {
     path: '/user-manager',
     component: Layout,
     children: [
       {
         path: 'index',
         component: () => import('@/views/user-manger/index'),
+        name: 'UserList',
+        meta: { title: '用户管理', icon: 'user-manager', noCache: false, roles: ['admin'] }
+      },
+      {
+        path: 'info/:id(\\d*)',
+        hidden: true,
+        component: () => import('@/views/user-manger/info'),
+        name: 'UserInfo',
+        meta: { title: '用户信息', noCache: true, roles: ['admin'] }
+      },
+      {
+        path: 'add',
+        hidden: true,
+        component: () => import('@/views/user-manger/add'),
+        name: 'UserAdd',
+        meta: { title: '新增用户', noCache: false, roles: ['admin'] }
+      },
+      {
+        path: 'edit/:id(\\d*)',
+        hidden: true,
+        component: () => import('@/views/user-manger/edit'),
+        name: 'UserEdit',
+        meta: { title: '编辑用户', noCache: false, roles: ['admin'] }
+      }
+    ]
+  },
+  {
+    path: '/role',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/role/index'),
+        name: 'UserList',
+        meta: { title: '角色管理', icon: '角色管理', noCache: false, roles: ['admin'] }
+      },
+      {
+        path: 'info/:id(\\d*)',
+        hidden: true,
+        component: () => import('@/views/role/info'),
+        name: 'UserInfo',
+        meta: { title: '角色信息', noCache: true, roles: ['admin'] }
+      },
+      {
+        path: 'add',
+        hidden: true,
+        component: () => import('@/views/role/add'),
+        name: 'UserAdd',
+        meta: { title: '新增角色', noCache: false, roles: ['admin'] }
+      },
+      {
+        path: 'edit/:id(\\d*)',
+        hidden: true,
+        component: () => import('@/views/role/edit'),
+        name: 'UserEdit',
+        meta: { title: '编辑角色', noCache: false, roles: ['admin'] }
+      }
+    ]
+  },
+  {
+    path: '/user',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        hidden: true,
+        component: () => import('@/views/user/index'),
         name: 'UserManager',
-        meta: { title: '基本信息管理', icon: 'el-icon-user', noCache: false, roles: ['editor', 'admin'] }
+        meta: { title: '基本信息管理', noCache: true, roles: ['editor', 'admin'] }
       }
     ]
   },

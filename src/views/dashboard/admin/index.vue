@@ -20,7 +20,7 @@ import PanelGroup from '../components/PanelGroup'
 import PanThumb from '@/components/PanThumb'
 export default {
   name: 'DashboardAdmin',
-  components: { PanThumb, PanelGroup, },
+  components: { PanThumb, PanelGroup },
   data() {
     return {
     }
