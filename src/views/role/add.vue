@@ -7,7 +7,7 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="ruleForm.remark" type="textarea" />
       </el-form-item>
-      <el-form-item label="授权目录" prop="role">
+      <el-form-item label="授权目录" required>
         <el-tree
           ref="tree"
           :data="data"
@@ -41,9 +41,6 @@ export default {
         ],
         remark: [
           { required: true, message: '请填写角色备注', trigger: 'blur' }
-        ],
-        role: [
-          { required: true, message: '请选择授权的系统角色', trigger: 'change' }
         ]
       },
       data: [{
@@ -91,6 +88,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log(this.$refs.tree.getCheckedKeys())
           alert('submit!')
         } else {
           console.log('error submit!!')
@@ -100,12 +98,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    },
-    getCheckedNodes() {
-      console.log(this.$refs.tree.getCheckedNodes())
-    },
-    getCheckedKeys() {
-      console.log(this.$refs.tree.getCheckedKeys())
+      this.$refs.tree.setCheckedKeys([])
     },
     setCheckedNodes() {
       this.$refs.tree.setCheckedNodes([{

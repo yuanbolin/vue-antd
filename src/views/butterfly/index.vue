@@ -11,7 +11,7 @@
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleAdd">新增流程图</el-button>
+        <el-button @click="dialog = true">新增流程图</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -48,6 +48,10 @@
         label="所属目录"
       />
       <el-table-column
+        prop="province"
+        label="描述"
+      />
+      <el-table-column
         label="操作"
       >
         <template slot-scope="scope">
@@ -56,6 +60,11 @@
             size="mini"
             @click="handleEdit(scope.$index, scope.row)"
           >编辑</el-button>
+          <el-button
+            type="text"
+            size="mini"
+            @click="handleEdit(scope.$index, scope.row)"
+          >绘制流程图</el-button>
           <el-popconfirm
             v-if="!scope.row.hasChildren"
             style="margin-left: 10px"
@@ -90,6 +99,32 @@
       </el-table-column>
     </el-table>
     <pagination v-show="Pagination.total>0" :total="Pagination.total" :page.sync="Pagination.currentPage" :limit.sync="Pagination.size" @pagination="getList" />
+    <el-drawer
+      ref="drawer"
+      title="新增流程图 "
+      :before-close="handleClose"
+      :visible.sync="dialog"
+      direction="rtl"
+      custom-class="demo-drawer"
+    >
+      <div class="demo-drawer__content">
+        <el-form ref="ruleForm" :model="form" :rules="rules" label-width="100px">
+          <el-form-item label="流程图名称" prop="name">
+            <el-input v-model="form.name" autocomplete="off" placeholder="名称" />
+          </el-form-item>
+          <el-form-item label="流程图备注" prop="remark">
+            <el-input v-model="form.remark" autocomplete="off" placeholder="备注" />
+          </el-form-item>
+          <el-form-item label="所属目录">
+            <el-cascader v-model="form.region" :props="{value:'id'}" placeholder="所属目录" :options="options" />
+          </el-form-item>
+        </el-form>
+        <div class="demo-drawer__footer">
+          <el-button @click="cancelForm">取 消</el-button>
+          <el-button type="primary" :loading="loading" @click="$refs.drawer.closeDrawer()">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -102,7 +137,16 @@ export default {
     return {
       formInline: {
         user: '',
-        region: ''
+        remark: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入流程图名称', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
+        remark: [
+          { required: true, message: '请填写流程图备注', trigger: 'blur' }
+        ]
       },
       options: [
         {
@@ -217,6 +261,7 @@ export default {
         }
       ],
       tableData: [{
+        id: 1,
         date: '2016-05-03',
         name: '王小虎',
         province: '上海',
@@ -224,6 +269,7 @@ export default {
         address: '上海市普陀区金沙江路 1518 弄',
         zip: 200333
       }, {
+        id: 2,
         date: '2016-05-02',
         name: '王小虎',
         province: '上海',
@@ -231,6 +277,7 @@ export default {
         address: '上海市普陀区金沙江路 1518 弄',
         zip: 200333
       }, {
+        id: 3,
         date: '2016-05-04',
         name: '王小虎',
         province: '上海',
@@ -238,6 +285,7 @@ export default {
         address: '上海市普陀区金沙江路 1518 弄',
         zip: 200333
       }, {
+        id: 4,
         date: '2016-05-01',
         name: '王小虎',
         province: '上海',
@@ -245,6 +293,7 @@ export default {
         address: '上海市普陀区金沙江路 1518 弄',
         zip: 200333
       }, {
+        id: 5,
         date: '2016-05-08',
         name: '王小虎',
         province: '上海',
@@ -252,6 +301,7 @@ export default {
         address: '上海市普陀区金沙江路 1518 弄',
         zip: 200333
       }, {
+        id: 6,
         date: '2016-05-06',
         name: '王小虎',
         province: '上海',
@@ -259,6 +309,7 @@ export default {
         address: '上海市普陀区金沙江路 1518 弄',
         zip: 200333
       }, {
+        id: 7,
         date: '2016-05-07',
         name: '王小虎',
         province: '上海',
@@ -270,18 +321,46 @@ export default {
         currentPage: 1,
         size: 10,
         total: 45
-      }
+      },
+      dialog: false,
+      loading: false,
+      gridData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }],
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        desc: ''
+      },
+      timer: null
     }
   },
   methods: {
     handleEdit(index, row) {
       console.log(index, row)
-      if (row.type === 'flowchart') {
-        this.$router.push(`/butterfly/index/${row.id}`)
-      }
+      this.$router.push(`/butterfly/draw/${row.id}`)
     },
-    handleAdd(index, row) {
-      console.log(index, row)
+    handleAdd() {
+      this.$router.push(`/butterfly/draw`)
     },
     handleInfo(e) {
       console.log(e)
@@ -294,13 +373,38 @@ export default {
     },
     getList(args) {
       console.log('pagnation change==>', args)
+    },
+    handleClose(done) {
+      if (this.loading) {
+        return
+      }
+      this.$confirm('确定要提交表单吗？')
+        .then(_ => {
+          this.loading = true
+          this.timer = setTimeout(() => {
+            done()
+            // 动画关闭需要一定的时间
+            setTimeout(() => {
+              this.loading = false
+            }, 400)
+          }, 2000)
+        })
+        .catch(_ => {})
+    },
+    cancelForm() {
+      this.loading = false
+      this.dialog = false
+      clearTimeout(this.timer)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 .container .tr_style {
   background: #eee;
+}
+.demo-drawer__content{
+  padding: 10px 25px;
 }
 </style>

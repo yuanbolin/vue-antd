@@ -80,7 +80,7 @@
             >删除</el-button>
           </el-popconfirm>
           <el-tooltip
-            v-if="scope.row.status === 'true'"
+            v-if="scope.row.status === 'false'"
             class="item"
             effect="dark"
             content="用户状态正常"
@@ -90,11 +90,11 @@
               style="margin-left: 10px"
               type="success"
               class="pointer"
-              @click="handleChangeStatus(scope.row,false)"
-            ><svg-icon icon-class="kejian" /> 正常</el-tag>
+              @click="handleChangeStatus(scope.row,true)"
+            ><svg-icon icon-class="启用" /> 正常</el-tag>
           </el-tooltip>
           <el-tooltip
-            v-else-if="scope.row.status === 'false'"
+            v-else-if="scope.row.status === 'true'"
             class="item"
             effect="dark"
             content="用户已停用,禁止登录"
@@ -104,9 +104,9 @@
               style="margin-left: 10px"
               type="danger"
               class="pointer"
-              @click="handleChangeStatus(scope.row,true)"
+              @click="handleChangeStatus(scope.row,false)"
             >
-              <svg-icon icon-class="yincangbukejian" /> 停用</el-tag>
+              <svg-icon icon-class="禁用" /> 停用</el-tag>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -132,66 +132,56 @@ export default {
         name: '王小虎',
         role: '销售员',
         status: 'false',
-        province: '上海',
-        city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        phone: 200333
+        phone: 17863658012
       }, {
         id: 2,
         date: '2016-05-02',
         name: '王小虎',
         role: '会计',
         status: 'false',
-        province: '上海',
-        city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        phone: 17863658012
       }, {
         id: 3,
         date: '2016-05-04',
         name: '王小虎',
         role: '销售员',
         status: 'false',
-        province: '上海',
-        city: '普陀区',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        phone: 17863658012
       }, {
         id: 4,
         date: '2016-05-01',
         name: '王小虎',
         role: '会计',
-        province: '上海',
-        city: '普陀区',
+        status: 'false',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        phone: 17863658012
       }, {
         id: 5,
         date: '2016-05-08',
         name: '王小虎',
         role: '会计',
-        province: '上海',
-        city: '普陀区',
+        status: 'false',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        phone: 17863658012
       }, {
         id: 6,
         date: '2016-05-06',
         name: '王小虎',
         role: '营销经理',
-        province: '上海',
-        city: '普陀区',
+        status: 'false',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        phone: 17863658012
       }, {
         id: 7,
         date: '2016-05-07',
         name: '王小虎',
-        province: '上海',
-        role: '会计',
-        city: '普陀区',
+        role: '上海部',
+        status: 'true',
         address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
+        phone: 17863658012
       }],
       Pagination: {
         currentPage: 1,
