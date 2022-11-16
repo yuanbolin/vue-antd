@@ -115,8 +115,8 @@
           <el-form-item label="所属目录" required>
             <el-cascader v-model="form.region" :props="{value:'id'}" placeholder="所属目录" :options="options" />
           </el-form-item>
-          <el-form-item label="流程图备注" prop="remark">
-            <el-input v-model="form.remark" autocomplete="off" placeholder="备注" />
+          <el-form-item label="流程图描述" prop="remark">
+            <el-input v-model="form.remark" autocomplete="off" placeholder="描述" />
           </el-form-item>
         </el-form>
         <div class="demo-drawer__footer">

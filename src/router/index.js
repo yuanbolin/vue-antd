@@ -91,7 +91,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/catalogue/index'),
         name: 'CatalogueList',
-        meta: { title: '分级目录管理', icon: 'education', noCache: true, roles: ['admin'] }
+        meta: { title: '分级目录管理', icon: 'education', noCache: false, roles: ['admin'] }
       },
       {
         path: 'info/:id(\\d*)',
@@ -229,7 +229,7 @@ export const asyncRoutes = [
         hidden: true,
         component: () => import('@/views/user/index'),
         name: 'My',
-        meta: { title: '基本信息管理', noCache: true, roles: ['editor', 'admin'] }
+        meta: { title: '基本信息管理', noCache: false, roles: ['editor', 'admin'] }
       }
     ]
   },

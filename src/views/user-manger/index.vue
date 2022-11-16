@@ -39,6 +39,10 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="username"
+        label="用户账号"
+      />
+      <el-table-column
         prop="role"
         label="系统角色"
       />

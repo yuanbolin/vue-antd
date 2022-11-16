@@ -4,7 +4,7 @@
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="ruleForm.name" />
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
+      <el-form-item label="描述" prop="remark">
         <el-input v-model="ruleForm.remark" type="textarea" />
       </el-form-item>
       <el-form-item label="授权目录" required>
@@ -40,7 +40,7 @@ export default {
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
         ],
         remark: [
-          { type: 'string', whitespace: true, required: true, message: '请填写角色备注', trigger: 'blur' }
+          { type: 'string', whitespace: true, required: true, message: '请填写角色描述', trigger: 'blur' }
         ]
       },
       data: [{

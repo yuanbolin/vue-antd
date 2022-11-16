@@ -42,7 +42,7 @@
       />
       <el-table-column
         prop="remark"
-        label="备注"
+        label="描述"
       />
       <el-table-column
         label="操作"

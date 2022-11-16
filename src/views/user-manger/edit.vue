@@ -1,8 +1,17 @@
 <template>
   <div class="container demo-block">
     <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm">
+      <el-form-item label="用户账号" prop="username">
+        <el-input v-model="ruleForm.username" />
+      </el-form-item>
       <el-form-item label="用户姓名" prop="name">
         <el-input v-model="ruleForm.name" />
+      </el-form-item>
+      <el-form-item label="系统角色" prop="role">
+        <el-select v-model="ruleForm.role" placeholder="系统角色">
+          <el-option label="会计" value="shanghai" />
+          <el-option label="销售员" value="beijing" />
+        </el-select>
       </el-form-item>
       <el-form-item label="用户状态" prop="status">
         <el-radio-group v-model="ruleForm.status">
@@ -16,12 +25,6 @@
       <el-form-item label="地址" prop="address">
         <el-input v-model="ruleForm.address" type="textarea" />
       </el-form-item>
-      <el-form-item label="系统角色" prop="role">
-        <el-select v-model="ruleForm.role" placeholder="系统角色">
-          <el-option label="会计" value="shanghai" />
-          <el-option label="销售员" value="beijing" />
-        </el-select>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
       </el-form-item>
@@ -34,6 +37,7 @@ export default {
   data() {
     return {
       ruleForm: {
+        username: '',
         name: '',
         status: 'true',
         phone: '',
@@ -41,6 +45,10 @@ export default {
         role: ''
       },
       rules: {
+        username: [
+          { type: 'string', whitespace: true, required: true, message: '请输入用户账号', trigger: 'blur' },
+          { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+        ],
         name: [
           { type: 'string', whitespace: true, required: true, message: '请输入用户姓名', trigger: 'blur' },
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
@@ -52,7 +60,7 @@ export default {
           { type: 'string', whitespace: true, required: true, message: '请填写联系方式', trigger: 'blur' }
         ],
         address: [
-          { type: 'string', whitespace: true, required: true, message: '请填写所在地址', trigger: 'blur' }
+          { min: 5, max: 30, message: '长度在 5 到 30 个字符', trigger: 'blur' }
         ],
         role: [
           { required: true, message: '请选择授权的系统角色', trigger: 'change' }

@@ -28,7 +28,7 @@
       <el-descriptions-item>
         <template slot="label">
           <i class="el-icon-chat-line-square" />
-          备注
+          描述
         </template>
         {{ formInline.remark }}
       </el-descriptions-item>
@@ -50,7 +50,7 @@ export default {
       formInline: {
         name: '角色名称',
         createDate: '2022-11-10 11:18:23',
-        remark: '一个角色的备注',
+        remark: '一个角色的描述',
         menu: '战略与经营管理，产品研发管理，产品营销管理。',
         level: 1
       }

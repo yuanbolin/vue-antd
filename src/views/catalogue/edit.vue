@@ -46,7 +46,7 @@ export default {
   created() {
     this.ruleForm = {
       name: '目录名称',
-      remack: '目录备注',
+      remack: '目录描述',
       resource: 'true'
     }
   },
