@@ -236,6 +236,14 @@ aside {
   transition: .2s;
 }
 
+.theme-text{
+  color: $--color-primary;
+}
+
+.success-text{
+  color:$--color-success;
+}
+
 .demo-block:hover{
   box-shadow:2px 2px 10px $--color-primary;
 }

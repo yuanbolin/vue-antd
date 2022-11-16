@@ -312,7 +312,7 @@ export default {
       linkOptions: [],
       rules: {
         nodeName: [
-          { required: true, message: '请输入节点名称', trigger: 'blur' }
+          { type: 'string', whitespace: true, required: true, message: '请输入节点名称', trigger: 'blur' }
         ],
         direction: [
           { required: true, message: '请选择连接方向', trigger: 'change' }

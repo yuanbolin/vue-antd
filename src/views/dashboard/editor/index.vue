@@ -7,7 +7,7 @@
       </pan-thumb>
       <div class="info-container">
         <span class="display_name">{{ name }}</span>
-        <span style="font-size:20px;padding-top:20px;display:inline-block;">Editor's Dashboard</span>
+        <span style="font-size:20px;padding-top:20px;display:inline-block;">欢迎使用{{ title }}系统</span>
       </div>
     </div>
   </div>
@@ -15,12 +15,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { title } from '@/settings'
 import PanThumb from '@/components/PanThumb'
 export default {
   name: 'DashboardEditor',
   components: { PanThumb },
   data() {
     return {
+      title
     }
   },
   computed: {
@@ -42,7 +44,7 @@ export default {
 
   .dashboard-editor-container {
     min-height: 60vh;
-    padding: 50px 60px 0px;
+    padding: 50px 60px 0;
     .pan-info-roles {
       font-size: 12px;
       font-weight: 700;

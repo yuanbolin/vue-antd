@@ -1,5 +1,5 @@
 module.exports = {
-  title: '流程图管理平台',
+  title: '浙江宏利流程管理工具',
 
   /**
    * @type {boolean} true | false

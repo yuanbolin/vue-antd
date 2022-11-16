@@ -1,9 +1,22 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel" @click="handleData('/catalogue/index')">
+        <div class="card-panel-icon-wrapper icon-message">
+          <svg-icon icon-class="education" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">
+            目录数量
+          </div>
+          <count-to :start-val="0" :end-val="78" :duration="3000" class="card-panel-num" />
+        </div>
+      </div>
+    </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleData('/butterfly/index')">
         <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="documentation" class-name="card-panel-icon" />
+          <svg-icon icon-class="流程图" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
@@ -16,13 +29,26 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleData('/user-manager/index')">
         <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+          <svg-icon icon-class="user-manager" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             用户数量
           </div>
           <count-to :start-val="0" :end-val="35" :duration="2600" class="card-panel-num" />
+        </div>
+      </div>
+    </el-col>
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+      <div class="card-panel" @click="handleData('/role/index')">
+        <div class="card-panel-icon-wrapper icon-message">
+          <svg-icon icon-class="角色管理" class-name="card-panel-icon" />
+        </div>
+        <div class="card-panel-description">
+          <div class="card-panel-text">
+            角色数量
+          </div>
+          <count-to :start-val="0" :end-val="16" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>

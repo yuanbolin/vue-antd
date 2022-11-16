@@ -35,11 +35,11 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="date"
+        prop="createDate"
         label="创建日期"
       />
       <el-table-column
-        prop="date"
+        prop="updateDate"
         label="修改日期"
       />
       <el-table-column prop="message" label="描述" />
@@ -133,111 +133,72 @@ export default {
         {
           id: 1,
           status: 'true',
-          message: '流程图描述',
-          label: '王小虎',
+          message: '这是一个目录的描述',
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18',
           level: 1
         },
         {
           id: 2,
-          status: 'true',
-          message: '流程图描述',
-          label: '王小虎',
-          level: 1,
-          children: [
-            {
-              id: 31,
-              status: 'true',
-              message: '流程图描述',
-              label: '王小虎',
-              level: 2,
-              children: [
-                {
-                  id: 34,
-                  status: 'true',
-                  message: '流程图描述',
-                  label: '王小虎',
-                  level: 3
-                },
-                {
-                  id: 33,
-                  status: 'true',
-                  message: '流程图描述',
-                  label: '王小虎',
-                  level: 3
-                },
-                {
-                  id: 34,
-                  status: 'true',
-                  message: '流程图描述',
-                  label: '王小虎',
-                  level: 3
-                }
-              ]
-            },
-            {
-              id: 32,
-              status: 'true',
-              message: '流程图描述',
-              label: '王小虎',
-              level: 2
-            }
-          ]
+          status: 'false',
+          message: '这是一个目录的描述',
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18',
+          level: 1
         },
         {
           id: 3,
-          status: 'false',
-          message: '流程图描述',
-          label: '王小虎',
+          status: 'true',
+          message: '这是一个目录的描述',
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18',
           level: 1,
           hasChildren: true
         },
         {
           id: 4,
           status: 'true',
-          message: '流程图描述',
+          message: '这是一个目录的描述',
           level: 1,
-          label: '王小虎'
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18'
         },
         {
           id: 37,
           status: 'true',
-          message: '流程图描述',
+          message: '这是一个目录的描述',
           level: 1,
-          label: '王小虎'
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18'
         },
         {
           id: 38,
           status: 'true',
-          message: '流程图描述',
+          message: '这是一个目录的描述',
           level: 1,
-          label: '王小虎'
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18'
         },
         {
           id: 39,
           status: 'true',
-          message: '流程图描述',
+          message: '这是一个目录的描述',
           level: 1,
-          label: '王小虎'
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18'
         },
         {
           id: 40,
           status: 'true',
-          message: '流程图描述',
-          label: '王小虎',
+          message: '这是一个目录的描述',
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18',
           level: 1
         },
         {
           id: 41,
           status: 'true',
-          message: '流程图描述',
-          label: '王小虎',
+          message: '这是一个目录的描述',
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18',
           level: 1
         },
         {
           id: 42,
           status: 'true',
-          message: '流程图描述',
-          label: '王小虎',
+          message: '这是一个目录的描述',
+          label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18',
           level: 1
         }
       ]
@@ -251,16 +212,16 @@ export default {
             id: 35,
             type: 'catalogue',
             status: 'true',
-            message: '流程图描述',
-            label: '王小虎',
+            message: '这是一个目录的描述',
+            label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18',
             level: 2
           },
           {
             id: 36,
             type: 'flowchart',
             status: 'true',
-            message: '流程图描述',
-            label: '王小虎',
+            message: '这是一个目录的描述',
+            label: '目录名称', createDate: '2022-11-10 10:22:18', updateDate: '2022-11-19 09:55:18',
             level: 2
           }
         ])

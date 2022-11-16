@@ -7,7 +7,7 @@
       </pan-thumb>
       <div class="info-container">
         <span class="display_name">{{ name }}</span>
-        <span style="font-size:20px;padding-top:20px;display:inline-block;">欢迎使用流程图管理平台系统</span>
+        <span style="font-size:20px;padding-top:20px;display:inline-block;">欢迎使用{{ title }}系统</span>
       </div>
     </div>
     <panel-group />
@@ -18,11 +18,13 @@
 import { mapGetters } from 'vuex'
 import PanelGroup from '../components/PanelGroup'
 import PanThumb from '@/components/PanThumb'
+import { title } from '@/settings'
 export default {
   name: 'DashboardAdmin',
   components: { PanThumb, PanelGroup },
   data() {
     return {
+      title
     }
   },
   computed: {
@@ -44,7 +46,7 @@ export default {
 
 .dashboard-editor-container {
   min-height: 60vh;
-  padding: 50px 60px 0px;
+  padding: 50px 60px 0;
   .pan-info-roles {
     font-size: 12px;
     font-weight: 700;

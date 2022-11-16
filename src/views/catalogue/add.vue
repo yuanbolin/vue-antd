@@ -31,14 +31,14 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入目录名称', trigger: 'blur' },
+          { type: 'string', whitespace: true, required: true, message: '请输入目录名称', trigger: 'blur' },
           { min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur' }
         ],
         resource: [
           { required: true, message: '请选择目录是否可见', trigger: 'change' }
         ],
         remack: [
-          { required: true, message: '请填写活动描述', trigger: 'blur' }
+          { type: 'string', whitespace: true, required: true, message: '请填写活动描述', trigger: 'blur' }
         ]
       }
     }

@@ -1,9 +1,8 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
       <div class="title-container">
-        <h3 class="title">流程图管理平台</h3>
+        <h3 class="title">{{ title }}</h3>
       </div>
 
       <el-form-item prop="username">
@@ -44,42 +43,17 @@
           </span>
         </el-form-item>
       </el-tooltip>
-
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div style="position:relative">
-        <div class="tips">
-          <span>Username : admin</span>
-          <span>Password : any</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">Username : editor</span>
-          <span>Password : any</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          Or connect with
-        </el-button>
-      </div>
     </el-form>
-
-    <el-dialog title="Or connect with" :visible.sync="showDialog">
-      Can not be simulated on local, so please combine you own business simulation! ! !
-      <br>
-      <br>
-      <br>
-      <social-sign />
-    </el-dialog>
+    <div class="footer">© 2022 威海若维技术部出品</div>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
-import SocialSign from './components/SocialSignin'
-
+import { title } from '@/settings'
 export default {
   name: 'Login',
-  components: { SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -96,6 +70,7 @@ export default {
       }
     }
     return {
+      title,
       loginForm: {
         username: 'admin',
         password: '111111'
@@ -295,7 +270,7 @@ $light_gray:#eee;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
+      margin: 0 auto 40px auto;
       text-align: center;
       font-weight: bold;
     }
@@ -311,16 +286,12 @@ $light_gray:#eee;
     user-select: none;
   }
 
-  .thirdparty-button {
-    position: absolute;
-    right: 0;
-    bottom: 6px;
-  }
-
-  @media only screen and (max-width: 470px) {
-    .thirdparty-button {
-      display: none;
-    }
+  .footer{
+    position: fixed;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    color: #fff;
   }
 }
 </style>

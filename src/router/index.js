@@ -91,7 +91,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/catalogue/index'),
         name: 'CatalogueList',
-        meta: { title: '分级目录管理', icon: 'el-icon-s-grid', noCache: true, roles: ['admin'] }
+        meta: { title: '分级目录管理', icon: 'education', noCache: true, roles: ['admin'] }
       },
       {
         path: 'info/:id(\\d*)',
@@ -124,7 +124,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/butterfly/index'),
         name: 'ButterFlyList',
-        meta: { title: '流程图管理', icon: 'el-icon-s-management', noCache: false, roles: ['admin'] }
+        meta: { title: '流程图管理', icon: '流程图', noCache: false, roles: ['admin'] }
       },
       {
         path: 'draw/:id(\\d*)',
@@ -228,7 +228,7 @@ export const asyncRoutes = [
         path: 'index',
         hidden: true,
         component: () => import('@/views/user/index'),
-        name: 'UserManager',
+        name: 'My',
         meta: { title: '基本信息管理', noCache: true, roles: ['editor', 'admin'] }
       }
     ]

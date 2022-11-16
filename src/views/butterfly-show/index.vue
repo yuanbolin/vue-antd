@@ -5,14 +5,15 @@
       <el-input
         v-model="filterText"
         placeholder="输入关键字进行过滤"
+        style="margin-bottom: 10px"
       />
-
       <el-tree
         ref="tree"
         accordion
         class="filter-tree"
         :data="data"
         :props="defaultProps"
+        :render-content="renderContent"
         default-expand-all
         :filter-node-method="filterNode"
       />
@@ -85,10 +86,12 @@ export default {
           label: '二级 1-1',
           children: [{
             id: 9,
-            label: '三级 1-1-1'
+            label: '三级 流程图',
+            type: '流程图'
           }, {
             id: 10,
-            label: '三级 1-1-2'
+            label: '三级 流程图',
+            type: '流程图'
           }]
         }]
       }, {
@@ -164,6 +167,12 @@ export default {
     }
   },
   methods: {
+    renderContent(h, { node, data, store }) {
+      return (
+        <span class='custom-tree-node'>
+          <span><svg-icon class={data.type === '流程图' ? 'theme-text' : 'success-text'} icon-class={data.type === '流程图' ? '流程图' : 'nested'}/> {data.label}</span>
+        </span>)
+    },
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1

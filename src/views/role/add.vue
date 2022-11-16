@@ -36,11 +36,11 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入角色名称', trigger: 'blur' },
+          { type: 'string', whitespace: true, required: true, message: '请输入角色名称', trigger: 'blur' },
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
         ],
         remark: [
-          { required: true, message: '请填写角色备注', trigger: 'blur' }
+          { type: 'string', whitespace: true, required: true, message: '请填写角色备注', trigger: 'blur' }
         ]
       },
       data: [{

@@ -112,11 +112,11 @@
           <el-form-item label="流程图名称" prop="name">
             <el-input v-model="form.name" autocomplete="off" placeholder="名称" />
           </el-form-item>
+          <el-form-item label="所属目录" required>
+            <el-cascader v-model="form.region" :props="{value:'id'}" placeholder="所属目录" :options="options" />
+          </el-form-item>
           <el-form-item label="流程图备注" prop="remark">
             <el-input v-model="form.remark" autocomplete="off" placeholder="备注" />
-          </el-form-item>
-          <el-form-item label="所属目录">
-            <el-cascader v-model="form.region" :props="{value:'id'}" placeholder="所属目录" :options="options" />
           </el-form-item>
         </el-form>
         <div class="demo-drawer__footer">
@@ -141,11 +141,8 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入流程图名称', trigger: 'blur' },
+          { type: 'string', whitespace: true, required: true, message: '请输入流程图名称', trigger: 'blur' },
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
-        ],
-        remark: [
-          { required: true, message: '请填写流程图备注', trigger: 'blur' }
         ]
       },
       options: [

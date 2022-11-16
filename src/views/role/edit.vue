@@ -42,17 +42,17 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入用户姓名', trigger: 'blur' },
+          { type: 'string', whitespace: true, required: true, message: '请输入用户姓名', trigger: 'blur' },
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '请选择用户状态', trigger: 'change' }
         ],
         phone: [
-          { required: true, message: '请填写联系方式', trigger: 'blur' }
+          { type: 'string', whitespace: true, required: true, message: '请填写联系方式', trigger: 'blur' }
         ],
         address: [
-          { required: true, message: '请填写所在地址', trigger: 'blur' }
+          { type: 'string', whitespace: true, required: true, message: '请填写所在地址', trigger: 'blur' }
         ],
         role: [
           { required: true, message: '请选择授权的系统角色', trigger: 'change' }
