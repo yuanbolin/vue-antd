@@ -152,6 +152,7 @@
             @dblclick="changeEdgeShow"
             @inputedge="inputEdge"
             @addchildren="addChildren"
+            @resize="resize"
             @delnode="delnode"
             @changecurrentnode="changeCurrentNode"
           />
@@ -390,7 +391,33 @@ export default {
         )
       }
       console.log(mockData)
+      mockData.groups.push({
+        id: 'group',
+        index: 0,
+        render: gridGroup,
+        draggable: true,
+        top: 10,
+        left: 10,
+        label: 'hello',
+        width: 1000,
+        height: 300
+        // resize: true
+      })
       this.mockData = mockData
+
+      setTimeout(() => {
+        this.mockData.groups.splice(0, 1, {
+          id: 'group',
+          index: 0,
+          render: gridGroup,
+          draggable: true,
+          top: 10,
+          left: 10,
+          label: 'hello word!',
+          width: 500,
+          height: 300
+        })
+      }, 2000)
     } catch (e) {
       console.log('json解析失败', e)
     }
@@ -540,6 +567,7 @@ export default {
               endpoints: [{ ...item.endpoints[0], Class: MyEndpoint }, { ...item.endpoints[1], Class: MyEndpoint }]
             })
           })
+          dataArr[0].group = 'group'
           break
         case 'edges':
           arr.forEach((item) => {
@@ -580,6 +608,20 @@ export default {
     },
     addChildren(type, id) {
       // console.log(type, id);
+    },
+    resize(type, index, width, height) {
+      this.mockData.groups.splice(index, 1, {
+        id: 'group',
+        index: 0,
+        render: gridGroup,
+        draggable: true,
+        top: 10,
+        left: 10,
+        label: 'hello',
+        width,
+        height
+      })
+      console.log(this.mockData.groups[index].width)
     },
     redo() {
       this.mockData = {
