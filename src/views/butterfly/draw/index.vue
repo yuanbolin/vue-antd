@@ -152,7 +152,7 @@
             @dblclick="changeEdgeShow"
             @inputedge="inputEdge"
             @addchildren="addChildren"
-            @resize="resize"
+            @groupResize="groupResize"
             @delnode="delnode"
             @changecurrentnode="changeCurrentNode"
           />
@@ -237,7 +237,7 @@ import gridNode from './components/GridNode.vue'
 import gridGroup from './components/GridGroup.vue'
 import MyUpload from '@/components/MyUpload'
 import MyEndpoint from './components/MyEndpoint.js'
-// import Edge from './components/GridEdge.vue'
+import Edge from './components/GridEdge.vue'
 import { v4 as uuidv4 } from 'uuid'
 const endpoints_row = [
   {
@@ -364,7 +364,7 @@ export default {
       }
     }
   },
-  beforeMount: function() {
+  created: function() {
     // https://webpack.js.org/guides/dependency-management/#requirecontext
     const imgFiles = require.context('@/assets/node_img', true, /\.png$/)
 
@@ -390,34 +390,19 @@ export default {
           mockDataObj[mockDataObjKey]
         )
       }
-      console.log(mockData)
-      mockData.groups.push({
+      this.mockData = JSON.parse(JSON.stringify(mockData))
+      this.mockData.groups.push({
         id: 'group',
         index: 0,
         render: gridGroup,
         draggable: true,
-        top: 10,
-        left: 10,
+        top: 0,
+        left: 0,
         label: 'hello',
         width: 1000,
         height: 300
         // resize: true
       })
-      this.mockData = mockData
-
-      setTimeout(() => {
-        this.mockData.groups.splice(0, 1, {
-          id: 'group',
-          index: 0,
-          render: gridGroup,
-          draggable: true,
-          top: 10,
-          left: 10,
-          label: 'hello word!',
-          width: 500,
-          height: 300
-        })
-      }, 2000)
     } catch (e) {
       console.log('json解析失败', e)
     }
@@ -436,17 +421,6 @@ export default {
       window.canvasRef = ref
       console.log('finish', ref)
       window.canvas = ref.canvas
-      window.canvas.setGuideLine(true, {
-        limit: 4, // 限制辅助线条数
-        adsorp: {
-          enable: true, // 开启吸附效果
-          gap: 5 // 吸附间隔
-        },
-        theme: {
-          lineColor: 'red', // 网格线条颜色
-          lineWidth: 1 // 网格粗细
-        }
-      })
       // window.canvas.setGridMode(true, {
       //   isAdsorb: true, // 是否自动吸附,默认关闭
       //   theme: {
@@ -499,6 +473,24 @@ export default {
     },
     logEvent(e) {
       console.log('logEvent', e)
+      if (e.type === 'drag:end' && e.dragType === 'group:drag') {
+        console.log(this.mockData.groups)
+      }
+      if (e.type === 'drag:end' && e.dragType === 'node:drag') {
+        console.log(this.mockData.nodes)
+      }
+      if (e.type === 'system.group.addMembers') {
+        this.$message({
+          message: '已添加入节点组中',
+          type: 'success'
+        })
+      }
+      if (e.type === 'system.group.removeMembers') {
+        this.$message({
+          message: '已从节点组中移出',
+          type: 'success'
+        })
+      }
     },
     /**
      * 通过拖拽创建了edge
@@ -507,20 +499,32 @@ export default {
      */
     onCreateEdgeHandle(e) {
       console.log('连线成功', e)
-      // const nodeInfo = this.mockData.nodes.filter(item => item.id === e.sourceNodeId)
-      // function checkId(item) {
-      //   return item.id === e.id
-      // }
-      // if (nodeInfo && nodeInfo.length > 0) {
-      //   let index = 0
-      //   index = this.mockData.edges.findIndex(checkId)
-      //   this.mockData.edges[index].render = Edge
-      //   this.mockData.edges[index].isShow = false
-      //   this.mockData.edges[index].edgeLabel = ''
-      // }
+      const nodeInfo = this.mockData.nodes.filter(item => item.id === e.sourceNodeId)
+      function checkId(item) {
+        return item.id === e.id
+      }
+      if (nodeInfo && nodeInfo.length > 0) {
+        let index = 0
+        index = this.mockData.edges.findIndex(checkId)
+        this.mockData.edges[index].render = Edge
+        this.mockData.edges[index].isShow = false
+        this.mockData.edges[index].edgeLabel = ''
+      }
     },
     onChangeEdgeHandle(e) {
       console.log('修改连线成功', e)
+      console.log(this.mockData.edges)
+      const nodeInfo = this.mockData.nodes.filter(item => item.id === e.addLink.sourceNodeId)
+      function checkId(item) {
+        return item.id === e.addLink.id
+      }
+      if (nodeInfo && nodeInfo.length > 0) {
+        let index = 0
+        index = this.mockData.edges.findIndex(checkId)
+        this.mockData.edges[index].render = Edge
+        this.mockData.edges[index].isShow = false
+        this.mockData.edges[index].edgeLabel = ''
+      }
     },
     onDeleteEdgeHandle(e) {
       console.log('删除连线成功', e)
@@ -609,19 +613,13 @@ export default {
     addChildren(type, id) {
       // console.log(type, id);
     },
-    resize(type, index, width, height) {
-      this.mockData.groups.splice(index, 1, {
-        id: 'group',
-        index: 0,
-        render: gridGroup,
-        draggable: true,
-        top: 10,
-        left: 10,
-        label: 'hello',
+    groupResize(type, index, width, height) {
+      this.mockData.groups.splice(0, 1, {
+        ...this.mockData.groups[index],
         width,
         height
       })
-      console.log(this.mockData.groups[index].width)
+      window.canvasRef.redraw()
     },
     redo() {
       this.mockData = {

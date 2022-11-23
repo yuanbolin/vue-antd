@@ -1,9 +1,9 @@
 // grid-node.vue
 <template>
   <div ref="group" class="grid-node" :style="size" @click="getId">
-    <div class="title">{{ itemData.label }}  {{ itemData.width }}</div>
+    <div class="title">{{ itemData.label }}</div>
     <div class="resize">
-      <svg-icon icon-class="resize" @mousedown.stop="handleDown" />
+      <i class="butterfly-icon icon-drag" @mousedown.stop="handleDown" />
     </div>
   </div>
 </template>
@@ -45,13 +45,10 @@ export default {
       this.$emit('changecurrentnode', this.itemData.id)
     },
     handleDown(edown) {
-      console.log(this.$refs['group'])
       const xNum = edown.clientX - this.$refs['group'].offsetWidth
       const yNum = edown.clientY - this.$refs['group'].offsetHeight
       document.body.onmousemove = (eMove) => {
-        this.$emit('resize', 'group', this.itemData.index, eMove.clientX - xNum, eMove.clientY - yNum)
-        // this.$refs['group'].style.width = eMove.clientX - xNum + 'px'
-        // this.$refs['group'].style.height = eMove.clientY - yNum + 'px'
+        this.$emit('groupResize', 'group', this.itemData.index, eMove.clientX - xNum, eMove.clientY - yNum)
       }
       document.body.onmouseup = (eMove) => {
         document.body.onmousemove = null
@@ -65,13 +62,15 @@ export default {
 .grid-node {
   line-height: 100px;
   text-align: center;
-  border: 2px solid #7f94ff;
+  border: rgba(246, 105, 2, 0.7);
   color: #000;
-  background-color: rgba(255,255,255,0.2);
   position: relative;
+  background: rgba(246, 105, 2, 0.2);
+  border-radius: 0 0 9px 9px;
 }
 .title {
-  background: aquamarine;
+  color: #fff;
+  background: #F66902;
   height: 30px;
   border-bottom: 1px solid #333;
   line-height: 30px;
@@ -83,7 +82,6 @@ export default {
   right: 0;
   height: 1em;
   line-height: 1em;
-  border: 1px solid #eee;
   cursor: se-resize;
   z-index: 150;
 }
