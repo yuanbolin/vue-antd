@@ -2,7 +2,7 @@
   <div class="all">
     <div class="antv-content">
       <div class="antv-menu">
-        <h3>基础图形列表</h3>
+        <h3>图形列表</h3>
         <ul class="menu-list">
           <li draggable="true" @drag="menuDrag('defaultOval')">
             <i class="icon-oval" /> <strong>椭圆形</strong>
@@ -24,6 +24,9 @@
           </li>
           <li draggable="true" @drag="menuDrag('defaultSuccess')">
             <a-icon type="check-circle" /><strong>成功</strong>
+          </li>
+          <li draggable="true" @drag="menuDrag('defaultError')">
+            <a-icon type="close-circle" /><strong>失败</strong>
           </li>
         </ul>
         <div v-if="isChange" class="wrapper-btn">
@@ -51,15 +54,17 @@
           @select="onMenuSelect"
         />
       </div>
-      <div v-if="editDrawer" class="edit-main">
-        <div class="edit-main-title">
-          <h3>{{ editTitle }}</h3>
-          <a-icon type="close" @click="closeEditForm" />
-        </div>
+      <a-drawer
+        :title="editTitle"
+        :width="350"
+        :visible="editDrawer"
+        :body-style="{ paddingBottom: '30px' }"
+        @close="closeEditForm"
+      >
         <div
           v-if="editTitle === '编辑节点'"
           :style="drawerMainHeight"
-          class="form-main  beauty-scroll"
+          class="form-main beauty-scroll"
         >
           <a-form ref="nodeForm" :model="form" label-width="80px">
             <a-form-item class="minInterval" label="节点文本">
@@ -82,19 +87,19 @@
               <twitter-picker
                 :defaultColors="defaultColors"
                 :value="form.fontFill"
-                @input="value => updateValue('fontFill', value)"
+                @input="value => updateNodeValue('fontFill', value)"
               />
             </a-form-item>
             <a-form-item class="minInterval" label="节点背景">
               <twitter-picker
                 :value="form.fill"
-                @input="value => updateValue('fill', value)"
+                @input="value => updateNodeValue('fill', value)"
               />
             </a-form-item>
             <a-form-item class="minInterval" label="边框颜色">
               <twitter-picker
                 :value="form.stroke"
-                @input="value => updateValue('stroke', value)"
+                @input="value => updateNodeValue('stroke', value)"
               />
             </a-form-item>
             <!--            <div class="see-box">-->
@@ -103,9 +108,13 @@
             <!--            </div>-->
           </a-form>
         </div>
-        <div v-if="editTitle === '编辑连线'" class="form-main">
+        <div
+          v-if="editTitle === '编辑连线'"
+          :style="drawerMainHeight"
+          class="form-main  beauty-scroll"
+        >
           <a-form ref="edgeForm" :model="form" label-width="80px">
-            <a-form-item label="标签内容">
+            <a-form-item class="minInterval" label="标签内容">
               <a-input
                 v-model="form.label"
                 size="small"
@@ -120,74 +129,52 @@
                 "
               />
               <div v-if="form.label" class="label-style">
-                <p>
-                  字体颜色：
+                <a-form-item class="minInterval" label="字体颜色">
                   <twitter-picker
                     :defaultColors="defaultColors"
-                    v-model="labelForm.fontColor"
-                    @change="
-                      changeEdgeLabel(
-                        form.label,
-                        labelForm.fontColor,
-                        labelForm.fill,
-                        labelForm.stroke
-                      )
-                    "
+                    :value="labelForm.fontColor"
+                    @input="value => updateEdgeValue('fontColor', value)"
                   />
-                </p>
-                <p>
-                  背景颜色：
+                </a-form-item>
+                <a-form-item class="minInterval" label="背景颜色">
                   <twitter-picker
                     :defaultColors="defaultColors"
-                    v-model="labelForm.fill"
-                    @change="
-                      changeEdgeLabel(
-                        form.label,
-                        labelForm.fontColor,
-                        labelForm.fill,
-                        labelForm.stroke
-                      )
-                    "
+                    :value="labelForm.fill"
+                    @input="value => updateEdgeValue('fill', value)"
                   />
-                </p>
-                <p>
-                  描边颜色：<a-color-picker
-                    v-model="labelForm.stroke"
-                    size="mini"
-                    @change="
-                      changeEdgeLabel(
-                        form.label,
-                        labelForm.fontColor,
-                        labelForm.fill,
-                        labelForm.stroke
-                      )
-                    "
+                </a-form-item>
+                <a-form-item class="minInterval" label="描边颜色">
+                  <twitter-picker
+                    :defaultColors="defaultColors"
+                    :value="labelForm.stroke"
+                    @input="value => updateEdgeValue('stroke', value)"
                   />
-                </p>
+                </a-form-item>
               </div>
             </a-form-item>
-            <a-form-item label="线条颜色">
-              <chrome-picker
-                v-model="form.stroke"
-                size="small"
-                @change="changeEdgeStroke"
+            <a-form-item class="minInterval" label="线条颜色">
+              <twitter-picker
+                :defaultColors="defaultColors"
+                :value="form.stroke"
+                @input="value => updateEdgeValue('stroke', value, 'edgeStroke')"
               />
-              <!--              <a-color-picker v-model="form.stroke" size="small" @change="changeEdgeStroke" />-->
             </a-form-item>
-            <a-form-item label="线条样式">
+            <a-form-item class="minInterval" label="线条样式">
               <a-select
                 v-model="form.connector"
                 size="small"
                 placeholder="请选择"
                 @change="changeEdgeConnector"
               >
-                <a-option label="直角" value="normal" />
-                <a-option label="圆角" value="rounded" />
-                <a-option label="平滑" value="smooth" />
-                <a-option label="跳线(两线交叉)" value="jumpover" />
+                <a-select-option value="normal">直角</a-select-option>
+                <a-select-option value="rounded">圆角</a-select-option>
+                <a-select-option value="smooth">平滑</a-select-option>
+                <a-select-option value="jumpover"
+                  >跳线(两线交叉)</a-select-option
+                >
               </a-select>
             </a-form-item>
-            <a-form-item label="线条宽度">
+            <a-form-item class="minInterval" label="线条宽度">
               <a-input-number
                 v-model="form.strokeWidth"
                 size="small"
@@ -198,18 +185,18 @@
                 @change="changeEdgeStrokeWidth"
               />
             </a-form-item>
-            <a-form-item label="双向箭头">
+            <a-form-item class="minInterval" label="双向箭头">
               <a-switch v-model="form.isArrows" @change="changeEdgeArrows" />
             </a-form-item>
-            <a-form-item label="流动线条">
+            <a-form-item class="minInterval" label="流动线条">
               <a-switch v-model="form.isAnit" @change="changeEdgeAnit" />
             </a-form-item>
-            <a-form-item label="调整线条">
+            <a-form-item class="minInterval" label="调整线条">
               <a-switch v-model="form.isTools" @change="changeEdgeTools" />
             </a-form-item>
           </a-form>
         </div>
-      </div>
+      </a-drawer>
     </div>
   </div>
 </template>
@@ -299,7 +286,7 @@ export default {
       return arr;
     },
     drawerMainHeight() {
-      return { height: `calc(${this.height} - 35px)` };
+      return { height: `calc(100vh - 120px)` };
     }
   },
   watch: {
@@ -311,6 +298,8 @@ export default {
           this.menuItem = "";
           this.selectCell = "";
           this.editDrawer = false;
+          // Graph.unregisterHTMLComponent("my-html2");
+          // Graph.unregisterVueComponent("count");
           this.graph.dispose();
           this.initGraph();
         }
@@ -319,21 +308,17 @@ export default {
       immediate: true
     }
   },
-  created() {
-  },
+  created() {},
   mounted() {
-    console.log("mounted");
-
-    //因直接初始化存在找不到节点的bug，推迟半秒初始化
+    //因直接初始化偶尔存在找不到节点的bug，推迟半秒初始化
     setTimeout(() => {
       this.initGraph();
     }, 500);
   },
   beforeDestroy() {
-    console.log("beforeDestroy");
     this.graph.dispose();
-    Graph.unregisterHTMLComponent("my-html2");
-    Graph.unregisterVueComponent("count");
+    // Graph.unregisterHTMLComponent("my-html2");
+    // Graph.unregisterVueComponent("count");
   },
   methods: {
     // 链接桩的显示与隐藏，主要是照顾菱形
@@ -375,7 +360,7 @@ export default {
       this.graph = graph;
       if (this.value && JSON.parse(this.value).length) {
         const resArr = JSON.parse(this.value);
-console.log(resArr)
+        console.log(resArr);
         // 导出的时候删除了链接桩设置加回来
         const portsGroups = configNodePorts().groups;
         if (resArr.length) {
@@ -392,20 +377,20 @@ console.log(resArr)
       });
     },
     //自定义HTML节点和VUE组件示例
-    vueExample(){
+    vueExample() {
       // 方式1：注册 vue component
       Graph.registerVueComponent(
-          "count",
-          {
-            template: `<Count v-on:test1="test1"/>`,
-            components: {
-              Count
-            },
-            methods: {
-              test1: this.test1
-            }
+        "count",
+        {
+          template: `<Count v-on:test1="test1"/>`,
+          components: {
+            Count
           },
-          true
+          methods: {
+            test1: this.test1
+          }
+        },
+        true
       );
 
       this.graph.addNode({
@@ -423,7 +408,7 @@ console.log(resArr)
         }
       });
     },
-    HTMLExample(){
+    HTMLExample() {
       // 注册html组件
       // 注册返回 HTML 元素的函数
       Graph.registerHTMLComponent("my-html2", {
@@ -659,6 +644,8 @@ console.log(resArr)
     },
     // 修改边label属性
     changeEdgeLabel(label, fontColor, fill, stroke) {
+      console.log(label, fontColor, fill, stroke);
+      console.log(this.selectCell);
       this.selectCell.setLabels([
         configEdgeLabel(label, fontColor, fill, stroke)
       ]);
@@ -812,19 +799,34 @@ console.log(resArr)
       }
       this.$emit("finish", JSON.stringify(tempGroupJson));
       sessionStorage.setItem("tempGroupJson", JSON.stringify(tempGroupJson));
+      this.$message.success("保存成功!", 3);
       console.log(JSON.stringify(tempGroupJson));
     },
     toPNG() {
       this.graph.toPNG(dataUri => {
         console.log("toPNG===>", dataUri);
         // 下载
-        DataUri.downloadDataUri(dataUri, "chart.png");
+        DataUri.downloadDataUri(dataUri, "流程图.png");
       });
     },
-    updateValue(name, value) {
-      this["form." + name] = value.hex8;
-      console.log(this["form." + name]);
+    updateNodeValue(name, value) {
+      this.form[name] = value.hex8;
       this.changeNode(name, value.hex8);
+    },
+    updateEdgeValue(name, value, type) {
+      console.log(name, value, type);
+      if (type === "edgeStroke") {
+        this.form[name] = value.hex8;
+        this.changeEdgeStroke(value.hex8);
+        return;
+      }
+      this.labelForm[name] = value.hex8;
+      this.changeEdgeLabel(
+        this.form.label,
+        this.labelForm.fontColor,
+        this.labelForm.fill,
+        this.labelForm.stroke
+      );
     },
     test1(target) {
       console.log("test1", target);
