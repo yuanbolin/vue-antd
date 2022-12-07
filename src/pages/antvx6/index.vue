@@ -1,24 +1,31 @@
 <template>
-  <antv :height="height" :value="value"></antv>
+  <antv-six  v-model="tempGroupJson" :height="height"></antv-six>
 </template>
 <script>
-import AntvX6 from '@/pages/antvx6/antvx6.vue'
+import AntVXSix from '@/pages/antvx6/antvx6.vue'
 export default {
   name: "LiuCheng",
   components:{
-    'antv':AntvX6
+    'antv-six':AntVXSix
   },
   data() {
     return {
       height: "calc(100vh - 185px)" ,
-      value: ""
+      tempGroupJson: ""
     };
+  },
+  watch:{
+    tempGroupJson:{
+      handler:function () {
+        console.log(this.tempGroupJson)
+      }
+    }
   },
   created() {
     // 返现方法
     try {
       if(sessionStorage.getItem("tempGroupJson") && JSON.parse(sessionStorage.getItem("tempGroupJson")).length)
-        this.value =sessionStorage.getItem("tempGroupJson");
+        this.tempGroupJson =sessionStorage.getItem("tempGroupJson");
     } catch (e) {
       console.error("JSON数据解析失败", e);
     }

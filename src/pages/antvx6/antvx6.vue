@@ -1,8 +1,11 @@
 <template>
   <div class="all">
     <div class="antv-content">
+      <!--      左侧图形列表-->
       <div class="antv-menu">
-        <h3>图形列表</h3>
+        <a-tag color="blue">
+          基础图形
+        </a-tag>
         <ul class="menu-list">
           <li draggable="true" @drag="menuDrag('defaultOval')">
             <i class="icon-oval" /> <strong>椭圆形</strong>
@@ -22,11 +25,23 @@
           <li draggable="true" @drag="menuDrag('defaultCircle')">
             <i class="icon-circle" /><strong>圆形</strong>
           </li>
+        </ul>
+        <a-divider />
+        <a-tag color="blue">
+          杂项图形
+        </a-tag>
+        <ul class="menu-list">
+          <li draggable="true" @drag="menuDrag('defaultNote')">
+            <a-icon type="file-text" /><strong>文档</strong>
+          </li>
           <li draggable="true" @drag="menuDrag('defaultSuccess')">
             <a-icon type="check-circle" /><strong>成功</strong>
           </li>
           <li draggable="true" @drag="menuDrag('defaultError')">
             <a-icon type="close-circle" /><strong>失败</strong>
+          </li>
+          <li draggable="true" @drag="menuDrag('defaultMoney')">
+            <a-icon type="pay-circle" /><strong>人民币</strong>
           </li>
         </ul>
         <div v-if="isChange" class="wrapper-btn">
@@ -34,6 +49,7 @@
           <a-button type="success" @click="toPNG">保存为PNG图片</a-button>
         </div>
       </div>
+      <!--      流程图绘制区域-->
       <div class="antv-wrapper">
         <div
           id="wrapper"
@@ -54,6 +70,7 @@
           @select="onMenuSelect"
         />
       </div>
+      <!--      编辑节点和连线样式-->
       <a-drawer
         :title="editTitle"
         :width="350"
@@ -197,6 +214,15 @@
           </a-form>
         </div>
       </a-drawer>
+      <!--      编辑节点信息-->
+      <a-modal
+        title="编辑节点信息"
+        :visible="visible"
+        :confirm-loading="confirmLoading"
+        @ok="handleOk"
+        @cancel="handleCancel"
+      >
+      </a-modal>
     </div>
   </div>
 </template>
@@ -224,10 +250,14 @@ export default {
    * 作为子组件例子 <AntVXSix v-model="tempGroupJson" height="720px" />
    *
    */
+  model: {
+    prop: "value",
+    event: "finish"
+  },
   props: {
     height: {
       type: String,
-      default: "calc(100vh - 185px)" // '720px'
+      default: "720px" // '720px'
     },
     value: {
       type: String,
@@ -236,24 +266,26 @@ export default {
   },
   data() {
     return {
-      graph: null,
-      isChange: false,
-      isPortsShow: false,
-      menuItem: "",
-      selectCell: "",
-      editDrawer: false,
-      editTitle: "",
-      form: {},
+      graph: null, //画布
+      isChange: false, //是否绘制，修改过
+      isPortsShow: false, //锚点是否长显
+      menuItem: "", //拖拽生成的节点
+      selectCell: "", //选中的基类
+      editDrawer: false, //抽屉是否显示
+      editTitle: "", //编辑样式标题
+      form: {}, //样式表单
       labelForm: {
+        //连线默认样式
         fontColor: "#333",
         fill: "#FFF",
         stroke: "#555"
       },
       defaultColors: [
+        //颜色选择器的颜色组
         "#000000",
         "#FCB900",
         "#7BDCB5",
-        "#009fd0",
+        "#f7f7f7",
         "#8ED1FC",
         "#0693E3",
         "#ABB8C3",
@@ -261,11 +293,14 @@ export default {
         "#F78DA7",
         "#9900EF"
       ],
-      menuVisible: false,
-      contextmenuType: ""
+      menuVisible: false, //右击导航是否显示
+      contextmenuType: "", //右击的节点类型
+      visible: false, //弹窗是否显示
+      confirmLoading: false //节点信息提交状态
     };
   },
   computed: {
+    // 右击导航列表
     menuItemList() {
       let arr = [];
       switch (this.contextmenuType) {
@@ -286,6 +321,7 @@ export default {
       return arr;
     },
     drawerMainHeight() {
+      // 抽屉内容高度
       return { height: `calc(100vh - 120px)` };
     }
   },
@@ -316,6 +352,7 @@ export default {
     }, 500);
   },
   beforeDestroy() {
+    //卸载前清理注册内容
     this.graph.dispose();
     // Graph.unregisterHTMLComponent("my-html2");
     // Graph.unregisterVueComponent("count");
@@ -352,6 +389,10 @@ export default {
       });
       // 画布键盘事件
       graphBindKey(graph);
+      //选择事件
+      graph.on('cell:selected', ({cell}) => {
+        console.log("节点/边被选中",cell)
+      })
       // 删除
       graph.bindKey(["delete", "backspace"], () => {
         this.handlerDel();
@@ -360,7 +401,6 @@ export default {
       this.graph = graph;
       if (this.value && JSON.parse(this.value).length) {
         const resArr = JSON.parse(this.value);
-        console.log(resArr);
         // 导出的时候删除了链接桩设置加回来
         const portsGroups = configNodePorts().groups;
         if (resArr.length) {
@@ -531,7 +571,6 @@ export default {
     isChangeValue() {
       if (!this.isChange) {
         this.isChange = true;
-        this.$emit("cellChanged", true);
       }
     },
     menuDrag(type) {
@@ -757,13 +796,11 @@ export default {
       if (val) this.selectCell.addTools(["vertices", "segments"]);
       else this.selectCell.removeTools();
     },
-    // 删除节点
+    // 删除
     handlerDel() {
       this.$confirm({
         title: "是否继续",
-        content: `此操作将永久删除此${
-          this.editTitle === "编辑节点" ? "节点" : "连线"
-        }, 是否继续?`,
+        content: `此操作将永久删除, 是否继续?`,
         okText: "确定",
         cancelText: "取消",
         onOk: () => {
@@ -800,19 +837,30 @@ export default {
       this.$emit("finish", JSON.stringify(tempGroupJson));
       sessionStorage.setItem("tempGroupJson", JSON.stringify(tempGroupJson));
       this.$message.success("保存成功!", 3);
-      console.log(JSON.stringify(tempGroupJson));
     },
     toPNG() {
-      this.graph.toPNG(dataUri => {
-        console.log("toPNG===>", dataUri);
-        // 下载
-        DataUri.downloadDataUri(dataUri, "流程图.png");
-      });
+      this.graph.toPNG(
+        dataUri => {
+          console.log("toPNG===>", dataUri);
+          // 下载
+          DataUri.downloadDataUri(dataUri, "流程图.png");
+        },
+        {
+          padding: {
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 20
+          }
+        }
+      );
     },
+    //节点样式编辑事件
     updateNodeValue(name, value) {
       this.form[name] = value.hex8;
       this.changeNode(name, value.hex8);
     },
+    //连线样式编辑事件
     updateEdgeValue(name, value, type) {
       console.log(name, value, type);
       if (type === "edgeStroke") {
@@ -828,16 +876,18 @@ export default {
         this.labelForm.stroke
       );
     },
-    test1(target) {
-      console.log("test1", target);
+    //编辑节点展示
+    showModal() {
+      this.visible = true;
     },
-    onMenuSelect(key, target) {
+    //右击列表选择事件
+    onMenuSelect(key) {
       switch (key) {
         case "1":
           this.editNodeStyle();
           break;
         case "2":
-          this.test1(target);
+          this.showModal();
           break;
         case "3":
           this.handlerDel();
@@ -848,6 +898,19 @@ export default {
         default:
           break;
       }
+    },
+    //编辑节点信息确认事件
+    handleOk() {
+      this.confirmLoading = true;
+      setTimeout(() => {
+        this.visible = false;
+        this.confirmLoading = false;
+      }, 2000);
+    },
+    //编辑节点信息取消事件
+    handleCancel() {
+      console.log("Clicked cancel button");
+      this.visible = false;
     }
   }
 };
