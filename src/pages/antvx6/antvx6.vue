@@ -27,7 +27,7 @@
           </li>
         </ul>
         <a-divider />
-        <a-tag color="blue">
+        <a-tag color="cyan">
           杂项图形
         </a-tag>
         <ul class="menu-list">
@@ -41,7 +41,10 @@
             <a-icon type="close-circle" /><strong>失败</strong>
           </li>
           <li draggable="true" @drag="menuDrag('defaultMoney')">
-            <a-icon type="pay-circle" /><strong>人民币</strong>
+            <a-icon type="pay-circle" /><strong>财务</strong>
+          </li>
+          <li draggable="true" @drag="menuDrag('defaultWuliu')">
+            <a-icon type="pay-circle" /><strong>物流</strong>
           </li>
         </ul>
         <div v-if="isChange" class="wrapper-btn">
@@ -415,6 +418,10 @@ export default {
       graph.on("cell:changed", () => {
         this.isChangeValue();
       });
+      //获取新增的节点/边
+      graph.on('cell:added', ({ cell }) => {
+        console.log("新增==》",cell)
+      })
     },
     //自定义HTML节点和VUE组件示例
     vueExample() {
@@ -484,7 +491,6 @@ export default {
     // 自动扩展父节点
     parentResize(graph) {
       graph.on("node:change:size", ({ node, options }) => {
-        console.log(node, options);
         if (options.skipParentHandler) {
           return;
         }
