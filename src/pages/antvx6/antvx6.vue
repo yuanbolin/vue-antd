@@ -221,10 +221,49 @@
       <a-modal
         title="编辑节点信息"
         :visible="visible"
+        :width="820"
         :confirm-loading="confirmLoading"
         @ok="handleOk"
         @cancel="handleCancel"
       >
+        <a-tabs default-active-key="1" @change="callback">
+          <a-tab-pane key="1" tab="基本信息">
+            <a-form-model
+              layout="vertical"
+              ref="ruleForm"
+              :rules="rules"
+              :model="infoForm"
+            >
+              <a-form-model-item label="节点描述" prop="describe">
+                <a-textarea auto-size v-model="infoForm.describe" />
+              </a-form-model-item>
+            </a-form-model>
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="输入" force-render>
+            Content of Tab Pane 2
+          </a-tab-pane>
+          <a-tab-pane key="3" tab="输出">
+            Content of Tab Pane 3
+          </a-tab-pane>
+          <a-tab-pane key="4" tab="操作规范">
+            Content of Tab Pane 4
+          </a-tab-pane>
+          <a-tab-pane key="5" tab="指标">
+            Content of Tab Pane 5
+          </a-tab-pane>
+          <a-tab-pane key="6" tab="风险控制点">
+            Content of Tab Pane 6
+          </a-tab-pane>
+          <a-tab-pane key="7" tab="信息化">
+            Content of Tab Pane 7
+          </a-tab-pane>
+          <a-tab-pane key="8" tab="关联标准">
+            Content of Tab Pane 8
+          </a-tab-pane>
+          <a-tab-pane key="9" tab="办理时限">
+            Content of Tab Pane 9
+          </a-tab-pane>
+        </a-tabs>
       </a-modal>
     </div>
   </div>
@@ -282,6 +321,18 @@ export default {
         fontColor: "#333",
         fill: "#FFF",
         stroke: "#555"
+      },
+      infoForm: {}, //基本信息表单
+      rules: {
+        describe: [
+          { required: true, message: "请输入节点描述", trigger: "blur" },
+          {
+            min: 2,
+            max: 50,
+            message: "字符长度应在2到50之间",
+            trigger: "change"
+          }
+        ]
       },
       defaultColors: [
         //颜色选择器的颜色组
@@ -393,9 +444,9 @@ export default {
       // 画布键盘事件
       graphBindKey(graph);
       //选择事件
-      graph.on('cell:selected', ({cell}) => {
-        console.log("节点/边被选中",cell)
-      })
+      graph.on("cell:selected", ({ cell }) => {
+        console.log("节点/边被选中", cell);
+      });
       // 删除
       graph.bindKey(["delete", "backspace"], () => {
         this.handlerDel();
@@ -419,9 +470,9 @@ export default {
         this.isChangeValue();
       });
       //获取新增的节点/边
-      graph.on('cell:added', ({ cell }) => {
-        console.log("新增==》",cell)
-      })
+      graph.on("cell:added", ({ cell }) => {
+        console.log("新增==》", cell);
+      });
     },
     //自定义HTML节点和VUE组件示例
     vueExample() {
@@ -701,7 +752,7 @@ export default {
     changeEdgeStroke(val) {
       this.selectCell.attr("line/stroke", val);
     },
-    // 边的样式
+    // 边的类型
     changeEdgeConnector(val) {
       switch (val) {
         case "normal":
@@ -831,6 +882,11 @@ export default {
     handlerSend() {
       // 我在这里删除了链接桩的设置，和工具（为了减少数据），反显的时候要把删除的链接桩加回来
       const { cells: jsonArr } = this.graph.toJSON();
+      console.log(jsonArr);
+      if (!jsonArr) {
+        this.$message.error("保存失败!", 3);
+        return;
+      }
       const tempGroupJson = jsonArr.map(item => {
         if (item.ports && item.ports.groups) delete item.ports.groups;
         if (item.tools) delete item.tools;
@@ -844,6 +900,7 @@ export default {
       sessionStorage.setItem("tempGroupJson", JSON.stringify(tempGroupJson));
       this.$message.success("保存成功!", 3);
     },
+    //导出成png图片并下载
     toPNG() {
       this.graph.toPNG(
         dataUri => {
@@ -885,6 +942,7 @@ export default {
     //编辑节点展示
     showModal() {
       this.visible = true;
+      this.infoForm = { ...this.selectCell.data };
     },
     //右击列表选择事件
     onMenuSelect(key) {
@@ -907,16 +965,32 @@ export default {
     },
     //编辑节点信息确认事件
     handleOk() {
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible = false;
-        this.confirmLoading = false;
-      }, 2000);
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          console.log(valid);
+          // this.selectCell.
+          this.selectCell.setData(this.infoForm);
+          console.log(this.selectCell.data);
+          this.confirmLoading = true;
+          setTimeout(() => {
+            this.visible = false;
+            this.confirmLoading = false;
+          }, 2000);
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     //编辑节点信息取消事件
     handleCancel() {
       console.log("Clicked cancel button");
+      this.$refs.ruleForm.resetFields();
       this.visible = false;
+    },
+    //data表单标签页切换事件
+    callback(key) {
+      console.log(key);
     }
   }
 };
