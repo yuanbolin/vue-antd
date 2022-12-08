@@ -26,10 +26,6 @@ const routerMap = {
     name: '工作台',
     component: () => import('@/pages/dashboard/workplace')
   },
-  analysis: {
-    name: '分析页',
-    component: () => import('@/pages/dashboard/analysis')
-  },
   form: {
     name: '表单页',
     icon: 'form',
@@ -67,8 +63,8 @@ const routerMap = {
   },
   cardList: {
     path: 'card',
-    name: '卡片列表',
-    component: () => import('@/pages/list/CardList')
+    name: '权限管理组',
+    component: () => import('@/pages/权限管理组/CardList')
   },
   searchList: {
     path: 'search',

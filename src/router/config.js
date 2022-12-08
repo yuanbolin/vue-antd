@@ -52,11 +52,6 @@ const options = {
                 }
               },
               component: () => import("@/pages/dashboard/workplace")
-            },
-            {
-              path: "analysis",
-              name: "分析页",
-              component: () => import("@/pages/dashboard/analysis")
             }
           ]
         },
@@ -124,11 +119,6 @@ const options = {
               component: () => import("@/pages/list/StandardList")
             },
             {
-              path: "card",
-              name: "卡片列表",
-              component: () => import("@/pages/list/CardList")
-            },
-            {
               path: "search",
               name: "搜索列表",
               component: () => import("@/pages/list/search/SearchLayout"),
@@ -153,6 +143,21 @@ const options = {
           ]
         },
         {
+          path:'group',
+          name: "权限管理组",
+          meta: {
+            icon: "table"
+          },
+          component: PageView,
+          children: [
+            {
+              path: "card",
+              name: "卡片列表",
+              component: () => import("@/pages/权限管理组/CardList")
+            }
+          ]
+        },
+        {
           path: "details",
           name: "详情页",
           meta: {
@@ -169,51 +174,6 @@ const options = {
               path: "advance",
               name: "高级详情页",
               component: () => import("@/pages/detail/AdvancedDetail")
-            }
-          ]
-        },
-        {
-          path: "result",
-          name: "结果页",
-          meta: {
-            icon: "check-circle-o"
-          },
-          component: PageView,
-          children: [
-            {
-              path: "success",
-              name: "成功",
-              component: () => import("@/pages/result/Success")
-            },
-            {
-              path: "error",
-              name: "失败",
-              component: () => import("@/pages/result/Error")
-            }
-          ]
-        },
-        {
-          path: "exception",
-          name: "异常页",
-          meta: {
-            icon: "warning"
-          },
-          component: BlankView,
-          children: [
-            {
-              path: "404",
-              name: "Exp404",
-              component: () => import("@/pages/exception/404")
-            },
-            {
-              path: "403",
-              name: "Exp403",
-              component: () => import("@/pages/exception/403")
-            },
-            {
-              path: "500",
-              name: "Exp500",
-              component: () => import("@/pages/exception/500")
             }
           ]
         },
@@ -274,33 +234,6 @@ const options = {
             }
           },
           component: () => import("@/pages/Demo")
-        },
-        {
-          name: "动态路由菜单",
-          path: "router/dynamic/:id",
-          meta: {
-            icon: "project",
-            params: {
-              id: 123
-            }
-          },
-          component: () => import("@/pages/Demo")
-        },
-        {
-          name: "Ant Design Vue",
-          path: "antdv",
-          meta: {
-            icon: "ant-design",
-            link: "https://www.antdv.com/docs/vue/introduce-cn/"
-          }
-        },
-        {
-          name: "使用文档",
-          path: "document",
-          meta: {
-            icon: "file-word",
-            link: "https://iczer.gitee.io/vue-antd-admin-docs/"
-          }
         }
       ]
     }

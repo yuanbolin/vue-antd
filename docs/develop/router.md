@@ -37,10 +37,6 @@ const options = {
         path: 'workplace',
         name: '工作台',
         component: () => import('@/pages/dashboard/workplace/WorkPlace'),
-      }, {
-        path: 'analysis',
-        name: '分析页',
-        component: () => import('@/pages/dashboard/analysis/Analysis'),
       }]
     }]
   }]
