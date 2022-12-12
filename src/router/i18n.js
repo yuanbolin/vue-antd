@@ -1,16 +1,15 @@
 module.exports = {
   messages: {
     CN: {
-      home: {name: '首页'},
+      home: {name: '流程管理工具'},
     },
     US: {
       home: {name: 'home'},
     },
     HK: {
-      home: {name: '首頁'},
+      home: {name: '流程管理工具'},
       dashboard: {
-        name: 'Dashboard',
-        workplace: {name: '工作台'},
+        name: '首頁',
       },
       form: {
         name: '表單頁',

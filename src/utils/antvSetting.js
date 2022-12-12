@@ -8,7 +8,7 @@ export const configSetting = Shape => {
       // 鼠标滚轮缩放画布
       enabled: true, // 开启
       zoomAtMousePosition: true, // 缩放点跟随鼠标位置
-      modifiers: "ctrl", // 键盘按键, 触发方式变为:鼠标滚轮+键盘按键
+      modifiers: "alt", // 键盘按键, 触发方式变为:鼠标滚轮+键盘按键
       minScale: 0.5, // 最小缩放
       maxScale: 3 // 最大缩放
     },

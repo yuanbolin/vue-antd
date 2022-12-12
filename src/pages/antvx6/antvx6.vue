@@ -240,28 +240,28 @@
             </a-form-model>
           </a-tab-pane>
           <a-tab-pane key="2" tab="输入" force-render>
-            Content of Tab Pane 2
+            此功能仍在开发中...
           </a-tab-pane>
           <a-tab-pane key="3" tab="输出">
-            Content of Tab Pane 3
+            此功能仍在开发中...
           </a-tab-pane>
           <a-tab-pane key="4" tab="操作规范">
-            Content of Tab Pane 4
+            此功能仍在开发中...
           </a-tab-pane>
           <a-tab-pane key="5" tab="指标">
-            Content of Tab Pane 5
+            此功能仍在开发中...
           </a-tab-pane>
           <a-tab-pane key="6" tab="风险控制点">
-            Content of Tab Pane 6
+            此功能仍在开发中...
           </a-tab-pane>
           <a-tab-pane key="7" tab="信息化">
-            Content of Tab Pane 7
+            此功能仍在开发中...
           </a-tab-pane>
           <a-tab-pane key="8" tab="关联标准">
-            Content of Tab Pane 8
+            此功能仍在开发中...
           </a-tab-pane>
           <a-tab-pane key="9" tab="办理时限">
-            Content of Tab Pane 9
+            此功能仍在开发中...
           </a-tab-pane>
         </a-tabs>
       </a-modal>

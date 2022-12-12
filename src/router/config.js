@@ -31,29 +31,20 @@ const options = {
     },
     {
       path: "/",
-      name: "首页",
+      name: "流程管理工具",
       component: TabsView,
       redirect: "/login",
       children: [
         {
           path: "dashboard",
-          name: "Dashboard",
+          name: "首页",
           meta: {
-            icon: "dashboard"
-          },
-          component: BlankView,
-          children: [
-            {
-              path: "workplace",
-              name: "工作台",
-              meta: {
-                page: {
-                  closable: false
-                }
-              },
-              component: () => import("@/pages/dashboard/workplace")
+            icon: "dashboard",
+            page: {
+              closable: false
             }
-          ]
+          },
+          component: () => import("@/pages/dashboard/workplace")
         },
         {
           path: "form",
@@ -158,6 +149,76 @@ const options = {
           ]
         },
         {
+          path:'Flow',
+          name: "流程管理",
+          meta: {
+            icon: "table",
+          },
+          component: BlankView,
+          children: [
+            {
+              path: "list",
+              name: "流程目录",
+              component: () => import("@/pages/流程管理/QueryList")
+            },
+            {
+              path: "stepAdd",
+              name: "新建流程",
+              component: () => import("@/pages/流程管理/step")
+            },
+            {
+              name: "流程图绘制",
+              path: "antvx6/:id",
+              meta: {
+                invisible:true,
+                icon: "file-excel",
+                page: {
+                  cacheAble: false
+                }
+              },
+              component: () => import("@/pages/antvx6/index")
+            },
+          ]
+        },
+        {
+          path:'User',
+          name: "用户管理",
+          redirect:'User/index',
+          meta: {
+            icon: "table",
+          },
+          component: BlankView,
+          children: [
+            {
+              meta: {
+                invisible: true,
+              },
+              path: "index",
+              name: "列表",
+              component: () => import("@/pages/用户管理/QueryList")
+            }
+          ]
+        },
+        {
+          path:'Organization',
+          name: "组织机构树管理",
+          redirect:'Organization/index',
+          meta: {
+            icon: "table",
+          },
+          component: BlankView,
+          children: [
+            {
+              meta: {
+                invisible: true,
+              },
+              path: "index",
+              name: "树形列表",
+              component: () => import("@/pages/组织机构树管理/QueryList")
+            }
+          ]
+        },
+        {
           path: "details",
           name: "详情页",
           meta: {
@@ -214,15 +275,15 @@ const options = {
           component: () => import("@/pages/form/basic")
         },
         {
-          name: "流程图绘制",
-          path: "auth/antvx6",
+          name: "流程图展示",
+          path: "antvShow",
           meta: {
             icon: "file-excel",
             page: {
               cacheAble: false
             }
           },
-          component: () => import("@/pages/antvx6/index")
+          component: () => import("@/pages/antvx6/antvShow")
         },
         {
           name: "带参菜单",
@@ -234,6 +295,14 @@ const options = {
             }
           },
           component: () => import("@/pages/Demo")
+        },
+        {
+          name: "个人中心",
+          path: "personalCenter",
+          meta: {
+            invisible:true
+          },
+          component: () => import("@/pages/个人中心/index")
         }
       ]
     }
