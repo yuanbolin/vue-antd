@@ -2,6 +2,7 @@
   <a-layout>
     <a-layout-sider
       theme="light"
+      class="left-content"
       v-model="collapsed"
       :trigger="null"
       collapsible
@@ -19,18 +20,7 @@
           />
         </div>
       </a-tooltip>
-      <a-tree
-        :hidden="collapsed"
-        checkable
-        :tree-data="treeData"
-        :default-expanded-keys="['0-0-0', '0-0-1']"
-        :default-selected-keys="['0-0-0', '0-0-1']"
-        :default-checked-keys="['0-0-0', '0-0-1']"
-        @select="onSelect"
-        @check="onCheck"
-      >
-        <span slot="title0010" style="color: #1890ff">sss</span>
-      </a-tree>
+      <search-tree @treeSelect="onSelect" :gData="treeData"></search-tree>
     </a-layout-sider>
     <a-layout-content>
       <div class="antv-wrapper">
@@ -42,6 +32,7 @@
 <script>
 import { Graph, Shape } from "@antv/x6";
 import { configNodePorts } from "@/utils/antvSetting";
+import SearchTree from "@/components/tree/SearchTree";
 // 反显数据
 const resData = [
   {
@@ -188,6 +179,7 @@ const resData = [
     zIndex: 3
   }
 ];
+
 export default {
   name: "AntvShow",
   data() {
@@ -196,33 +188,33 @@ export default {
       collapsed: false
     };
   },
+  components: { "search-tree": SearchTree },
   created() {},
   mounted() {
     setTimeout(() => {
       this.initGraph();
+      this.treeData = [
+        {
+          title: "parent 1",
+          key: "0-0",
+          children: [
+            {
+              title: "parent 1-0",
+              key: "0-0-0",
+              children: [
+                { title: "leaf", key: "0-0-0-0"},
+                { title: "leaf", key: "0-0-0-1" }
+              ]
+            },
+            {
+              title: "parent 1-1",
+              key: "0-0-1",
+              children: [{ key: "0-0-1-0", title:'right' }]
+            }
+          ]
+        }
+      ];
     }, 500);
-    this.treeData = [
-      {
-        title: "parent 1",
-        key: "0-0",
-        children: [
-          {
-            title: "parent 1-0",
-            key: "0-0-0",
-            disabled: true,
-            children: [
-              { title: "leaf", key: "0-0-0-0", disableCheckbox: true },
-              { title: "leaf", key: "0-0-0-1" }
-            ]
-          },
-          {
-            title: "parent 1-1",
-            key: "0-0-1",
-            children: [{ key: "0-0-1-0", slots: { title: "title0010" } }]
-          }
-        ]
-      }
-    ];
   },
   methods: {
     // 初始化渲染画布
@@ -239,6 +231,7 @@ export default {
           minScale: 0.5, // 最小缩放
           maxScale: 3 // 最大缩放
         },
+        panning: true,
         interacting: false,
         connecting: {
           router: {
@@ -288,11 +281,9 @@ export default {
       }
       graph.centerContent();
     },
+    //左侧树形选择器的选中的key
     onSelect(selectedKeys, info) {
       console.log("selected", selectedKeys, info);
-    },
-    onCheck(checkedKeys, info) {
-      console.log("onCheck", checkedKeys, info);
     }
   }
 };
@@ -337,5 +328,9 @@ export default {
   align-items: center;
   padding: 20px 10px;
   font-weight: bold;
+}
+.left-content {
+  padding: 0 5px;
+  border: 1px solid #eee;
 }
 </style>
