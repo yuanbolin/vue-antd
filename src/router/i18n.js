@@ -17,6 +17,12 @@ module.exports = {
         step: {name: '分步表單'},
         advance: {name: '分步表單'}
       },
+      User:{
+        name:"用户管理",
+        index:{name:"用户管理"},
+        edit:{name:"用户信息编辑"},
+        add:{name:"新增用户"},
+      },
       list: {
         name: '列表頁',
         query: {name: '查詢表格'},

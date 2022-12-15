@@ -1,23 +1,27 @@
 <template>
   <a-card>
     <div class="search">
-      <a-form layout="horizontal">
+      <a-form-model ref="form" :model="form" :rules="rules">
         <a-row>
           <a-col :md="8" :sm="24">
-            <a-form-item
-              label="目录名称"
+            <a-form-model-item
               :labelCol="{ span: 5 }"
               :wrapperCol="{ span: 18, offset: 1 }"
+              ref="name"
+              label="目录名称"
+              prop="name"
             >
-              <a-input placeholder="请输入" />
-            </a-form-item>
+              <a-input placeholder="请输入" v-model="form.name" />
+            </a-form-model-item>
           </a-col>
         </a-row>
         <span style="float: right; margin-top: 3px;">
-          <a-button type="primary">查询</a-button>
-          <a-button style="margin-left: 8px">重置</a-button>
+          <a-button @click="search" type="primary">查询</a-button>
+          <a-button @click="resetSearchForm" style="margin-left: 8px"
+            >重置</a-button
+          >
         </span>
-      </a-form>
+      </a-form-model>
     </div>
     <div>
       <a-space class="operator">
@@ -33,6 +37,7 @@
         @change="tableChange"
         :pagination="pagination"
         :columns="columns"
+        :loading="loading"
         :data-source="dataSource"
         :expanded-row-keys.sync="expandedRowKeys"
       >
@@ -115,7 +120,7 @@
             </a-menu>
           </a-dropdown>
           <router-link
-            v-if="record.type === 'info'"
+            v-if="record.type === CatalogueType.INFO"
             style="margin-right: 8px"
             :to="`antvx6/${record.key}`"
             ><a-icon type="highlight" />绘制
@@ -124,15 +129,26 @@
             <a-icon type="edit" />编辑
           </a>
           <a-popconfirm
-            v-if="dataSource.length"
-            title="Sure to delete?"
+            v-if="record.type === CatalogueType.INFO && record.public === 0"
+            title="发布后将不可删除，确定要发布此流程吗?"
+            @confirm="() => push(record.key)"
+          >
+            <a style="margin-right: 8px" @click="() => showEditDrawer(record)">
+              <a-icon type="edit" />发布
+            </a>
+          </a-popconfirm>
+          <a-popconfirm
+            v-if="
+              record.type === CatalogueType.CATALOGUE || record.public === 0
+            "
+            title="确定要删除吗?"
             @confirm="() => deleteRecord(record.key)"
           >
             <a style="margin-right: 8px"> <a-icon type="delete" />删除 </a>
           </a-popconfirm>
-          <router-link :to="`/list/query/detail/${record.key}`"
-            ><a-icon type="file-search" />详情</router-link
-          >
+          <!--          <router-link :to="`/list/query/detail/${record.key}`"-->
+          <!--            ><a-icon type="file-search" />详情</router-link-->
+          <!--          >-->
         </template>
       </a-table>
     </div>
@@ -155,8 +171,8 @@
       >
         <a-form-model-item has-feedback label="所属目录" prop="shangji">
           <select-tree
-              :treeData="treeData"
-              v-model="infoForm.shangji"
+            :treeData="treeData"
+            v-model="infoForm.shangji"
           ></select-tree>
         </a-form-model-item>
         <a-form-model-item has-feedback label="流程名称" prop="name">
@@ -351,8 +367,15 @@ export default {
   name: "FlowQueryList",
   data() {
     return {
+      //搜索框
+      form: {
+        name: ""
+      },
+      rules: {
+        name: []
+      },
       columns: columns,
-      dataSource: [],
+      dataSource: [], //表格数据
       selectedRows: [],
       isOpen: false,
       expandedRowKeys: [],
@@ -360,7 +383,9 @@ export default {
       pagination: {
         current: 1,
         pageSize: 10,
-        total: 2
+        total: 100,
+        pageSizeOptions: ["10", "20", "30", "40", "50"],
+        showQuickJumper: true
       },
       catalogueForm: {},
       catalogueRules: {
@@ -417,7 +442,8 @@ export default {
       treeData: [],
       chooseType: "",
       drawerVisible: false,
-      CatalogueType
+      CatalogueType,
+      loading: false
     };
   },
   components: {
@@ -427,7 +453,7 @@ export default {
     deleteRecord: "delete"
   },
   mounted() {
-    this.getData();
+    this.fetch();
     this.getTreeData();
   },
   methods: {
@@ -458,19 +484,29 @@ export default {
       });
     },
     showEditDrawer(obj) {
-      const parentKey = obj.id;
-      console.log(obj);
+      const parentKey = getParentKey(obj.id, this.dataSource);
       if (obj.type.indexOf(CatalogueType.CATALOGUE) !== -1) {
         this.chooseType = obj.type;
-        this.catalogueForm.shangji = parentKey + "";
+        this.catalogueForm = {
+          shangji: parentKey + "",
+          name: obj.name,
+          message: obj.message
+        };
       } else if (obj.type.indexOf(CatalogueType.INFO) !== -1) {
         this.chooseType = obj.type;
-        this.infoForm.shangji = parentKey + "";
+        this.infoForm = {
+          shangji: parentKey + "",
+          name: obj.name,
+          message: obj.message
+        };
       }
-
       this.$nextTick(() => {
         this.drawerVisible = true;
       });
+    },
+    //发布流程
+    push(id) {
+      console.log(id);
     },
     submitForm() {
       if (this.chooseType.indexOf(CatalogueType.CATALOGUE) !== -1) {
@@ -519,6 +555,22 @@ export default {
         this.$refs.infoForm.resetFields();
         this.onClose();
       }
+    },
+    search() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          console.log(this.form.name);
+          this.fetch();
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetSearchForm() {
+      this.$refs.form.resetFields();
+      console.log(this.form.name);
+      this.fetch();
     },
     onClose() {
       this.drawerVisible = false;
@@ -611,105 +663,10 @@ export default {
           name: "战略与经营",
           type: "catalogue",
           message: "这是一个战略与经营描述",
-          public: 0,
+          public: 1,
           level: 1
         }
       ];
-    },
-    getData() {
-      this.dataSource = [
-        {
-          id: 1, //主键id
-          name: "营销", //名称
-          message: "这是一个营销描述", //描述
-          type: "catalogue", //类型 枚举值：目录，流程
-          level: 1, // 树形结构等级
-          public: 1, //是否公开
-          children: [
-            //子级
-            {
-              id: 11,
-              name: "客户管理流程",
-              public: 0,
-              type: "info",
-              message: "这是一个客户管理流程描述",
-              level: 2
-            },
-            {
-              id: 12,
-              name: "产品",
-              type: "catalogue",
-              message: "产品",
-              public: 1,
-              level: 2,
-              children: [
-                {
-                  id: 121,
-                  type: "info",
-                  name: "产品价格管理流程",
-                  message: "产品价格管理流程",
-                  public: 1,
-                  level: 3
-                }
-              ]
-            },
-            {
-              id: 13,
-              name: "产品研发",
-              type: "catalogue",
-              message: "产品研发",
-              public: 1,
-              level: 2,
-              children: [
-                {
-                  id: 131,
-                  name: "产品研发成本",
-                  type: "catalogue",
-                  message: "产品研发成本",
-                  public: 1,
-                  level: 3,
-                  children: [
-                    {
-                      id: 1311,
-                      name: "产品研发成本控制流程",
-                      type: "info",
-                      message: "产品研发成本控制流程",
-                      public: 0,
-                      level: 4
-                    },
-                    {
-                      id: 1312,
-                      name: "产品研发成本汇报流程",
-                      type: "info",
-                      message: "产品研发成本汇报流程",
-                      public: 1,
-                      level: 4
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: "战略与经营",
-          type: "catalogue",
-          message: "这是一个战略与经营描述",
-          public: 0,
-          level: 1
-        }
-      ];
-      // request(process.env.VUE_APP_API_BASE_URL + "/list", "get", {
-      //   page: this.pagination.current,
-      //   pageSize: this.pagination.pageSize
-      // }).then(res => {
-      //   const { list, page, pageSize, total } = res?.data?.data ?? {};
-      //   this.dataSource = list;
-      //   this.pagination.current = page;
-      //   this.pagination.pageSize = pageSize;
-      //   this.pagination.total = total;
-      // });
     },
     deleteRecord(key) {
       this.dataSource = this.dataSource.filter(item => item.key !== key);
@@ -736,11 +693,11 @@ export default {
     addNew() {
       this.dataSource.unshift({
         id: this.dataSource.length,
-        no: "NO " + this.dataSource.length,
-        description: "这是一段描述",
-        callNo: Math.floor(Math.random() * 1000),
-        status: Math.floor(Math.random() * 10) % 4,
-        updatedAt: "2018-07-26"
+        name: "NO " + this.dataSource.length, //名称
+        message: "这是一断描述", //描述
+        type: "catalogue", //类型 枚举值：目录，流程
+        level: 1, // 树形结构等级
+        public: 1 //是否公开
       });
     },
     handleMenuClick(e) {
@@ -778,8 +735,115 @@ export default {
     },
     //表格分页事件
     tableChange(pagination) {
-      this.pagination = pagination;
       console.log("表格分页事件", pagination);
+      const pager = { ...this.pagination };
+      pager.current = pagination.current;
+      this.pagination = pager;
+      this.fetch();
+    },
+    fetch() {
+      this.loading = true;
+      setTimeout(() => {
+        const pagination = { ...this.pagination };
+        // Read total count from server
+        // pagination.total = data.totalCount;
+        pagination.total = 100;
+        this.dataSource = [
+          {
+            id: 1, //主键id
+            name: "营销", //名称
+            message: "这是一个营销描述", //描述
+            type: "catalogue", //类型 枚举值：目录，流程
+            level: 1, // 树形结构等级
+            public: 1, //是否公开
+            children: [
+              //子级
+              {
+                id: 11,
+                name: "客户管理流程",
+                public: 0,
+                type: "info",
+                message: "这是一个客户管理流程描述",
+                level: 2
+              },
+              {
+                id: 12,
+                name: "产品",
+                type: "catalogue",
+                message: "产品",
+                public: 1,
+                level: 2,
+                children: [
+                  {
+                    id: 121,
+                    type: "info",
+                    name: "产品价格管理流程",
+                    message: "产品价格管理流程",
+                    public: 1,
+                    level: 3
+                  }
+                ]
+              },
+              {
+                id: 13,
+                name: "产品研发",
+                type: "catalogue",
+                message: "产品研发",
+                public: 1,
+                level: 2,
+                children: [
+                  {
+                    id: 131,
+                    name: "产品研发成本",
+                    type: "catalogue",
+                    message: "产品研发成本",
+                    public: 1,
+                    level: 3,
+                    children: [
+                      {
+                        id: 1311,
+                        name: "产品研发成本控制流程",
+                        type: "info",
+                        message: "产品研发成本控制流程",
+                        public: 0,
+                        level: 4
+                      },
+                      {
+                        id: 1312,
+                        name: "产品研发成本汇报流程",
+                        type: "info",
+                        message: "产品研发成本汇报流程",
+                        public: 1,
+                        level: 4
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 2,
+            name: "战略与经营",
+            type: "catalogue",
+            message: "这是一个战略与经营描述",
+            public: 1,
+            level: 1
+          }
+        ];
+        // request(process.env.VUE_APP_API_BASE_URL + "/list", "get", {
+        //   page: this.pagination.current,
+        //   pageSize: this.pagination.pageSize
+        // }).then(res => {
+        //   const { list, page, pageSize, total } = res?.data?.data ?? {};
+        //   this.dataSource = list;
+        //   this.pagination.current = page;
+        //   this.pagination.pageSize = pageSize;
+        //   this.pagination.total = total;
+        // });
+        this.loading = false;
+        this.pagination = pagination;
+      }, 1000);
     }
   }
 };

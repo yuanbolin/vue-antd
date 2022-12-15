@@ -196,6 +196,30 @@ const options = {
               path: "index",
               name: "列表",
               component: () => import("@/pages/用户管理/QueryList")
+            },
+            {
+              meta: {
+                invisible: true,
+              },
+              path: "edit/:id",
+              name: "用户信息编辑",
+              component: () => import("@/pages/用户管理/BasicForm")
+            },
+            {
+              meta: {
+                invisible: true,
+              },
+              path: "add",
+              name: "新增用户",
+              component: () => import("@/pages/用户管理/BasicForm")
+            },
+            {
+              meta: {
+                invisible: true,
+              },
+              path: "detail/:id",
+              name: "查看用户信息",
+              component: () => import("@/pages/用户管理/BasicDetail")
             }
           ]
         },

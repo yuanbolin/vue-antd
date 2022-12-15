@@ -1,86 +1,92 @@
 <template>
   <a-card>
     <div class="search">
-      <a-form layout="horizontal">
+      <a-form :form="form"  layout="horizontal">
         <a-row>
           <a-col :md="8" :sm="24">
             <a-form-item
-              label="目录名称"
+              label="用户名称"
               :labelCol="{ span: 5 }"
               :wrapperCol="{ span: 18, offset: 1 }"
             >
-              <a-input placeholder="请输入" />
+              <a-input  v-decorator="['name']" placeholder="请输入" />
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item
-              label="使用状态"
+              label="用户状态"
               :labelCol="{ span: 5 }"
               :wrapperCol="{ span: 18, offset: 1 }"
             >
-              <a-select placeholder="请选择">
-                <a-select-option value="1">关闭</a-select-option>
-                <a-select-option value="2">运行中</a-select-option>
+              <a-select v-decorator="['status']" placeholder="请选择">
+                <a-select-option value="1">停用</a-select-option>
+                <a-select-option value="2">正常</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item
-              label="调用次数"
+              label="用户账号"
               :labelCol="{ span: 5 }"
               :wrapperCol="{ span: 18, offset: 1 }"
             >
-              <a-input-number style="width: 100%" placeholder="请输入" />
+              <a-input v-decorator="['username']" style="width: 100%" placeholder="请输入" />
             </a-form-item>
           </a-col>
         </a-row>
         <span style="float: right; margin-top: 3px;">
-          <a-button type="primary">查询</a-button>
-          <a-button style="margin-left: 8px">重置</a-button>
+          <a-button type="primary" @click="handleSubmit">查询</a-button>
+          <a-button style="margin-left: 8px" @click="resetForm">重置</a-button>
         </span>
       </a-form>
     </div>
     <div>
       <a-space class="operator">
         <a-button @click="addNew" type="primary">新建</a-button>
-        <a-button>批量操作</a-button>
-        <a-dropdown>
-          <a-menu @click="handleMenuClick" slot="overlay">
-            <a-menu-item key="delete">删除</a-menu-item>
-            <a-menu-item key="audit">审批</a-menu-item>
-          </a-menu>
-          <a-button> 更多操作 <a-icon type="down" /> </a-button>
-        </a-dropdown>
       </a-space>
       <standard-table
         :columns="columns"
         :dataSource="dataSource"
-        :selectedRows.sync="selectedRows"
         @clear="onClear"
+        rowKey="id"
+        :loading="loading"
         @change="onChange"
         :pagination="{ ...pagination, onChange: onPageChange }"
         @selectedRowChange="onSelectChange"
       >
-        <div slot="description" slot-scope="{ text }">
-          {{ text }}
-        </div>
         <div slot="action" slot-scope="{ text, record }">
-          <a v-auth="`edit`" style="margin-right: 8px">
-            <a-icon type="plus" />新增
-          </a>
-          <a style="margin-right: 8px"> <a-icon type="edit" />编辑 </a>
-          <a @click="deleteRecord(record.key)">
-            <a-icon type="delete" />删除1
-          </a>
-          <a @click="deleteRecord(record.key)" v-auth="`delete`">
-            <a-icon type="delete" />删除2
-          </a>
-          <router-link :to="`/list/query/detail/${record.key}`"
-            >详情</router-link
+          <router-link style="margin-right: 8px" :to="`edit/${record.id}`"
+          ><a-icon type="edit" />编辑</router-link
+          >
+          <a-popconfirm
+            v-if="record.status === 0"
+            title="确定要启用此用户吗?"
+            @confirm="() => deleteRecord(record.id)"
+          >
+            <a style="margin-right: 8px" @click="deleteRecord(record.id)">
+              <a-icon type="check-circle" />启用
+            </a>
+          </a-popconfirm>
+          <a-popconfirm
+            v-if="record.status === 1"
+            title="确定要停用此用户吗?"
+            @confirm="() => deleteRecord(record.id)"
+          >
+            <a style="margin-right: 8px" @click="deleteRecord(record.id)">
+              <a-icon type="close-circle" />停用
+            </a>
+          </a-popconfirm>
+          <router-link :to="`detail/${record.id}`"
+            ><a-icon type="file-search" />详情</router-link
           >
         </div>
-        <template slot="statusTitle">
-          <a-icon @click.native="onStatusTitleClick" type="info-circle" />
+        <template slot="status" slot-scope="{ text }">
+          <a-tag v-if="text === 0" color="red">
+            停用
+          </a-tag>
+          <a-tag v-else color="green">
+            正常
+          </a-tag>
         </template>
       </standard-table>
     </div>
@@ -92,34 +98,45 @@ import StandardTable from "@/components/table/StandardTable";
 import { request } from "@/utils/request";
 const columns = [
   {
-    title: "规则编号",
-    dataIndex: "no"
+    title: "用户账号",
+    dataIndex: "username",
+    fixed: 'left',
+    width: 100,
   },
   {
-    title: "描述",
-    dataIndex: "description",
-    scopedSlots: { customRender: "description" }
+    title: "用户姓名",
+    dataIndex: "name"
   },
   {
-    title: "服务调用次数",
-    dataIndex: "callNo",
-    sorter: true,
-    needTotal: true,
-    customRender: text => text + " 次"
+    title: "联系电话",
+    dataIndex: "phone"
   },
   {
+    title: "所在地址",
+    dataIndex: "address"
+  },
+  {
+    title: "所属机构",
+    dataIndex: "department"
+  },
+  {
+    title: "工作岗位",
+    dataIndex: "job"
+  },
+  {
+    title: "邮箱",
+    dataIndex: "email"
+  },
+  {
+    title: "用户状态",
     dataIndex: "status",
-    needTotal: true,
-    slots: { title: "statusTitle" }
-  },
-  {
-    title: "更新时间",
-    dataIndex: "updatedAt",
-    sorter: true
+    scopedSlots: { customRender: "status" }
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
+    scopedSlots: { customRender: "action" },
+    fixed: 'right',
+    width: 100,
   }
 ];
 
@@ -130,7 +147,8 @@ export default {
     return {
       columns: columns,
       dataSource: [],
-      selectedRows: [],
+      form: this.$form.createForm(this),
+      loading:false,
       pagination: {
         current: 1,
         pageSize: 10,
@@ -138,20 +156,29 @@ export default {
       }
     };
   },
-  authorize: {
-    deleteRecord: "delete"
-  },
   mounted() {
     this.getData();
   },
   methods: {
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+        }
+      });
+    },
+    resetForm() {
+      this.form.resetFields();
+    },
     onPageChange(page, pageSize) {
       this.pagination.current = page;
       this.pagination.pageSize = pageSize;
       this.getData();
     },
     getData() {
-      request(process.env.VUE_APP_API_BASE_URL + "/list", "get", {
+      this.loading=true
+      request(process.env.VUE_APP_API_BASE_URL + "/userList", "get", {
         page: this.pagination.current,
         pageSize: this.pagination.pageSize
       }).then(res => {
@@ -160,17 +187,12 @@ export default {
         this.pagination.current = page;
         this.pagination.pageSize = pageSize;
         this.pagination.total = total;
+      }).finally(()=>{
+        this.loading=false
       });
     },
     deleteRecord(key) {
       this.dataSource = this.dataSource.filter(item => item.key !== key);
-      this.selectedRows = this.selectedRows.filter(item => item.key !== key);
-    },
-    remove() {
-      this.dataSource = this.dataSource.filter(
-        item => this.selectedRows.findIndex(row => row.key === item.key) === -1
-      );
-      this.selectedRows = [];
     },
     onClear() {
       this.$message.info("您清空了勾选的所有行");
@@ -185,19 +207,18 @@ export default {
       this.$message.info("选中行改变了");
     },
     addNew() {
-      this.dataSource.unshift({
-        key: this.dataSource.length,
-        no: "NO " + this.dataSource.length,
-        description: "这是一段描述",
-        callNo: Math.floor(Math.random() * 1000),
-        status: Math.floor(Math.random() * 10) % 4,
-        updatedAt: "2018-07-26"
-      });
-    },
-    handleMenuClick(e) {
-      if (e.key === "delete") {
-        this.remove();
-      }
+      this.$router.push("add")
+      // this.dataSource.unshift({
+      //   id: this.dataSource.length,
+      //   username: "urara" + this.dataSource.length,
+      //   name: "张三",
+      //   phone: 13296314652,
+      //   address: "山东省威海市",
+      //   departmentId: 2,
+      //   job: "会计",
+      //   email: "48612312@qq.com",
+      //   status: 0
+      // });
     }
   }
 };
