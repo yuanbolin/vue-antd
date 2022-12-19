@@ -47,6 +47,227 @@ const options = {
           component: () => import("@/pages/dashboard/workplace")
         },
         {
+          path: "group",
+          name: "权限管理组",
+          redirect: "group/index",
+          meta: {
+            icon: "schedule"
+          },
+          component: BlankView,
+          children: [
+            {
+              path: "index",
+              meta: {
+                invisible: true
+              },
+              name: "管理组列表",
+              component: () => import("@/pages/权限管理组/CardList")
+            },
+            {
+              path: "edit/:id",
+              meta: {
+                invisible: true
+              },
+              name: "编辑管理组",
+              component: () => import("@/pages/权限管理组/BasicForm")
+            },
+            {
+              path: "add",
+              meta: {
+                invisible: true
+              },
+              name: "新增管理组",
+              component: () => import("@/pages/权限管理组/BasicForm")
+            },
+            {
+              path: "detail/:id",
+              meta: {
+                invisible: true
+              },
+              name: "管理组详情",
+              component: () => import("@/pages/权限管理组/BasicDetail")
+            },
+          ]
+        },
+        {
+          path: "Flow",
+          name: "流程管理",
+          redirect: "Flow/list",
+          meta: {
+            icon: "project"
+          },
+          component: BlankView,
+          children: [
+            {
+              path: "list",
+              name: "流程目录",
+              meta: {
+                invisible: true
+              },
+              component: () => import("@/pages/流程管理/QueryList")
+            },
+            {
+              name: "流程图绘制",
+              path: "antvx6/:id",
+              meta: {
+                invisible: true,
+                page: {
+                  cacheAble: false
+                }
+              },
+              component: () => import("@/pages/antvx6/index")
+            }
+          ]
+        },
+        {
+          path: "User",
+          name: "用户管理",
+          redirect: "User/index",
+          meta: {
+            icon: "team"
+          },
+          component: BlankView,
+          children: [
+            {
+              meta: {
+                invisible: true
+              },
+              path: "index",
+              name: "列表",
+              component: () => import("@/pages/用户管理/QueryList")
+            },
+            {
+              meta: {
+                invisible: true
+              },
+              path: "edit/:id",
+              name: "用户信息编辑",
+              component: () => import("@/pages/用户管理/BasicForm")
+            },
+            {
+              meta: {
+                invisible: true
+              },
+              path: "add",
+              name: "新增用户",
+              component: () => import("@/pages/用户管理/BasicForm")
+            },
+            {
+              meta: {
+                invisible: true
+              },
+              path: "detail/:id",
+              name: "查看用户信息",
+              component: () => import("@/pages/用户管理/BasicDetail")
+            }
+          ]
+        },
+        {
+          path: "Organization",
+          name: "组织机构树管理",
+          redirect: "Organization/index",
+          meta: {
+            icon: "table"
+          },
+          component: BlankView,
+          children: [
+            {
+              meta: {
+                invisible: true
+              },
+              path: "index",
+              name: "树形列表",
+              component: () => import("@/pages/组织机构树管理/QueryList")
+            }
+          ]
+        },
+        {
+          name: "个人中心",
+          path: "personalCenter",
+          meta: {
+            invisible: true
+          },
+          component: () => import("@/pages/个人中心/index")
+        },
+        {
+          name: "流程图展示",
+          path: "antvShow",
+          meta: {
+            icon: "profile",
+            page: {
+              cacheAble: false
+            }
+          },
+          component: () => import("@/pages/antvx6/antvShow")
+        },
+        {
+          path: "details",
+          name: "详情页",
+          meta: {
+            icon: "profile"
+          },
+          component: BlankView,
+          children: [
+            {
+              path: "basic",
+              name: "基础详情页",
+              component: () => import("@/pages/detail/BasicDetail")
+            },
+            {
+              path: "advance",
+              name: "高级详情页",
+              component: () => import("@/pages/detail/AdvancedDetail")
+            }
+          ]
+        },
+        {
+          path: "components",
+          name: "内置组件",
+          meta: {
+            icon: "appstore-o"
+          },
+          component: PageView,
+          children: [
+            {
+              path: "taskCard",
+              name: "任务卡片",
+              component: () => import("@/pages/components/TaskCard")
+            },
+            {
+              path: "palette",
+              name: "颜色复选框",
+              component: () => import("@/pages/components/Palette")
+            },
+            {
+              path: "table",
+              name: "高级表格",
+              component: () => import("@/pages/components/table")
+            }
+          ]
+        },
+        {
+          name: "验权表单",
+          path: "auth/form",
+          meta: {
+            icon: "file-excel",
+            authority: {
+              permission: "form"
+            }
+          },
+          component: () => import("@/pages/form/basic")
+        },
+        {
+          name: "带参菜单",
+          path: "router/query",
+          meta: {
+            icon: "project",
+            query: {
+              name: "菜单默认参数"
+            }
+          },
+          component: () => import("@/pages/Demo")
+        },
+        {
           path: "form",
           name: "表单页",
           meta: {
@@ -132,201 +353,6 @@ const options = {
               ]
             }
           ]
-        },
-        {
-          path:'group',
-          name: "权限管理组",
-          meta: {
-            icon: "table"
-          },
-          component: PageView,
-          children: [
-            {
-              path: "card",
-              name: "卡片列表",
-              component: () => import("@/pages/权限管理组/CardList")
-            }
-          ]
-        },
-        {
-          path:'Flow',
-          name: "流程管理",
-          meta: {
-            icon: "table",
-          },
-          component: BlankView,
-          children: [
-            {
-              path: "list",
-              name: "流程目录",
-              component: () => import("@/pages/流程管理/QueryList")
-            },
-            {
-              path: "stepAdd",
-              name: "新建流程",
-              component: () => import("@/pages/流程管理/step")
-            },
-            {
-              name: "流程图绘制",
-              path: "antvx6/:id",
-              meta: {
-                invisible:true,
-                icon: "file-excel",
-                page: {
-                  cacheAble: false
-                }
-              },
-              component: () => import("@/pages/antvx6/index")
-            },
-          ]
-        },
-        {
-          path:'User',
-          name: "用户管理",
-          redirect:'User/index',
-          meta: {
-            icon: "table",
-          },
-          component: BlankView,
-          children: [
-            {
-              meta: {
-                invisible: true,
-              },
-              path: "index",
-              name: "列表",
-              component: () => import("@/pages/用户管理/QueryList")
-            },
-            {
-              meta: {
-                invisible: true,
-              },
-              path: "edit/:id",
-              name: "用户信息编辑",
-              component: () => import("@/pages/用户管理/BasicForm")
-            },
-            {
-              meta: {
-                invisible: true,
-              },
-              path: "add",
-              name: "新增用户",
-              component: () => import("@/pages/用户管理/BasicForm")
-            },
-            {
-              meta: {
-                invisible: true,
-              },
-              path: "detail/:id",
-              name: "查看用户信息",
-              component: () => import("@/pages/用户管理/BasicDetail")
-            }
-          ]
-        },
-        {
-          path:'Organization',
-          name: "组织机构树管理",
-          redirect:'Organization/index',
-          meta: {
-            icon: "table",
-          },
-          component: BlankView,
-          children: [
-            {
-              meta: {
-                invisible: true,
-              },
-              path: "index",
-              name: "树形列表",
-              component: () => import("@/pages/组织机构树管理/QueryList")
-            }
-          ]
-        },
-        {
-          path: "details",
-          name: "详情页",
-          meta: {
-            icon: "profile"
-          },
-          component: BlankView,
-          children: [
-            {
-              path: "basic",
-              name: "基础详情页",
-              component: () => import("@/pages/detail/BasicDetail")
-            },
-            {
-              path: "advance",
-              name: "高级详情页",
-              component: () => import("@/pages/detail/AdvancedDetail")
-            }
-          ]
-        },
-        {
-          path: "components",
-          name: "内置组件",
-          meta: {
-            icon: "appstore-o"
-          },
-          component: PageView,
-          children: [
-            {
-              path: "taskCard",
-              name: "任务卡片",
-              component: () => import("@/pages/components/TaskCard")
-            },
-            {
-              path: "palette",
-              name: "颜色复选框",
-              component: () => import("@/pages/components/Palette")
-            },
-            {
-              path: "table",
-              name: "高级表格",
-              component: () => import("@/pages/components/table")
-            }
-          ]
-        },
-        {
-          name: "验权表单",
-          path: "auth/form",
-          meta: {
-            icon: "file-excel",
-            authority: {
-              permission: "form"
-            }
-          },
-          component: () => import("@/pages/form/basic")
-        },
-        {
-          name: "流程图展示",
-          path: "antvShow",
-          meta: {
-            icon: "file-excel",
-            page: {
-              cacheAble: false
-            }
-          },
-          component: () => import("@/pages/antvx6/antvShow")
-        },
-        {
-          name: "带参菜单",
-          path: "router/query",
-          meta: {
-            icon: "project",
-            query: {
-              name: "菜单默认参数"
-            }
-          },
-          component: () => import("@/pages/Demo")
-        },
-        {
-          name: "个人中心",
-          path: "personalCenter",
-          meta: {
-            invisible:true
-          },
-          component: () => import("@/pages/个人中心/index")
         }
       ]
     }

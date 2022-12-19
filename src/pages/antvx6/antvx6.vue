@@ -53,11 +53,11 @@
         </div>
       </div>
       <!--      流程图绘制区域-->
-      <div class="antv-wrapper">
+      <div :style="{ height: height }" class="antv-wrapper">
         <div
           id="wrapper"
           class="wrapper-canvas"
-          :style="{ height: height }"
+          :style="{ flex: 1 }"
           @drop="drop($event)"
           @dragover.prevent
         />
@@ -403,6 +403,7 @@ export default {
     //因直接初始化偶尔存在找不到节点的bug，推迟半秒初始化
     setTimeout(() => {
       this.initGraph();
+      console.log(document.getElementsByTagName("main"));
     }, 500);
   },
   beforeDestroy() {

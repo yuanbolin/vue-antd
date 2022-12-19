@@ -20,172 +20,82 @@
           />
         </div>
       </a-tooltip>
-      <search-tree @treeSelect="onSelect" :gData="treeData"></search-tree>
+      <search-tree
+        :hidden="collapsed"
+        @treeSelect="onSelect"
+        :gData="treeData"
+      ></search-tree>
     </a-layout-sider>
     <a-layout-content>
       <div class="antv-wrapper">
-        <div id="wrapper" class="wrapper-canvas" />
+        <!--      展示节点信息-->
+        <a-modal
+          title="节点信息"
+          :visible="visible"
+          :width="820"
+          @ok="handleOk"
+          @cancel="handleCancel"
+        >
+          <a-tabs default-active-key="1">
+            <a-tab-pane key="1" tab="基本信息">
+              <a-descriptions title="" bordered>
+                <a-descriptions-item label="节点描述" :span="3">
+                  {{ nodeData.describe }}
+                </a-descriptions-item>
+              </a-descriptions>
+            </a-tab-pane>
+            <a-tab-pane key="2" tab="输入" force-render>
+              此功能仍在开发中...
+            </a-tab-pane>
+            <a-tab-pane key="3" tab="输出">
+              此功能仍在开发中...
+            </a-tab-pane>
+            <a-tab-pane key="4" tab="操作规范">
+              此功能仍在开发中...
+            </a-tab-pane>
+            <a-tab-pane key="5" tab="指标">
+              此功能仍在开发中...
+            </a-tab-pane>
+            <a-tab-pane key="6" tab="风险控制点">
+              此功能仍在开发中...
+            </a-tab-pane>
+            <a-tab-pane key="7" tab="信息化">
+              此功能仍在开发中...
+            </a-tab-pane>
+            <a-tab-pane key="8" tab="关联标准">
+              此功能仍在开发中...
+            </a-tab-pane>
+            <a-tab-pane key="9" tab="办理时限">
+              此功能仍在开发中...
+            </a-tab-pane>
+          </a-tabs>
+        </a-modal>
+        <div class="wrapper-tips">
+          <div class="wrapper-tips-item">
+            <a-button type="success" @click="toPNG">保存为PNG图片</a-button>
+          </div>
+        </div>
+        <div id="wrapper" class="wrapper-canvas"></div>
       </div>
     </a-layout-content>
   </a-layout>
 </template>
 <script>
-import { Graph, Shape } from "@antv/x6";
+import { DataUri, Graph } from "@antv/x6";
 import { configNodePorts } from "@/utils/antvSetting";
 import SearchTree from "@/components/tree/SearchTree";
+
 // 反显数据
-const resData = [
-  {
-    shape: "edge",
-    attrs: {
-      line: {
-        stroke: "#05C13A",
-        strokeWidth: 4,
-        targetMarker: { name: "block", width: 24, height: 16 },
-        strokeDasharray: 5,
-        style: { animation: "ant-line 30s infinite linear" }
-      }
-    },
-    id: "390b4bc1-4945-464c-a34d-eeb14acba1a1",
-    zIndex: 0,
-    source: {
-      cell: "c9ba8f28-9335-447a-a4c0-1dbe34afc815",
-      port: "9daae234-935b-4634-aae4-62fe6e1a763a"
-    },
-    target: {
-      cell: "e78740b8-f27f-4f3d-b1d4-11e6e810c76a",
-      port: "122093c7-de48-435b-95aa-8ef9cf58a9ca"
-    },
-    connector: { name: "normal" },
-    vertices: [{ x: 640, y: 134 }]
-  },
-  {
-    shape: "edge",
-    attrs: {
-      line: {
-        stroke: "#0074FF",
-        targetMarker: { name: "block", width: 12, height: 8 },
-        sourceMarker: { name: "block", width: 12, height: 8 }
-      }
-    },
-    id: "4fa2ff4a-a78e-4f4c-a8fa-0b1c536cbe1b",
-    zIndex: 0,
-    source: {
-      cell: "e78740b8-f27f-4f3d-b1d4-11e6e810c76a",
-      port: "7ae5d159-3823-4b7f-9e2b-994405071dc8"
-    },
-    target: {
-      cell: "9e97d5af-ae22-47e0-bb9f-a0ebf8db0910",
-      port: "40ce97eb-f258-4b8c-b3bc-b798b4662b77"
-    },
-    vertices: [
-      { x: 1240, y: 250 },
-      { x: 1240, y: 400 }
-    ]
-  },
-  {
-    shape: "edge",
-    attrs: {
-      line: {
-        stroke: "#E36600",
-        strokeWidth: 4,
-        targetMarker: { name: "block", width: 24, height: 16 }
-      }
-    },
-    id: "c0874682-8817-4797-b6e9-5022fd6238b3",
-    zIndex: 0,
-    source: {
-      cell: "c9ba8f28-9335-447a-a4c0-1dbe34afc815",
-      port: "4b5b6dd0-c31a-42bd-ae81-74b26f67b3eb"
-    },
-    target: {
-      cell: "9e97d5af-ae22-47e0-bb9f-a0ebf8db0910",
-      port: "ef42ef10-d01d-49b1-95da-2f19189adf29"
-    },
-    connector: { name: "smooth" },
-    vertices: [
-      { x: 290, y: 290 },
-      { x: 380, y: 400 }
-    ]
-  },
-  {
-    position: { x: 170, y: 130 },
-    size: { width: 100, height: 50 },
-    attrs: {
-      text: { text: "椭圆形" },
-      body: { rx: 20, ry: 26, fill: "#08D34F", stroke: "#028222" },
-      label: { text: "椭圆形", fontSize: 16, fill: "#FFFFFF" }
-    },
-    visible: true,
-    shape: "rect",
-    id: "c9ba8f28-9335-447a-a4c0-1dbe34afc815",
-    data: { type: "defaultOval" },
-    ports: {
-      items: [
-        { group: "top", id: "e49da871-6793-4a8e-909d-becd630de7cc" },
-        { group: "right", id: "9daae234-935b-4634-aae4-62fe6e1a763a" },
-        { group: "bottom", id: "4b5b6dd0-c31a-42bd-ae81-74b26f67b3eb" },
-        { group: "left", id: "1a7be646-1507-4122-94e0-0ad9d0ab0554" }
-      ]
-    },
-    zIndex: 1
-  },
-  {
-    position: { x: 590, y: 350 },
-    size: { width: 480, height: 100 },
-    attrs: {
-      text: { text: "平行四边形" },
-      body: {
-        refPoints: "10,0 40,0 30,20 0,20",
-        fill: "#7A0289",
-        stroke: "#49007A"
-      },
-      label: { text: "平行四边形", fontSize: "40", fill: "#FFFFFF" }
-    },
-    visible: true,
-    shape: "polygon",
-    id: "9e97d5af-ae22-47e0-bb9f-a0ebf8db0910",
-    data: { type: "defaultRhomboid" },
-    ports: {
-      items: [
-        { group: "top", id: "c6a92550-ceb3-411c-8c4c-7848aa064b76" },
-        { group: "right", id: "40ce97eb-f258-4b8c-b3bc-b798b4662b77" },
-        { group: "bottom", id: "a47a0d67-e30b-4149-91b7-527c47043f0a" },
-        { group: "left", id: "ef42ef10-d01d-49b1-95da-2f19189adf29" }
-      ]
-    },
-    zIndex: 2
-  },
-  {
-    position: { x: 940, y: 10 },
-    size: { width: 80, height: 80 },
-    attrs: {
-      text: { text: "圆形" },
-      body: { fill: "#CD0000", stroke: "#950000" },
-      label: { text: "圆形", fontSize: 16, fill: "#FFFFFF" }
-    },
-    visible: true,
-    shape: "circle",
-    id: "e78740b8-f27f-4f3d-b1d4-11e6e810c76a",
-    data: { type: "defaultCircle" },
-    ports: {
-      items: [
-        { group: "top", id: "11a5b89d-2e19-44db-ad6b-2f03983ea097" },
-        { group: "right", id: "7ae5d159-3823-4b7f-9e2b-994405071dc8" },
-        { group: "bottom", id: "358110af-4dd6-4806-8b24-46b2b34b2f7c" },
-        { group: "left", id: "122093c7-de48-435b-95aa-8ef9cf58a9ca" }
-      ]
-    },
-    zIndex: 3
-  }
-];
+import resData from "./resData";
 
 export default {
   name: "AntvShow",
   data() {
     return {
       treeData: [],
-      collapsed: false
+      collapsed: false,
+      nodeData: {},
+      visible: false
     };
   },
   components: { "search-tree": SearchTree },
@@ -195,23 +105,85 @@ export default {
       this.initGraph();
       this.treeData = [
         {
-          title: "parent 1",
-          key: "0-0",
+          id: 1, //主键id
+          name: "营销", //名称
+          message: "这是一个营销描述", //描述
+          type: "catalogue", //类型 枚举值：目录，流程
+          level: 1, // 树形结构等级
+          public: 1, //是否公开
           children: [
+            //子级
             {
-              title: "parent 1-0",
-              key: "0-0-0",
+              id: 11,
+              name: "客户管理流程",
+              public: 0,
+              type: "info",
+              message: "这是一个客户管理流程描述",
+              level: 2
+            },
+            {
+              id: 12,
+              name: "产品",
+              type: "catalogue",
+              message: "产品",
+              public: 1,
+              level: 2,
               children: [
-                { title: "leaf", key: "0-0-0-0"},
-                { title: "leaf", key: "0-0-0-1" }
+                {
+                  id: 121,
+                  type: "info",
+                  name: "产品价格管理流程",
+                  message: "产品价格管理流程",
+                  public: 1,
+                  level: 3
+                }
               ]
             },
             {
-              title: "parent 1-1",
-              key: "0-0-1",
-              children: [{ key: "0-0-1-0", title:'right' }]
+              id: 13,
+              name: "产品研发",
+              type: "catalogue",
+              message: "产品研发",
+              public: 1,
+              level: 2,
+              children: [
+                {
+                  id: 131,
+                  name: "产品研发成本",
+                  type: "catalogue",
+                  message: "产品研发成本",
+                  public: 1,
+                  level: 3,
+                  children: [
+                    {
+                      id: 1311,
+                      name: "产品研发成本控制流程",
+                      type: "info",
+                      message: "产品研发成本控制流程",
+                      public: 0,
+                      level: 4
+                    },
+                    {
+                      id: 1312,
+                      name: "产品研发成本汇报流程",
+                      type: "info",
+                      message: "产品研发成本汇报流程",
+                      public: 1,
+                      level: 4
+                    }
+                  ]
+                }
+              ]
             }
           ]
+        },
+        {
+          id: 2,
+          name: "战略与经营",
+          type: "catalogue",
+          message: "这是一个战略与经营描述",
+          public: 1,
+          level: 1
         }
       ];
     }, 500);
@@ -221,7 +193,6 @@ export default {
     initGraph() {
       const graph = new Graph({
         container: document.getElementById("wrapper"),
-        grid: true,
         autoResize: true,
         mousewheel: {
           // 鼠标滚轮缩放画布
@@ -251,22 +222,6 @@ export default {
           allowBlank: false,
           snap: {
             radius: 20
-          },
-          createEdge() {
-            return new Shape.Edge({
-              attrs: {
-                line: {
-                  stroke: "#A2B1C3",
-                  strokeWidth: 2,
-                  targetMarker: {
-                    name: "block",
-                    width: 12,
-                    height: 8
-                  }
-                }
-              },
-              zIndex: 0
-            });
           }
         }
       });
@@ -280,10 +235,54 @@ export default {
         graph.fromJSON(jsonTemp);
       }
       graph.centerContent();
+
+      // 画布事件
+      graph.on("node:click", ({ node }) => {
+        console.log(node.data);
+        this.nodeData = node.data;
+        this.visible = true;
+      });
+      // 画布事件
+      graph.on("node:mouseenter", ({ node }) => {
+        console.log(node);
+      });
+      graph.on("node:mouseleave", ({ node }) => {
+        console.log(node);
+      });
+      this.graph = graph;
     },
     //左侧树形选择器的选中的key
     onSelect(selectedKeys, info) {
       console.log("selected", selectedKeys, info);
+    },
+    //编辑节点信息确认事件
+    handleOk() {
+      this.nodeData = {};
+      this.visible = false;
+    },
+    //编辑节点信息取消事件
+    handleCancel() {
+      this.nodeData = {};
+      console.log("Clicked cancel button");
+      this.visible = false;
+    },
+    //导出成png图片并下载
+    toPNG() {
+      this.graph.toPNG(
+        dataUri => {
+          console.log("toPNG===>", dataUri);
+          // 下载
+          DataUri.downloadDataUri(dataUri, "流程图.png");
+        },
+        {
+          padding: {
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 20
+          }
+        }
+      );
     }
   }
 };
@@ -301,9 +300,9 @@ export default {
   position: relative;
   height: 100vh;
   flex: 1;
+  display: flex;
   .wrapper-canvas {
-    height: 100%;
-    width: 100%;
+    flex: 1;
     position: relative;
   }
   .wrapper-tips {
@@ -313,6 +312,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 2;
     .wrapper-tips-item {
       span {
         padding-left: 10px;

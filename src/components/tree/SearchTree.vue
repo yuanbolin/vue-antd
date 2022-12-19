@@ -6,20 +6,31 @@
       @change="onChange"
     />
     <a-tree
+      :show-line="true"
+      :showIcon="true"
+      :blockNode="true"
       :expanded-keys="expandedKeys"
       :auto-expand-parent="autoExpandParent"
-      :tree-data="gData"
+      :tree-data="treeData"
+      :replaceFields="replaceFields"
       @expand="onExpand"
       @select="onSelect"
     >
-      <template slot="title" slot-scope="{ title }">
-        <span v-if="title.indexOf(searchValue) > -1">
-          {{ title.substr(0, title.indexOf(searchValue)) }}
-          <span style="color: #f50">{{ searchValue }}</span>
-          {{ title.substr(title.indexOf(searchValue) + searchValue.length) }}
-        </span>
-        <span v-else>{{ title }}</span>
+      搜索时对应标题搜索值颜色标红
+      <template v-slot:title="{ name }">
+        <a-tooltip placement="right">
+          <template slot="title">
+            <span>{{ name }}</span>
+          </template>
+          <span class="tree-title" v-if="name.indexOf(searchValue) > -1">
+            {{ name.substr(0, name.indexOf(searchValue)) }}
+            <span style="color: #f50">{{ searchValue }}</span>
+            {{ name.substr(name.indexOf(searchValue) + searchValue.length) }}
+          </span>
+          <span class="tree-title" v-else>{{ name }}</span>
+        </a-tooltip>
       </template>
+
     </a-tree>
   </div>
 </template>
@@ -30,8 +41,8 @@ const getParentKey = (key, tree) => {
   for (let i = 0; i < tree.length; i++) {
     const node = tree[i];
     if (node.children) {
-      if (node.children.some(item => item.key === key)) {
-        parentKey = node.key;
+      if (node.children.some(item => item.id === key)) {
+        parentKey = node.id;
       } else if (getParentKey(key, node.children)) {
         parentKey = getParentKey(key, node.children);
       }
@@ -54,7 +65,13 @@ export default {
       expandedKeys: [],
       searchValue: "",
       autoExpandParent: true,
-      dataList: []
+      dataList: [],
+      replaceFields: {
+        children: "children",
+        title: "name",
+        key: "id",
+        value: "id"
+      }
     };
   },
   watch: {
@@ -62,6 +79,21 @@ export default {
       this.generateList(this.gData);
       console.log(this.gData);
       console.log(this.dataList);
+    }
+  },
+  computed: {
+    treeData() {
+      function f(data) {
+        for (let i = 0; i < data.length; i++) {
+          const node = data[i];
+          node.isLeaf = node.type === "info";
+          if (node.children) {
+            f(node.children);
+          }
+        }
+        return data;
+      }
+      return f(this.gData);
     }
   },
   methods: {
@@ -87,14 +119,18 @@ export default {
         autoExpandParent: true
       });
     },
-    onSelect(selectedKeys, info){
-      this.$emit('treeSelect', selectedKeys, info)
+    onSelect(selectedKeys, info) {
+      this.$emit("treeSelect", selectedKeys, info);
     },
     generateList(data) {
       for (let i = 0; i < data.length; i++) {
         const node = data[i];
-        const key = node.key;
-        this.dataList.push({ key, title: node.title });
+        const key = node.id;
+        this.dataList.push({
+          key,
+          title: node.name,
+          isLeaf: node.type === "info"
+        });
         if (node.children) {
           this.generateList(node.children);
         }
@@ -103,3 +139,11 @@ export default {
   }
 };
 </script>
+<style>
+.tree-title {
+  white-space: normal;
+  height: 24px;
+  overflow: hidden;
+  display: inline-block;
+}
+</style>

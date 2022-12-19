@@ -2,7 +2,7 @@
 export const configSetting = Shape => {
   return {
     grid: true, // 网格
-    autoResize: true, // 自适应容器大小
+    autoResize: false, // 自适应容器大小
     translating: { restrict: true }, // 平移节点
     mousewheel: {
       // 鼠标滚轮缩放画布
@@ -331,7 +331,11 @@ export const configNodeShape = type => {
         label: {
           text: "成功",
           fontSize: 16,
-          fill: "#333"
+          fill: "#333",
+          style:{
+            "text-shadow": "0px 0px 2px #333",
+            "font-weight":'bold',
+          },
         },
         body: {
           filter: "url(#f4)",
@@ -367,7 +371,11 @@ export const configNodeShape = type => {
         label: {
           text: "失败",
           fontSize: 16,
-          fill: "#333"
+          fill: "#333",
+          style:{
+            "text-shadow": "0px 0px 2px #333",
+            "font-weight":'bold',
+          },
         },
         body: {
           fill: "#e11313",
@@ -403,7 +411,11 @@ export const configNodeShape = type => {
         label: {
           text: "文档",
           fontSize: 16,
-          fill: "#333"
+          fill: "#333",
+          style:{
+            "text-shadow": "0px 0px 2px #333",
+            "font-weight":'bold',
+          },
         },
         body: {
           fill: "#13e199",
@@ -444,7 +456,11 @@ export const configNodeShape = type => {
         label: {
           text: "财务",
           fontSize: 16,
-          fill: "#333"
+          fill: "#333",
+          style:{
+            "text-shadow": "0px 0px 2px #333",
+            "font-weight":'bold',
+          },
         },
         body: {
           fill: "#dcb713",
