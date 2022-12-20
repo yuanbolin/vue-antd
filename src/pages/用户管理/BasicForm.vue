@@ -136,7 +136,7 @@
           style="margin-top: 24px"
           :wrapperCol="{ span: 10, offset: 7 }"
         >
-          <a-button @click="handleSubmit" type="primary">提交</a-button>
+          <a-button style="margin-right: 18px" @click="handleSubmit" type="primary">提交</a-button>
           <a-button @click="resetForm">重置</a-button>
         </a-form-item>
       </a-form>

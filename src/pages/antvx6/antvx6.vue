@@ -48,8 +48,8 @@
           </li>
         </ul>
         <div v-if="isChange" class="wrapper-btn">
-          <a-button type="success" @click="handlerSend">保存当前方案</a-button>
-          <a-button type="success" @click="toPNG">保存为PNG图片</a-button>
+          <a-button type="primary" @click="handlerSend">保存当前方案</a-button>
+          <!--          <a-button type="success" @click="toPNG">保存为PNG图片</a-button>-->
         </div>
       </div>
       <!--      流程图绘制区域-->
@@ -112,12 +112,14 @@
             </a-form-item>
             <a-form-item class="minInterval" label="节点背景">
               <twitter-picker
+                :defaultColors="defaultColors"
                 :value="form.fill"
                 @input="value => updateNodeValue('fill', value)"
               />
             </a-form-item>
             <a-form-item class="minInterval" label="边框颜色">
               <twitter-picker
+                :defaultColors="defaultColors"
                 :value="form.stroke"
                 @input="value => updateNodeValue('stroke', value)"
               />

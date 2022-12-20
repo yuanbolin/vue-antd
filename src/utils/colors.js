@@ -36,7 +36,7 @@ function getMenuColors(color, mode) {
   } else if (color == ANTD.primary.color) {
     return ANTD.primary.dark.menuColors
   } else {
-    return [varyColor.darken(color, 0.93), varyColor.darken(color, 0.83), varyColor.darken(color, 0.73)]
+    return [varyColor.darken(color, 0.93), varyColor.darken(color, 0.83), varyColor.darken(color, 0.55)]
   }
 }
 

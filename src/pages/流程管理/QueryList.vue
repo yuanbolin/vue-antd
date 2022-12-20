@@ -49,14 +49,14 @@
                 ? {
                     background: '#fff',
                     borderStyle: 'dashed',
-                    borderColor: '#33cd8d'
+                    borderColor: '#f35a19'
                   }
                 : { background: '#fff', borderStyle: 'dashed' }
             "
           >
             <a-icon
-              :style="record.public ? { color: '#33cd8d' } : { color: '#aaa' }"
-              type="unordered-list"
+              :style="record.public ? { color: '#f35a19' } : { color: '#aaa' }"
+              type="folder-open"
             />
             {{ text }}
           </a-tag>
@@ -67,20 +67,20 @@
                 ? {
                     background: '#fff',
                     borderStyle: 'dashed',
-                    borderColor: '#33cd8d'
+                    borderColor: '#33aecd'
                   }
                 : { background: '#fff', borderStyle: 'dashed' }
             "
           >
             <a-icon
-              :style="record.public ? { color: '#33cd8d' } : { color: '#aaa' }"
-              type="sliders"
+              :style="record.public ? { color: '#33aecd' } : { color: '#aaa' }"
+              type="file"
             />
             {{ text }}
           </a-tag>
         </template>
         <template slot="level" slot-scope="text, record">
-          <a-tag v-if="record.type === CatalogueType.CATALOGUE" color="#33cd8d">
+          <a-tag v-if="record.type === CatalogueType.CATALOGUE" color="#f35a19">
             {{ text }} 级目录
           </a-tag>
           <a-tag v-else color="#33aecd">

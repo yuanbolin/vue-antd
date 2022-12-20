@@ -19,10 +19,10 @@
         <a-form-model-item has-feedback label="成员" prop="chengyuan">
           <a-select mode="multiple" v-model="form.chengyuan">
             <a-select-option value="caiwu">
-              财务处
+              张三
             </a-select-option>
             <a-select-option value="wuliu">
-              物流部
+              李四
             </a-select-option>
           </a-select>
         </a-form-model-item>
@@ -33,7 +33,9 @@
           ></select-tree>
         </a-form-model-item>
         <a-form-model-item label="权限分配" prop="resource">
-          <a-radio-group v-model="form.resource">
+          <a-radio-group
+            v-model="form.resource"
+          >
             <a-radio value="1">
               查看
             </a-radio>
@@ -46,7 +48,12 @@
           style="margin-top: 24px"
           :wrapperCol="{ span: 10, offset: 7 }"
         >
-          <a-button style="margin-right: 8px" @click="handleSubmit('form')" type="primary">提交</a-button>
+          <a-button
+            style="margin-right: 8px"
+            @click="handleSubmit('form')"
+            type="primary"
+            >提交</a-button
+          >
           <a-button @click="resetForm('form')">重置</a-button>
         </a-form-item>
       </a-form-model>
@@ -62,7 +69,7 @@ export default {
   components: { PageLayout, SelectTree },
   data() {
     return {
-      desc:"权限分配是在管理范围内分配权限",
+      desc: "权限分配是在管理范围内分配权限",
       form: {},
       rules: {
         name: [
@@ -77,28 +84,33 @@ export default {
         chengyuan: [
           { required: true, message: "请至少选择一名成员!", trigger: "change" }
         ],
-        guanlifanwei:[
-          { required: true, message: "请至少选择一项管理范围!", trigger: "change" }
+        guanlifanwei: [
+          {
+            required: true,
+            message: "请至少选择一项管理范围!",
+            trigger: "change"
+          }
         ],
-        resource:[
+        resource: [
           { required: true, message: "请选择权限分配!", trigger: "change" }
-        ],
+        ]
       },
-      treeData:[],
+      treeData: [],
       type: "add"
     };
   },
   computed: {},
   mounted() {
-    this.getTreeData()
+    this.getTreeData();
     console.log(this.$route.params);
     if (this.$route.params.id) {
       this.type = "edit";
       this.form = {
         id: parseInt(Math.random() * 10000),
-        name: "张三",
+        name: "xxx管理组",
         chengyuan: ["caiwu"],
-        guanlifanwei: []
+        guanlifanwei: ["121"],
+        resource: "1"
       };
     }
   },
@@ -194,7 +206,7 @@ export default {
     handleSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.form)
+          console.log(this.form);
           if (this.type === "edit") {
             console.log("edit");
           } else {

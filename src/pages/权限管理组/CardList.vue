@@ -30,13 +30,13 @@
       >
         <a-list-item slot="renderItem" slot-scope="item">
           <template v-if="item.add">
-            <a-button class="new-btn" type="dashed">
+            <a-button class="new-btn" type="dashed" @click="$router.push('add')">
               <a-icon type="plus" />新增产品
             </a-button>
           </template>
           <template v-else>
             <a-card :hoverable="true">
-              <a-card-meta>
+              <a-card-meta @click="()=>toDetail(item)">
                 <div style="margin-bottom: 3px" slot="title">
                   {{ item.title }}
                 </div>
@@ -130,6 +130,11 @@ export default {
     resetSearchForm() {
       this.$refs.form.resetFields();
       console.log(this.form.name);
+    },
+    //前往详情页
+    toDetail(item){
+      console.log(item)
+      this.$router.push(`detail/${1}`)
     }
   }
 };

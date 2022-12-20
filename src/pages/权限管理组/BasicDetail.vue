@@ -1,35 +1,15 @@
 <template>
   <page-layout>
     <a-card :bordered="false">
-      <a-descriptions title="用户信息" bordered>
-        <a-descriptions-item label="用户账号">
-          {{form.username}}
+      <a-descriptions :title="form.name" bordered>
+        <a-descriptions-item label="管理组成员" :span="2">
+          {{form.chengyuan}}
         </a-descriptions-item>
-        <a-descriptions-item label="用户姓名">
-          {{form.name}}
+        <a-descriptions-item label="权限分配">
+          {{form.quanxian}}
         </a-descriptions-item>
-        <a-descriptions-item label="联系电话">
-          {{form.phone}}
-        </a-descriptions-item>
-        <a-descriptions-item label="所在地址" :span="2">
-          {{form.address}}
-        </a-descriptions-item>
-        <a-descriptions-item label="所在部门" :span="2">
-          {{form.department}}
-        </a-descriptions-item>
-        <a-descriptions-item label="工作岗位">
-          {{form.job}}
-        </a-descriptions-item>
-        <a-descriptions-item label="邮箱">
-          {{form.email}}
-        </a-descriptions-item>
-        <a-descriptions-item label="用户状态">
-          <template v-if="form.status===1">
-            <a-badge status="processing" text="正常" />
-          </template>
-          <template v-else-if="form.status===0">
-            <a-badge status="error" text="停用" />
-          </template>
+        <a-descriptions-item label="管理范围" :span="3">
+          {{form.guanlifanwei}}
         </a-descriptions-item>
       </a-descriptions>
     </a-card>
@@ -50,14 +30,10 @@ export default {
   created() {
     this.form = {
       id: 0,
-      username: "urara123",
-      name: "张三",
-      phone: 13296314652,
-      address: "山东省威海市",
-      department: "财务部",
-      job: "会计",
-      email: "48612312@qq.com",
-      status: 1
+      name: "xxx管理组",
+      chengyuan:"张三，李四",
+      guanlifanwei:"财务中心，信息部，嘉兴汽配零部件有限公司",
+      quanxian:"查看"
     };
   }
 };

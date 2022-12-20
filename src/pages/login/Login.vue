@@ -54,10 +54,10 @@
 <!--            </a-form-item>-->
 <!--          </a-tab-pane>-->
         </a-tabs>
-<!--        <div>-->
+        <div>
 <!--          <a-checkbox :checked="true" >自动登录</a-checkbox>-->
-<!--          <a style="float: right">忘记密码</a>-->
-<!--        </div>-->
+          <a class="forgetThePassword">忘记密码</a>
+        </div>
         <a-form-item>
           <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
         </a-form-item>
@@ -180,5 +180,8 @@ export default {
         }
       }
     }
+  }
+  .forgetThePassword{
+    cursor: pointer;
   }
 </style>
