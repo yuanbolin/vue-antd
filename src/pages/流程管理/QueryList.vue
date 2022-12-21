@@ -89,7 +89,7 @@
         </template>
         <template slot="action" slot-scope="text, record">
           <a-dropdown v-if="record.type === CatalogueType.CATALOGUE">
-            <a style="margin-right: 8px"> <a-icon type="plus" />新增 </a>
+            <a style="margin-right: 8px"> <a-icon style="margin-right: 5px" type="plus" />新增 </a>
             <a-menu slot="overlay">
               <a-menu-item
                 @click="
@@ -123,10 +123,10 @@
             v-if="record.type === CatalogueType.INFO"
             style="margin-right: 8px"
             :to="`antvx6/${record.key}`"
-            ><a-icon type="highlight" />绘制
+            ><a-icon style="margin-right: 5px" type="highlight" />绘制
           </router-link>
           <a style="margin-right: 8px" @click="() => showEditDrawer(record)">
-            <a-icon type="edit" />编辑
+            <a-icon style="margin-right: 5px" type="edit" />编辑
           </a>
           <a-popconfirm
             v-if="record.type === CatalogueType.INFO && record.public === 0"
@@ -134,7 +134,7 @@
             @confirm="() => push(record.key)"
           >
             <a style="margin-right: 8px" @click="() => showEditDrawer(record)">
-              <a-icon type="edit" />发布
+              <a-icon style="margin-right: 5px" type="edit" />发布
             </a>
           </a-popconfirm>
           <a-popconfirm
@@ -144,7 +144,7 @@
             title="确定要删除吗?"
             @confirm="() => deleteRecord(record.key)"
           >
-            <a style="margin-right: 8px"> <a-icon type="delete" />删除 </a>
+            <a style="margin-right: 8px"> <a-icon style="margin-right: 5px" type="delete" />删除 </a>
           </a-popconfirm>
           <!--          <router-link :to="`/list/query/detail/${record.key}`"-->
           <!--            ><a-icon type="file-search" />详情</router-link-->

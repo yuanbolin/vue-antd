@@ -1,7 +1,7 @@
 <template>
   <a-card>
     <div class="search">
-      <a-form :form="form"  layout="horizontal">
+      <a-form :form="form" layout="horizontal">
         <a-row>
           <a-col :md="8" :sm="24">
             <a-form-item
@@ -9,7 +9,7 @@
               :labelCol="{ span: 5 }"
               :wrapperCol="{ span: 18, offset: 1 }"
             >
-              <a-input  v-decorator="['name']" placeholder="请输入" />
+              <a-input v-decorator="['name']" placeholder="请输入" />
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
@@ -30,7 +30,11 @@
               :labelCol="{ span: 5 }"
               :wrapperCol="{ span: 18, offset: 1 }"
             >
-              <a-input v-decorator="['username']" style="width: 100%" placeholder="请输入" />
+              <a-input
+                v-decorator="['username']"
+                style="width: 100%"
+                placeholder="请输入"
+              />
             </a-form-item>
           </a-col>
         </a-row>
@@ -45,39 +49,72 @@
         <a-button @click="addNew" type="primary">新建</a-button>
       </a-space>
       <a-table
-          :scroll="{ x: 1920 }"
-          :columns="columns"
-          :dataSource="dataSource"
-          rowKey="id"
-          :loading="loading"
-          @change="onChange"
-          :pagination="{ ...pagination, onChange: onPageChange }"
+        :scroll="{ x: 1920 }"
+        :columns="columns"
+        :dataSource="dataSource"
+        rowKey="id"
+        :loading="loading"
+        @change="onChange"
+        :pagination="{ ...pagination, onChange: onPageChange }"
       >
         <template slot="action" slot-scope="record">
-          <router-link style="margin-right: 8px" :to="`edit/${record.id}`"
-          ><a-icon type="edit" />编辑</router-link
-          >
-          <a-popconfirm
-              v-if="record.status === 0"
-              title="确定要启用此用户吗?"
-              @confirm="() => startUser(record.id)"
-          >
-            <a style="margin-right: 8px">
-              <a-icon type="check-circle" />启用
+          <a-dropdown>
+            <a class="ant-dropdown-link" @click="e => e.preventDefault()">
+              相关操作 <a-icon type="down" />
             </a>
-          </a-popconfirm>
-          <a-popconfirm
-              v-if="record.status === 1"
-              title="确定要停用此用户吗?"
-              @confirm="() => endUser(record.id)"
-          >
-            <a style="margin-right: 8px">
-              <a-icon type="close-circle" />停用
-            </a>
-          </a-popconfirm>
-          <router-link :to="`detail/${record.id}`"
-          ><a-icon type="file-search" />详情</router-link
-          >
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <router-link style="margin-right: 8px" :to="`edit/${record.id}`"
+                  ><a-icon
+                    style="margin-right: 5px"
+                    type="edit"
+                  />用户编辑</router-link
+                >
+              </a-menu-item>
+              <a-menu-item>
+                <a style="margin-right: 8px" @click="showModal(record)">
+                  <a-icon
+                    style="margin-right: 5px"
+                    type="interaction"
+                  />重置密码
+                </a>
+              </a-menu-item>
+              <a-menu-item>
+                <a-popconfirm
+                  v-if="record.status === 0"
+                  title="确定要启用此用户吗?"
+                  @confirm="() => startUser(record.id)"
+                >
+                  <a style="margin-right: 8px">
+                    <a-icon
+                      style="margin-right: 5px"
+                      type="check-circle"
+                    />启用用户
+                  </a>
+                </a-popconfirm>
+                <a-popconfirm
+                  v-if="record.status === 1"
+                  title="确定要停用此用户吗?"
+                  @confirm="() => endUser(record.id)"
+                >
+                  <a style="margin-right: 8px">
+                    <a-icon
+                      style="margin-right: 5px"
+                      type="close-circle"
+                    />停用用户
+                  </a>
+                </a-popconfirm>
+              </a-menu-item>
+              <a-menu-item>
+                <router-link :to="`detail/${record.id}`"
+                  ><a-icon
+                    style="margin-right: 5px"
+                    type="file-search"
+                  />用户详情</router-link
+                >
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
         </template>
         <template slot="status" slot-scope="text">
           <a-tag v-if="text === 0" color="red">
@@ -89,6 +126,20 @@
         </template>
       </a-table>
     </div>
+    <a-modal
+      v-model="visible"
+      title="用户密码重置"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <a-input-password v-model="password" placeholder="请输入管理员密码" />
+      <a-alert
+        style="margin-top: 10px;"
+        message="重置后的用户密码为 123456"
+        type="info"
+        show-icon
+      />
+    </a-modal>
   </a-card>
 </template>
 
@@ -98,52 +149,52 @@ const columns = [
   {
     title: "用户账号",
     dataIndex: "username",
-    key:'username',
-    fixed: 'left',
-    width: 200,
+    key: "username",
+    fixed: "left",
+    width: 200
   },
   {
     title: "用户姓名",
-    key:'name',
+    key: "name",
     dataIndex: "name"
   },
   {
     title: "联系电话",
-    key:'phone',
+    key: "phone",
     dataIndex: "phone"
   },
   {
     title: "所在地址",
-    key:'address',
+    key: "address",
     dataIndex: "address"
   },
   {
     title: "所属机构",
-    key:'department',
+    key: "department",
     dataIndex: "department"
   },
   {
     title: "工作岗位",
-    key:'job',
+    key: "job",
     dataIndex: "job"
   },
   {
     title: "邮箱",
-    key:'email',
+    key: "email",
     dataIndex: "email"
   },
   {
     title: "用户状态",
-    key:'status',
+    key: "status",
     dataIndex: "status",
     scopedSlots: { customRender: "status" }
   },
   {
     title: "操作",
-    key:'action',
+    key: "action",
     scopedSlots: { customRender: "action" },
-    fixed: 'right',
-    width: 200,
+    fixed: "right",
+    width: 150
   }
 ];
 
@@ -154,12 +205,14 @@ export default {
       columns: columns,
       dataSource: [],
       form: this.$form.createForm(this),
-      loading:false,
+      loading: false,
       pagination: {
         current: 1,
         pageSize: 10,
         total: 0
-      }
+      },
+      visible: false,
+      password: ""
     };
   },
   mounted() {
@@ -170,7 +223,7 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          console.log("Received values of form: ", values);
         }
       });
     },
@@ -183,20 +236,22 @@ export default {
       this.getData();
     },
     getData() {
-      this.loading=true
+      this.loading = true;
       request(process.env.VUE_APP_API_BASE_URL + "/userList", "get", {
         page: this.pagination.current,
         pageSize: this.pagination.pageSize
-      }).then(res => {
-        const { list, page, pageSize, total } = res?.data?.data ?? {};
-        console.log({ list, page, pageSize, total } )
-        this.dataSource = list;
-        this.pagination.current = page;
-        this.pagination.pageSize = pageSize;
-        this.pagination.total = total;
-      }).finally(()=>{
-        this.loading=false
-      });
+      })
+        .then(res => {
+          const { list, page, pageSize, total } = res?.data?.data ?? {};
+          console.log({ list, page, pageSize, total });
+          this.dataSource = list;
+          this.pagination.current = page;
+          this.pagination.pageSize = pageSize;
+          this.pagination.total = total;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     deleteRecord(key) {
       this.dataSource = this.dataSource.filter(item => item.key !== key);
@@ -208,7 +263,7 @@ export default {
       this.$message.info("选中行改变了");
     },
     addNew() {
-      this.$router.push("add")
+      this.$router.push("add");
       // this.dataSource.unshift({
       //   id: this.dataSource.length,
       //   username: "urara" + this.dataSource.length,
@@ -221,11 +276,23 @@ export default {
       //   status: 0
       // });
     },
-    startUser(id){
-      console.log("启用用户",id)
+    startUser(id) {
+      console.log("启用用户", id);
     },
-    endUser(id){
-      console.log("停用用户",id)
+    endUser(id) {
+      console.log("停用用户", id);
+    },
+    showModal(obj) {
+      console.log("重置密码的用户", obj);
+      this.visible = true;
+    },
+    handleCancel() {
+      this.password = "";
+      this.visible = false;
+    },
+    handleOk() {
+      console.log("管理员密码", this.password);
+      this.visible = false;
     }
   }
 };

@@ -34,14 +34,14 @@ const welcomeMessages = [
     US: 'you may need a break',
   },
   {
-    CN: '准备吃什么呢',
-    HK: '準備吃什麼呢',
-    US: 'what are you going to eat',
+    CN: '愿你有美好的一天！',
+    HK: '願你有美好的一天！',
+    US: 'Have a nice day！',
   },
   {
-    CN: '要不要打一把 DOTA',
-    HK: '要不要打一把 DOTA',
-    US: 'how about a game of DOTA',
+    CN: '做最好的自己。',
+    HK: '做最好的自己。',
+    US: 'Be the best you can be',
   },
   {
     CN: '我猜你可能累了',

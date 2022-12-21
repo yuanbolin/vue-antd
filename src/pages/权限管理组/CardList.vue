@@ -51,14 +51,14 @@
                 </div>
               </a-card-meta>
               <router-link slot="actions" :to="`edit/${item.id}`"
-                ><a-icon type="edit" />编辑</router-link
+                ><a-icon style="margin-right: 5px" type="edit" />编辑</router-link
               >
               <a slot="actions">
                 <a-popconfirm
                   title="确定要启用删除此权限组吗?"
                   @confirm="() => del(item.id)"
                 >
-                  <a-icon type="delete" />删除
+                  <a-icon style="margin-right: 5px" type="delete" />删除
                 </a-popconfirm>
               </a>
             </a-card>

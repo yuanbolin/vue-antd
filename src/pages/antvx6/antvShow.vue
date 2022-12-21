@@ -72,7 +72,7 @@
         </a-modal>
         <div class="wrapper-tips">
           <div class="wrapper-tips-item">
-            <a-button type="success" @click="toPNG">保存为PNG图片</a-button>
+            <a-button type="primary" @click="toPNG">保存为PNG图片</a-button>
           </div>
         </div>
         <div id="wrapper" class="wrapper-canvas"></div>

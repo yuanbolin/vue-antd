@@ -37,10 +37,8 @@
 </template>
 
 <script>
-import PageLayout from "@/layouts/PageLayout";
 export default {
-  name: "PersonalCenter",
-  components: { PageLayout },
+  name: "ForgetPassword",
   data() {
     let checkPldPass = (rule, value, callback) => {
       if (!value) {

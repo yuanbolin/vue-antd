@@ -25,10 +25,10 @@
         </a-descriptions-item>
         <a-descriptions-item label="用户状态">
           <template v-if="form.status===1">
-            <a-badge status="processing" text="正常" />
+            <a-badge color="green" status="processing" text="正常" />
           </template>
           <template v-else-if="form.status===0">
-            <a-badge status="error" text="停用" />
+            <a-badge color="red" status="processing" text="停用" />
           </template>
         </a-descriptions-item>
       </a-descriptions>

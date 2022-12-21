@@ -23,7 +23,7 @@
               </a-input>
             </a-form-item>
             <a-form-item>
-              <a-input
+              <a-input-password
                 size="large"
                 placeholder="888888"
                 autocomplete="autocomplete"
@@ -31,7 +31,7 @@
                 v-decorator="['password', {rules: [{ required: true, message: '请输入密码', whitespace: true}]}]"
               >
                 <a-icon slot="prefix" type="lock" />
-              </a-input>
+              </a-input-password>
             </a-form-item>
           </a-tab-pane>
 <!--          <a-tab-pane tab="手机号登录" key="2">-->
@@ -56,7 +56,7 @@
         </a-tabs>
         <div>
 <!--          <a-checkbox :checked="true" >自动登录</a-checkbox>-->
-          <a class="forgetThePassword">忘记密码</a>
+          <a @click="passwordHandle" class="forgetThePassword">忘记密码</a>
         </div>
         <a-form-item>
           <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
@@ -120,6 +120,13 @@ export default {
       } else {
         this.error = loginRes.message
       }
+    },
+    passwordHandle(){
+      this.$notification['info']({
+        message: '请寻求系统管理员的帮助',
+        description:
+            '非常抱歉！目前暂未开放个人密码重置服务，请联系系统管理员进行密码重置！',
+      });
     }
   }
 }

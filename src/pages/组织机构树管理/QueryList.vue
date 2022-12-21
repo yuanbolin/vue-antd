@@ -44,31 +44,39 @@
               borderColor: '#e85311'
             }"
           >
-            <a-icon :style="{ color: '#e85311' }" type="unordered-list" />
+            <a-icon :style="{ color: '#e85311' }" type="profile" />
             {{ text }}
           </a-tag>
         </template>
         <template slot="action" slot-scope="text, record">
           <a-dropdown>
-            <a style="margin-right: 8px"> <a-icon type="plus" />新增 </a>
+            <a style="margin-right: 8px">
+              <a-icon style="margin-right: 5px" type="plus" />新增
+            </a>
             <a-menu slot="overlay">
               <a-menu-item @click="() => showAddDrawer(record, 'ChildrenAdd')">
-                <a href="javascript:;">新增子目录</a>
+                <a href="javascript:;">新增子机构</a>
               </a-menu-item>
               <a-menu-item @click="() => showAddDrawer(record, 'add')">
-                <a href="javascript:;">新增同级目录</a>
+                <a href="javascript:;">新增同级机构</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
+          <a-divider type="vertical" />
           <a style="margin-right: 8px" @click="() => showEditDrawer(record)">
-            <a-icon type="edit"/>编辑
+            <a-icon style="margin-right: 5px" type="edit" />编辑
           </a>
+          <a-divider type="vertical" />
           <a-popconfirm
-            v-if="!record.children || record.children.length === 0"
             title="Sure to delete?"
             @confirm="() => deleteRecord(record.key)"
           >
-            <a style="margin-right: 8px"> <a-icon type="delete" />删除 </a>
+            <a
+              :disabled="record.children && record.children.length > 0"
+              style="margin-right: 8px"
+            >
+              <a-icon style="margin-right: 5px" type="delete" />删除
+            </a>
           </a-popconfirm>
         </template>
       </a-table>
@@ -87,13 +95,13 @@
         :label-col="{ span: 5 }"
         :wrapper-col="{ span: 17 }"
       >
-        <a-form-model-item has-feedback label="上级目录" prop="shangji">
+        <a-form-model-item has-feedback label="上级机构" prop="shangji">
           <select-tree
             :treeData="treeData"
             v-model="catalogueForm.shangji"
           ></select-tree>
         </a-form-model-item>
-        <a-form-model-item has-feedback label="目录名称" prop="name">
+        <a-form-model-item has-feedback label="机构名称" prop="name">
           <a-input
             v-model="catalogueForm.name"
             type="text"
@@ -101,7 +109,7 @@
             autocomplete="off"
           />
         </a-form-model-item>
-        <a-form-model-item has-feedback label="目录描述" prop="message">
+        <a-form-model-item has-feedback label="机构描述" prop="message">
           <a-textarea
             v-model="catalogueForm.message"
             type="text"
