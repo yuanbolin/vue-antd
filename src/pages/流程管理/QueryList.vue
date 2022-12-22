@@ -399,6 +399,7 @@ export default {
           }
         ],
         message: [
+          { required: true, message: "请输入目录描述", trigger: "blur" },
           {
             min: 2,
             max: 50,
