@@ -1,22 +1,23 @@
 <template>
   <div>
     <a-input-search
-        style="margin-bottom: 8px"
-        placeholder="名称搜索"
-        @change="onChange"
+      style="margin-bottom: 8px"
+      placeholder="名称搜索"
+      @change="onChange"
     />
     <a-tree
-        :show-line="true"
-        :showIcon="true"
-        :blockNode="true"
-        :expanded-keys="expandedKeys"
-        :auto-expand-parent="autoExpandParent"
-        :tree-data="treeData"
-        :replaceFields="replaceFields"
-        @expand="onExpand"
-        @select="onSelect"
+      :showIcon="true"
+      :blockNode="true"
+      :expanded-keys="expandedKeys"
+      :auto-expand-parent="autoExpandParent"
+      :tree-data="treeData"
+      :replaceFields="replaceFields"
+      @expand="onExpand"
+      @select="onSelect"
     >
-      搜索时对应标题搜索值颜色标红
+      <a-icon slot="group" type="bank" />
+      <a-icon slot="user" type="user" />
+      <!--      搜索时对应标题搜索值颜色标红-->
       <template v-slot:title="{ name }">
         <a-tooltip placement="right">
           <template slot="title">
@@ -30,7 +31,6 @@
           <span class="tree-title" v-else>{{ name }}</span>
         </a-tooltip>
       </template>
-
     </a-tree>
   </div>
 </template>
@@ -74,6 +74,9 @@ export default {
         for (let i = 0; i < data.length; i++) {
           const node = data[i];
           node.isLeaf = node.type === "user";
+          node.slots = {
+            icon: node.type
+          };
           if (node.children) {
             f(node.children);
           }
@@ -96,6 +99,7 @@ export default {
             {
               id: 13,
               name: "浙江华钜汽车零部件股份有限公司",
+              type: "group",
               message: "这是一个浙江华钜汽车零部件股份有限公司的描述",
               children: [
                 {
@@ -130,6 +134,7 @@ export default {
             {
               id: 12,
               name: "浙江康普瑞汽车零部件有限公司",
+              type: "group",
               message: "这是一个浙江康普瑞汽车零部件有限公司的描述",
               children: [
                 {
@@ -142,6 +147,7 @@ export default {
             },
             {
               id: 14,
+              type: "group",
               name: "财务中心",
               message: "这是一个财务中心的描述"
             }
@@ -149,11 +155,13 @@ export default {
         },
         {
           id: 2,
+          type: "group",
           name: "嘉兴科进机械制造有限公司",
           message: "这是一个嘉兴科进机械制造有限公司的描述"
         }
       ];
       this.$nextTick(() => {
+        this.generateList(this.data);
         this.loading = false;
       });
     }, 500);
@@ -166,14 +174,14 @@ export default {
     onChange(e) {
       const value = e.target.value;
       const expandedKeys = this.dataList
-          .map(item => {
-            if (item.title.indexOf(value) > -1) {
-              console.log("findkey==>", item.key, this.gData);
-              return getParentKey(item.key, this.gData);
-            }
-            return null;
-          })
-          .filter((item, i, self) => item && self.indexOf(item) === i);
+        .map(item => {
+          if (item.title.indexOf(value) > -1) {
+            console.log("findkey==>", item.key, this.data);
+            return getParentKey(item.key, this.data);
+          }
+          return null;
+        })
+        .filter((item, i, self) => item && self.indexOf(item) === i);
       console.log("expandedKeys", expandedKeys);
       Object.assign(this, {
         expandedKeys,
@@ -182,7 +190,7 @@ export default {
       });
     },
     onSelect(selectedKeys, info) {
-      console.log(selectedKeys, info)
+      console.log(selectedKeys, info);
     },
     generateList(data) {
       for (let i = 0; i < data.length; i++) {
