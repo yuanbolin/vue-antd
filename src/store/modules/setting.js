@@ -87,9 +87,6 @@ export default {
     setMenuData(state, menuData) {
       state.menuData = menuData
     },
-    setAsyncRoutes(state, asyncRoutes) {
-      state.asyncRoutes = asyncRoutes
-    },
     setPageWidth(state, pageWidth) {
       state.pageWidth = pageWidth
     },

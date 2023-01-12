@@ -144,20 +144,21 @@
 
 <script>
 import SelectTree from "@/components/tree/SelectTree";
-// import { request } from "@/utils/request";
+import { organization } from "@/services";
+import { getTree } from "../../services/organization";
 const columns = [
   {
     title: "机构名称",
-    dataIndex: "name",
-    key: "name",
+    dataIndex: "orgName",
+    key: "orgName",
     scopedSlots: { customRender: "name" }
   },
   {
     title: "机构描述",
-    dataIndex: "message",
+    dataIndex: "orgDescription",
     width: "30%",
     ellipsis: true,
-    key: "message"
+    key: "orgDescription"
   },
   {
     title: "操作",
@@ -369,16 +370,19 @@ export default {
           message: "这是一个嘉兴科进机械制造有限公司的描述"
         }
       ];
-      // request(process.env.VUE_APP_API_BASE_URL + "/list", "get", {
-      //   page: this.pagination.current,
-      //   pageSize: this.pagination.pageSize
-      // }).then(res => {
-      //   const { list, page, pageSize, total } = res?.data?.data ?? {};
-      //   this.dataSource = list;
-      //   this.pagination.current = page;
-      //   this.pagination.pageSize = pageSize;
-      //   this.pagination.total = total;
-      // });
+      organization
+        .getTree({
+          page: this.pagination.current,
+          pageSize: this.pagination.pageSize
+        })
+        .then(res => {
+          console.log("tree", res);
+          // const { list, page, pageSize, total } = res?.data?.data ?? {};
+          // this.dataSource = list;
+          // this.pagination.current = page;
+          // this.pagination.pageSize = pageSize;
+          // this.pagination.total = total;
+        });
     },
     showAddDrawer(obj, type) {
       if (type.indexOf("Children") !== -1) {

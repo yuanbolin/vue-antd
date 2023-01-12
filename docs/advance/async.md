@@ -7,8 +7,6 @@ lang: zn-CN
 可以让你很方便的从服务端加载路由和菜单配置，并应用到系统中。
 ## 异步加载路由
 动态路由的实现主要有以下四个步骤：
-### 开启异步路由设置
-在 `/config/config.js` 文件中设置 `asyncRoutes` 的值为 true:
 ```js {7}
 module.exports = {
   theme: {
@@ -16,7 +14,6 @@ module.exports = {
     mode: 'night'
   },
   multiPage: true,
-  asyncRoutes: true,       //异步加载路由，true:开启，false:不开启
   animate: {
     name: 'roll',
     direction: 'default'
@@ -217,18 +214,6 @@ function loadRoutes(routesConfig) {
     store.commit('account/setRoutesConfig', routesConfig)
   } else {
     routesConfig = store.getters['account/routesConfig']
-  }
-  // 如果开启了异步路由，则加载异步路由配置
-  const asyncRoutes = store.state.setting.asyncRoutes
-  if (asyncRoutes) {
-    if (routesConfig && routesConfig.length > 0) {
-      const routes = parseRoutes(routesConfig, routerMap)
-      formatAuthority(routes)
-      const finalRoutes = mergeRoutes(router.options.routes, routes)
-      router.options = {...router.options, routes: finalRoutes}
-      router.matcher = new Router({...router.options, routes:[]}).matcher
-      router.addRoutes(finalRoutes)
-    }
   }
   // 初始化Admin后台菜单数据
   const rootRoute = router.options.routes.find(item => item.path === '/')

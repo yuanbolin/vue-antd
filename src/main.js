@@ -13,7 +13,7 @@ import bootstrap from '@/bootstrap'
 import 'moment/locale/zh-cn'
 import { FormModel } from 'ant-design-vue';
 Vue.use(FormModel);
-const router = initRouter(store.state.setting.asyncRoutes)
+const router = initRouter()
 const i18n = initI18n('CN', 'US')
 
 Vue.use(Antd)

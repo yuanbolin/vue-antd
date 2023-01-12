@@ -1,7 +1,6 @@
-import userService from './user'
-import dataSource from './dataSource'
+//组织机构管理
+import organization from './organization'
 
 export {
-  userService,
-  dataSource
+  organization
 }

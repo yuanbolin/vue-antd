@@ -23,8 +23,8 @@ const loginIgnore = {
  * @param isAsync 是否异步路由模式
  * @returns {VueRouter}
  */
-function initRouter(isAsync) {
-  const options = isAsync ? require('./async/config.async').default : require('./config').default
+function initRouter() {
+  const options = require('./config').default
   formatRoutes(options.routes)
   return new Router(options)
 }

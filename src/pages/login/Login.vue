@@ -102,6 +102,7 @@ export default {
       })
     },
     afterLogin(res) {
+      console.log('login',res)
       this.logging = false
       const loginRes = res.data
       if (loginRes.code >= 0) {
