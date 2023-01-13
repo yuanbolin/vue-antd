@@ -362,15 +362,15 @@ export default {
       switch (this.contextmenuType) {
         case "node":
           arr = [
-            { key: "1", icon: "highlight", text: this.$t("样式编辑") },
-            { key: "2", icon: "edit", text: this.$t("信息编辑") },
-            { key: "3", icon: "delete", text: this.$t("删除此节点") }
+            { key: "1", icon: "highlight", text: "样式编辑"},
+            { key: "2", icon: "edit", text: "信息编辑" },
+            { key: "3", icon: "delete", text: "删除此节点" }
           ];
           break;
         case "edge":
           arr = [
-            { key: "4", icon: "highlight", text: this.$t("样式编辑") },
-            { key: "3", icon: "delete", text: this.$t("删除此连线") }
+            { key: "4", icon: "highlight", text: "样式编辑" },
+            { key: "3", icon: "delete", text: "删除此连线" }
           ];
           break;
       }

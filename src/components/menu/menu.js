@@ -21,20 +21,10 @@
  *    children: [子菜单配置]
  *  }
  * ]
- *
- * i18n: 国际化配置。系统默认会根据 options route配置的 path 和 name 生成英文以及中文的国际化配置，如需自定义或增加其他语言，配置
- * 此项即可。如：
- * i18n: {
- *   messages: {
- *     CN: {dashboard: {name: '监控中心'}}
- *     HK: {dashboard: {name: '監控中心'}}
- *   }
- * }
  **/
 import Menu from 'ant-design-vue/es/menu'
 import Icon from 'ant-design-vue/es/icon'
 import fastEqual from 'fast-deep-equal'
-import {getI18nKey} from '@/utils/routerUtil'
 
 const {Item, SubMenu} = Menu
 
@@ -80,7 +70,6 @@ export default {
       required: false,
       default: false
     },
-    i18n: Object,
     openKeys: Array
   },
   data () {
@@ -103,26 +92,11 @@ export default {
     if (this.options.length > 0 && !this.options[0].fullPath) {
       this.formatOptions(this.options, '')
     }
-    // 自定义国际化配置
-    if(this.i18n && this.i18n.messages) {
-      const messages = this.i18n.messages
-      Object.keys(messages).forEach(key => {
-        this.$i18n.mergeLocaleMessage(key, messages[key])
-      })
-    }
   },
   watch: {
     options(val) {
       if (val.length > 0 && !val[0].fullPath) {
         this.formatOptions(this.options, '')
-      }
-    },
-    i18n(val) {
-      if(val && val.messages) {
-        const messages = this.i18n.messages
-        Object.keys(messages).forEach(key => {
-          this.$i18n.mergeLocaleMessage(key, messages[key])
-        })
       }
     },
     collapsed (val) {
@@ -167,7 +141,7 @@ export default {
           h(tag, config,
             [
               this.renderIcon(h, menu.meta ? menu.meta.icon : 'none', menu.fullPath),
-              this.$t(getI18nKey(menu.fullPath))
+              menu.name
             ]
           )
         ]
@@ -178,7 +152,7 @@ export default {
       let subItem = [h('span', {slot: 'title', attrs: {style: 'overflow:hidden;white-space:normal;text-overflow:clip;'}},
         [
           this.renderIcon(h, menu.meta ? menu.meta.icon : 'none', menu.fullPath),
-          this.$t(getI18nKey(menu.fullPath))
+          menu.name
         ]
       )]
       let itemArr = []

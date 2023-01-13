@@ -1,9 +1,8 @@
-import {mergeI18nFromRoutes} from '@/utils/i18n'
+
 
 //应用配置
 let appOptions = {
   router: undefined,
-  i18n: undefined,
   store: undefined
 }
 
@@ -12,10 +11,9 @@ let appOptions = {
  * @param options
  */
 function setAppOptions(options) {
-  const {router, store, i18n} = options
+  const {router, store} = options
   appOptions.router = router
   appOptions.store = store
-  appOptions.i18n = i18n
 }
 
 /**
@@ -91,16 +89,16 @@ function loadRoutes(routesConfig) {
   /*************** 兼容 version < v0.6.1 *****************/
   if (arguments.length > 0) {
     const arg0 = arguments[0]
-    if (arg0.router || arg0.i18n || arg0.store) {
+    if (arg0.router || arg0.store) {
       routesConfig = arguments[1]
-      console.error('the usage of signature loadRoutes({router, store, i18n}, routesConfig) is out of date, please use the new signature: loadRoutes(routesConfig).')
-      console.error('方法签名 loadRoutes({router, store, i18n}, routesConfig) 的用法已过时, 请使用新的方法签名 loadRoutes(routesConfig)。')
+      console.error('the usage of signature loadRoutes({router, store}, routesConfig) is out of date, please use the new signature: loadRoutes(routesConfig).')
+      console.error('方法签名 loadRoutes({router, store}, routesConfig) 的用法已过时, 请使用新的方法签名 loadRoutes(routesConfig)。')
     }
   }
   /*************** 兼容 version < v0.6.1 *****************/
 
   // 应用配置
-  const {router, store, i18n} = appOptions
+  const {router, store } = appOptions
 
   // 如果 routesConfig 有值，则更新到本地，否则从本地获取
   if (routesConfig) {
@@ -108,8 +106,6 @@ function loadRoutes(routesConfig) {
   } else {
     routesConfig = store.getters['account/routesConfig']
   }
-  // 提取路由国际化数据
-  mergeI18nFromRoutes(i18n, router.options.routes)
   // 初始化Admin后台菜单数据
   const rootRoute = router.options.routes.find(item => item.path === '/')
   const menuRoutes = rootRoute && rootRoute.children
@@ -169,16 +165,6 @@ function formatAuthority(routes, pAuthorities = []) {
   })
 }
 
-/**
- * 从路由 path 解析 i18n key
- * @param path
- * @returns {*}
- */
-function getI18nKey(path) {
-  const keys = path.split('/').filter(item => !item.startsWith(':') && item != '')
-  keys.push('name')
-  return keys.join('.')
-}
 
 /**
  * 加载导航守卫
@@ -200,4 +186,4 @@ function loadGuards(guards, options) {
   })
 }
 
-export {parseRoutes, loadRoutes, formatAuthority, getI18nKey, loadGuards, formatRoutes, setAppOptions}
+export {parseRoutes, loadRoutes, formatAuthority, loadGuards, formatRoutes, setAppOptions}

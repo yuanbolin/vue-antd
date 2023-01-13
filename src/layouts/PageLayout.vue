@@ -5,8 +5,6 @@
       :style="`margin-top: ${multiPage ? 0 : -24}px`"
       :breadcrumb="breadcrumb"
       :title="pageTitle"
-      :logo="logo"
-      :avatar="avatar"
     >
       <slot name="action" slot="action"></slot>
       <slot slot="content" name="headerContent"></slot>
@@ -31,12 +29,11 @@
 <script>
 import PageHeader from "@/components/page/header/PageHeader";
 import { mapState, mapMutations } from "vuex";
-import { getI18nKey } from "@/utils/routerUtil";
 
 export default {
   name: "PageLayout",
   components: { PageHeader },
-  props: ["desc", "logo", "title", "avatar", "linkList", "extraImage"],
+  props: ["desc", "linkList"],
   data() {
     return {
       page: {},
@@ -73,31 +70,21 @@ export default {
       "layout",
       "multiPage",
       "pageMinHeight",
-      "pageWidth",
-      "customTitles"
+      "pageWidth"
     ]),
     pageTitle() {
       let pageTitle = this.page && this.page.title;
-      return (
-        this.customTitle ||
-        (pageTitle && this.$t(pageTitle)) ||
-        this.title ||
-        this.routeName
-      );
+      return pageTitle || this.title || this.routeName;
     },
     routeName() {
       const route = this.$route;
-      return this.$t(getI18nKey(route.matched[route.matched.length - 1].path));
+      return route.matched[route.matched.length - 1].name;
     },
     breadcrumb() {
       let page = this.page;
       let breadcrumb = page && page.breadcrumb;
       if (breadcrumb) {
-        let i18nBreadcrumb = [];
-        breadcrumb.forEach(item => {
-          i18nBreadcrumb.push(this.$t(item));
-        });
-        return i18nBreadcrumb;
+        return breadcrumb;
       } else {
         return this.getRouteBreadcrumb();
       }
@@ -115,12 +102,12 @@ export default {
       routes
         .filter(item => item.path.includes(":") || path.includes(item.path))
         .forEach(route => {
-          const path = route.path.length === 0 ? "/dashboard" : route.path;
-          breadcrumb.push(this.$t(getI18nKey(path)));
+          const path = route.path.length === 0 ? "首页" : route.name;
+          breadcrumb.push(path);
         });
-      let pageTitle = this.page && this.page.title;
-      if (this.customTitle || pageTitle) {
-        breadcrumb[breadcrumb.length - 1] = this.customTitle || pageTitle;
+      let pageTitle = this.page && this.page.name;
+      if (pageTitle) {
+        breadcrumb[breadcrumb.length - 1] = pageTitle;
       }
       return breadcrumb;
     },
