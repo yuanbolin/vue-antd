@@ -1,4 +1,4 @@
-import {LOGIN, ROUTES} from '@/services/api'
+import {LOGIN} from '@/services/api'
 import {request, METHOD, removeAuthorization} from '@/utils/request'
 
 /**
@@ -8,16 +8,11 @@ import {request, METHOD, removeAuthorization} from '@/utils/request'
  * @returns {Promise<AxiosResponse<T>>}
  */
 export async function login(name, password) {
-  return request(LOGIN, METHOD.POST, {
+  return request(LOGIN, METHOD.GET, {
     name: name,
     password: password
   })
 }
-
-export async function getRoutesConfig() {
-  return request(ROUTES, METHOD.GET)
-}
-
 /**
  * 退出登录
  */
@@ -29,6 +24,5 @@ export function logout() {
 }
 export default {
   login,
-  logout,
-  getRoutesConfig
+  logout
 }

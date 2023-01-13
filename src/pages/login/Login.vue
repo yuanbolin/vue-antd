@@ -68,9 +68,8 @@
 
 <script>
 import CommonLayout from '@/layouts/CommonLayout'
-import {login, getRoutesConfig} from '@/services/user'
+import {login} from '@/services/user'
 import {setAuthorization} from '@/utils/request'
-import {loadRoutes} from '@/utils/routerUtil'
 import {mapMutations} from 'vuex'
 
 export default {
@@ -105,28 +104,25 @@ export default {
       console.log('login',res)
       this.logging = false
       const loginRes = res.data
-      if (loginRes.code >= 0) {
+      loginRes.data.permissions = [{id: 'queryForm', operation: ['add', 'edit','delete']}]
+      loginRes.data.roles = []
+      if (res.status === 200) {
         const {user, permissions, roles} = loginRes.data
         this.setUser(user)
         this.setPermissions(permissions)
         this.setRoles(roles)
-        setAuthorization({token: loginRes.data.token, expireAt: new Date(loginRes.data.expireAt)})
-        // 获取路由配置
-        getRoutesConfig().then(result => {
-          const routesConfig = result.data.data
-          loadRoutes(routesConfig)
-          this.$router.push('/dashboard')
-          this.$message.success(loginRes.message, 3)
-        })
+        setAuthorization({token: loginRes.data.token, expireAt: null})
+        this.$router.push('/dashboard')
+        this.$message.success(loginRes.message, 3)
       } else {
         this.error = loginRes.message
       }
     },
     passwordHandle(){
       this.$notification['info']({
-        message: '请寻求系统管理员的帮助',
+        message: '请寻求本组织管理员的帮助',
         description:
-            '非常抱歉！目前暂未开放个人密码重置服务，请联系系统管理员进行密码重置！',
+            '非常抱歉！目前暂未开放个人密码重置服务，请联系本组织管理员进行密码重置！',
       });
     }
   }

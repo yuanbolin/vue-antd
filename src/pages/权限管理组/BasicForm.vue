@@ -76,8 +76,8 @@ export default {
           { required: true, message: "请输入管理组名称!", trigger: "blur" },
           {
             min: 2,
-            max: 10,
-            message: "字符长度要求在2-10字内",
+            max: 15,
+            message: "字符长度要求在2-15字内",
             trigger: "blur"
           }
         ],

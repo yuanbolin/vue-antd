@@ -1,12 +1,12 @@
 <template>
-  <page-layout :avatar="currUser.avatar">
+  <page-layout :avatar="avatar">
     <div slot="headerContent">
       <div class="title">
-        {{ welcome.timeFix[lang] }}，{{ currUser.name }}，{{
-          welcome.message[lang]
+        {{ welcome.timeFix }}，{{ currUser.name }}，{{
+          welcome.message
         }}
       </div>
-      <div>{{ currUser.position[lang] }}</div>
+      <div>{{ currUser.position }}</div>
     </div>
   </page-layout>
 </template>
@@ -14,17 +14,16 @@
 <script>
 import PageLayout from "@/layouts/PageLayout";
 import { mapState } from "vuex";
-import { request, METHOD } from "@/utils/request";
-
+import avatar from "@/assets/img/avatar.png";
+const timeList = ["早上好", "上午好", "中午好", "下午好", "晚上好"];
 export default {
   name: "WorkPlace",
   components: { PageLayout },
-  i18n: require("./i18n"),
   data() {
     return {
+      avatar,
       projects: [],
       loading: true,
-      activities: [],
       teams: [],
       welcome: {
         timeFix: "",
@@ -33,20 +32,24 @@ export default {
     };
   },
   computed: {
-    ...mapState("account", { currUser: "user" }),
-    ...mapState("setting", ["lang"])
+    ...mapState("account", { currUser: "user" })
   },
   created() {
-    request("/user/welcome", METHOD.GET).then(res => (this.welcome = res.data));
-    request("/work/activity", METHOD.GET).then(
-      res => (this.activities = res.data)
-    );
-    request("/work/team", METHOD.GET).then(res => (this.teams = res.data));
-    request("/project", METHOD.GET).then(res => {
-      this.projects = res.data;
-      this.loading = false;
-    });
-    console.log(this.menuData);
+    const time = new Date();
+    const hour = time.getHours();
+    this.welcome = {
+      timeFix:
+        hour < 9
+          ? timeList[0]
+          : hour <= 11
+          ? timeList[1]
+          : hour <= 13
+          ? timeList[2]
+          : hour <= 20
+          ? timeList[3]
+          : timeList[4],
+      message: "欢迎"
+    };
   }
 };
 </script>

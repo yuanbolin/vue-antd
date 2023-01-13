@@ -69,7 +69,7 @@
           <a-divider type="vertical" />
           <a-popconfirm
             title="Sure to delete?"
-            @confirm="() => deleteRecord(record.key)"
+            @confirm="() => deleteRecord(record.id)"
           >
             <a
               :disabled="record.children && record.children.length > 0"
@@ -95,23 +95,27 @@
         :label-col="{ span: 5 }"
         :wrapper-col="{ span: 17 }"
       >
-        <a-form-model-item has-feedback label="上级机构" prop="shangji">
+        <a-form-model-item
+          has-feedback
+          label="上级机构"
+          prop="parentOrganization"
+        >
           <select-tree
             :treeData="treeData"
-            v-model="catalogueForm.shangji"
+            v-model="catalogueForm.parentOrganization"
           ></select-tree>
         </a-form-model-item>
-        <a-form-model-item has-feedback label="机构名称" prop="name">
+        <a-form-model-item has-feedback label="机构名称" prop="orgName">
           <a-input
-            v-model="catalogueForm.name"
+            v-model="catalogueForm.orgName"
             type="text"
             placeholder="请输入名称"
             autocomplete="off"
           />
         </a-form-model-item>
-        <a-form-model-item has-feedback label="机构描述" prop="message">
+        <a-form-model-item has-feedback label="机构描述" prop="orgDescription">
           <a-textarea
-            v-model="catalogueForm.message"
+            v-model="catalogueForm.orgDescription"
             type="text"
             placeholder="请输入描述"
             autocomplete="off"
@@ -145,7 +149,6 @@
 <script>
 import SelectTree from "@/components/tree/SelectTree";
 import { organization } from "@/services";
-import { getTree } from "../../services/organization";
 const columns = [
   {
     title: "机构名称",
@@ -187,7 +190,6 @@ export default {
     return {
       columns: columns,
       dataSource: [],
-      selectedRows: [],
       isOpen: false,
       expandedRowKeys: [],
       pagination: {
@@ -199,16 +201,16 @@ export default {
       treeData: [],
       catalogueForm: {},
       catalogueRules: {
-        name: [
+        orgName: [
           { required: true, message: "请输入目录名称", trigger: "blur" },
           {
             min: 2,
-            max: 10,
-            message: "字符长度要求在2-10字内",
+            max: 15,
+            message: "字符长度要求在2-15字内",
             trigger: "blur"
           }
         ],
-        message: [
+        orgDescription: [
           {
             min: 2,
             max: 50,
@@ -216,7 +218,7 @@ export default {
             trigger: "blur"
           }
         ],
-        shangji: []
+        parentOrganization: []
       }
     };
   },
@@ -237,47 +239,47 @@ export default {
       this.treeData = [
         {
           id: 1, //主键id
-          name: "浙江宏利汽配集团有限公司", //名称
-          message: "这是一个浙江宏利汽配集团有限公司的描述", //描述
+          orgName: "浙江宏利汽配集团有限公司", //名称
+          orgDescription: "这是一个浙江宏利汽配集团有限公司的描述", //描述
           children: [
             //子级
             {
               id: 11,
-              name: "浙江宏利汽车零部件股份有限公司",
-              message: "这是一个浙江宏利汽车零部件股份有限公司的描述"
+              orgName: "浙江宏利汽车零部件股份有限公司",
+              orgDescription: "这是一个浙江宏利汽车零部件股份有限公司的描述"
             },
             {
               id: 12,
-              name: "浙江康普瑞汽车零部件有限公司",
-              message: "这是一个浙江康普瑞汽车零部件有限公司的描述",
+              orgName: "浙江康普瑞汽车零部件有限公司",
+              orgDescription: "这是一个浙江康普瑞汽车零部件有限公司的描述",
               children: [
                 {
                   id: 121,
                   type: "info",
-                  name: "人力资源中心",
-                  message: "这是一个人力资源中心的描述"
+                  orgName: "人力资源中心",
+                  orgDescription: "这是一个人力资源中心的描述"
                 }
               ]
             },
             {
               id: 13,
-              name: "浙江华钜汽车零部件股份有限公司",
-              message: "这是一个浙江华钜汽车零部件股份有限公司的描述",
+              orgName: "浙江华钜汽车零部件股份有限公司",
+              orgDescription: "这是一个浙江华钜汽车零部件股份有限公司的描述",
               children: [
                 {
                   id: 131,
-                  name: "信息中心",
-                  message: "这是一个信息中心的描述",
+                  orgName: "信息中心",
+                  orgDescription: "这是一个信息中心的描述",
                   children: [
                     {
                       id: 1311,
-                      name: "软件研发部",
-                      message: "这是一个软件研发部的描述"
+                      orgName: "软件研发部",
+                      orgDescription: "这是一个软件研发部的描述"
                     },
                     {
                       id: 1312,
-                      name: "信息运营部",
-                      message: "这是一个信息运营部的描述"
+                      orgName: "信息运营部",
+                      orgDescription: "这是一个信息运营部的描述"
                     }
                   ]
                 }
@@ -285,15 +287,15 @@ export default {
             },
             {
               id: 14,
-              name: "财务中心",
-              message: "这是一个财务中心的描述"
+              orgName: "财务中心",
+              orgDescription: "这是一个财务中心的描述"
             }
           ]
         },
         {
           id: 2,
-          name: "嘉兴科进机械制造有限公司",
-          message: "这是一个嘉兴科进机械制造有限公司的描述"
+          orgName: "嘉兴科进机械制造有限公司",
+          orgDescription: "这是一个嘉兴科进机械制造有限公司的描述"
         }
       ];
       // request(process.env.VUE_APP_API_BASE_URL + "/list", "get", {
@@ -308,94 +310,31 @@ export default {
       // });
     },
     getData() {
-      this.dataSource = [
-        {
-          id: 1, //主键id
-          name: "浙江宏利汽配集团有限公司", //名称
-          message: "这是一个浙江宏利汽配集团有限公司的描述", //描述
-          children: [
-            //子级
-            {
-              id: 11,
-              name: "浙江宏利汽车零部件股份有限公司",
-              message: "这是一个浙江宏利汽车零部件股份有限公司的描述"
-            },
-            {
-              id: 12,
-              name: "浙江康普瑞汽车零部件有限公司",
-              message: "这是一个浙江康普瑞汽车零部件有限公司的描述",
-              children: [
-                {
-                  id: 121,
-                  type: "info",
-                  name: "人力资源中心",
-                  message: "这是一个人力资源中心的描述"
-                }
-              ]
-            },
-            {
-              id: 13,
-              name: "浙江华钜汽车零部件股份有限公司",
-              message: "这是一个浙江华钜汽车零部件股份有限公司的描述",
-              children: [
-                {
-                  id: 131,
-                  name: "信息中心",
-                  message: "这是一个信息中心的描述",
-                  children: [
-                    {
-                      id: 1311,
-                      name: "软件研发部",
-                      message: "这是一个软件研发部的描述"
-                    },
-                    {
-                      id: 1312,
-                      name: "信息运营部",
-                      message: "这是一个信息运营部的描述"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 14,
-              name: "财务中心",
-              message: "这是一个财务中心的描述"
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: "嘉兴科进机械制造有限公司",
-          message: "这是一个嘉兴科进机械制造有限公司的描述"
-        }
-      ];
       organization
-        .getTree({
+        .getTrees({
           page: this.pagination.current,
           pageSize: this.pagination.pageSize
         })
         .then(res => {
-          console.log("tree", res);
-          // const { list, page, pageSize, total } = res?.data?.data ?? {};
-          // this.dataSource = list;
-          // this.pagination.current = page;
-          // this.pagination.pageSize = pageSize;
-          // this.pagination.total = total;
+          console.log("tree", res.data.data);
+          const list = res.data.data;
+          this.dataSource = list;
+          this.pagination.total = 100;
         });
     },
     showAddDrawer(obj, type) {
       if (type.indexOf("Children") !== -1) {
         const parentKey = obj.id;
-        this.catalogueForm.shangji = parentKey + "";
+        this.catalogueForm.parentOrganization = parentKey + "";
       } else {
         const parentKey = getParentKey(obj.id, this.dataSource);
-        console.log("'parentKey'===>");
-        console.log(obj.id, this.dataSource);
-        console.log(parentKey);
-        console.log("==========");
-        this.catalogueForm.shangji = parentKey + "";
+        // console.log("'parentKey'===>");
+        // console.log(obj.id, this.dataSource);
+        // console.log(parentKey);
+        // console.log("==========");
+        this.catalogueForm.parentOrganization = parentKey + "";
       }
+      this.chooseType = "Add";
       this.$nextTick(() => {
         this.drawerVisible = true;
       });
@@ -403,41 +342,70 @@ export default {
     showEditDrawer(obj) {
       const parentKey = getParentKey(obj.id, this.dataSource);
       this.catalogueForm = {
-        shangji: parentKey + "",
-        name: obj.name,
-        message: obj.message
+        parentOrganization: parentKey + "",
+        orgName: obj.orgName,
+        orgDescription: obj.orgDescription,
+        orgId: obj.id
       };
+      this.chooseType = "Edit";
       this.$nextTick(() => {
         this.drawerVisible = true;
       });
     },
-    deleteRecord(key) {
-      this.dataSource = this.dataSource.filter(item => item.key !== key);
-      this.selectedRows = this.selectedRows.filter(item => item.key !== key);
+    deleteRecord(orgId) {
+      if (!orgId) return;
+      organization.deleteTree({ orgId }).then(res => {
+        if (res.data.code === "1000") {
+          this.$message.success(res.data.msg, 3);
+          this.getData()
+        }
+      });
     },
     addNew() {
-      this.dataSource.unshift({
-        id: this.dataSource.length,
-        no: "NO " + this.dataSource.length,
-        description: "这是一段描述",
-        callNo: Math.floor(Math.random() * 1000),
-        status: Math.floor(Math.random() * 10) % 4,
-        updatedAt: "2018-07-26"
+      this.chooseType = "Add";
+      this.$nextTick(() => {
+        this.drawerVisible = true;
       });
     },
     submitForm() {
       this.$refs.catalogueForm.validate(valid => {
         if (valid) {
           if (this.chooseType.indexOf("Add") !== -1) {
-            alert("ADDsubmit!");
-            console.log(this.catalogueForm);
+            console.log("ADDsubmit!");
+            console.log(JSON.parse(JSON.stringify(this.catalogueForm)));
+            organization
+              .addTree(JSON.parse(JSON.stringify(this.catalogueForm)))
+              .then(res => {
+                console.log("add==>>", res);
+                if (res.data.code === "1000") {
+                  //新增成功后清空表单数据关闭抽屉,随后重新请求列表接口刷新列表数据
+                  this.$refs.catalogueForm.resetFields();
+                  this.onClose();
+                  this.$message.success(res.data.msg, 3);
+                  this.$nextTick(() => {
+                    this.getData()
+                  });
+                }
+              });
           } else {
-            if (this.chooseType.indexOf("Add") !== -1) {
-              alert("EDITsubmit!");
-              console.log(this.catalogueForm);
+            if (this.chooseType.indexOf("Edit") !== -1) {
+              console.log("EDITsubmit!");
+              organization
+                .editTree(JSON.parse(JSON.stringify(this.catalogueForm)))
+                .then(res => {
+                  console.log("edit==>>", res);
+                  if (res.data.code === "1000") {
+                    //修改成功后清空表单数据关闭抽屉,随后重新请求列表接口刷新列表数据
+                    this.$refs.catalogueForm.resetFields();
+                    this.onClose();
+                    this.$message.success(res.data.msg, 3);
+                    this.$nextTick(() => {
+                      this.getData()
+                    });
+                  }
+                });
             }
           }
-          this.onClose();
         } else {
           console.log("error submit!!");
           return false;
