@@ -88,7 +88,7 @@ export const configSetting = Shape => {
     },
     snapline: true, // 辅助对齐线
     keyboard: true, // 键盘快捷键 开启后监听键盘事件
-    history: false, // 历史操作记录
+    history: true, // 历史操作记录
     clipboard: false, // 剪切板 开启后可复制黏贴
     scroller: {
       enabled: true,

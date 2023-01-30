@@ -2,58 +2,23 @@
   <div class="all">
     <div class="antv-content">
       <!--      左侧图形列表-->
-      <div class="antv-menu">
-        <a-tag color="blue">
-          基础图形
-        </a-tag>
-        <ul class="menu-list">
-          <li draggable="true" @drag="menuDrag('defaultOval')">
-            <i class="icon-oval" /> <strong>椭圆形</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultSquare')">
-            <i class="icon-square" /><strong>矩形</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultYSquare')">
-            <i class="icon-ysquare" /><strong>圆角矩形</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultRhombus')">
-            <i class="icon-rhombus" /><strong>菱形</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultRhomboid')">
-            <i class="icon-rhomboid" /><strong>平行四边形</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultCircle')">
-            <i class="icon-circle" /><strong>圆形</strong>
-          </li>
-        </ul>
-        <a-divider />
-        <a-tag color="cyan">
-          杂项图形
-        </a-tag>
-        <ul class="menu-list">
-          <li draggable="true" @drag="menuDrag('defaultNote')">
-            <a-icon type="file-text" /><strong>文档</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultSuccess')">
-            <a-icon type="check-circle" /><strong>成功</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultError')">
-            <a-icon type="close-circle" /><strong>失败</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultMoney')">
-            <a-icon type="pay-circle" /><strong>财务</strong>
-          </li>
-          <li draggable="true" @drag="menuDrag('defaultWuliu')">
-            <a-icon type="pay-circle" /><strong>物流</strong>
-          </li>
-        </ul>
-        <div v-if="isChange" class="wrapper-btn">
-          <a-button type="primary" @click="handlerSend">保存当前方案</a-button>
-          <!--          <a-button type="success" @click="toPNG">保存为PNG图片</a-button>-->
-        </div>
-      </div>
-      <!--      流程图绘制区域-->
+      <my-graph
+        :is-change="isChange"
+        @menuDrag="menuDrag"
+        @handlerSend="handlerSend"
+      ></my-graph>
       <div :style="{ height: height }" class="antv-wrapper">
+        <!--      流程图工具栏-->
+        <my-toolbar
+          :zoom="zoom"
+          :visiable-grid="visiableGrid"
+          @changeZoom="changeZoom"
+          @changeGrid="changeGrid"
+          @changeContent="changeContent"
+          @changePortsShow="changePortsShow"
+          :is-ports-show="isPortsShow"
+        ></my-toolbar>
+        <!--      流程图绘制区域-->
         <div
           id="wrapper"
           class="wrapper-canvas"
@@ -61,12 +26,6 @@
           @drop="drop($event)"
           @dragover.prevent
         />
-        <div class="wrapper-tips">
-          <div class="wrapper-tips-item">
-            <a-switch v-model="isPortsShow" @change="changePortsShow" />
-            <span>链接桩常显</span>
-          </div>
-        </div>
         <contextmenu
           :itemList="menuItemList"
           :visible.sync="menuVisible"
@@ -276,6 +235,8 @@ import "@antv/x6-vue-shape";
 import { Graph, Shape, DataUri } from "@antv/x6";
 import Count from "./count.vue";
 import Contextmenu from "@/components/menu/Contextmenu";
+import MyGraph from "./graph";
+import MyToolbar from "./toolbar";
 import {
   configSetting,
   configNodeShape,
@@ -287,6 +248,8 @@ export default {
   name: "AntV6X",
   components: {
     "twitter-picker": Twitter,
+    MyGraph,
+    MyToolbar,
     Contextmenu
   },
   /**
@@ -311,6 +274,8 @@ export default {
   data() {
     return {
       graph: null, //画布
+      zoom: 1, //画布缩放大小
+      visiableGrid: true,
       isChange: false, //是否绘制，修改过
       isPortsShow: false, //锚点是否长显
       menuItem: "", //拖拽生成的节点
@@ -362,7 +327,7 @@ export default {
       switch (this.contextmenuType) {
         case "node":
           arr = [
-            { key: "1", icon: "highlight", text: "样式编辑"},
+            { key: "1", icon: "highlight", text: "样式编辑" },
             { key: "2", icon: "edit", text: "信息编辑" },
             { key: "3", icon: "delete", text: "删除此节点" }
           ];
@@ -417,20 +382,52 @@ export default {
   methods: {
     // 链接桩的显示与隐藏，主要是照顾菱形
     changePortsShow(val) {
+      console.log("changePortsShow", val);
       const container = document.getElementById("wrapper");
       const ports = container.querySelectorAll(".x6-port-body");
       for (let i = 0, len = ports.length; i < len; i = i + 1) {
         ports[i].style.visibility = val ? "visible" : "hidden";
       }
+      this.isPortsShow = val;
     },
-    // 初始化渲染画布
+    // 初始化渲染画布并添加监听事件
     initGraph() {
       const graph = new Graph({
         container: document.getElementById("wrapper"),
         ...configSetting(Shape)
       });
-      console.log("graph", graph);
+
+      //画布缩放
+
+      //历史记录（撤销/重做）
+      graph.history.on("undo", args => {
+        // code here
+        console.log(args);
+      });
+      graph.history.on("redo", args => {
+        // code here
+        console.log(args);
+      });
+
+      //添加点/边自带工具
+      graph.on("cell:mouseenter", ({ cell }) => {
+        if (cell.isNode()) {
+          console.log(cell);
+          //如果是点，则不添加自带工具（目前点自带工具实用性不高、不美观，故不采用）
+        } else {
+          //如果是边，添加线段和路径点工具
+          cell.addTools(["vertices", "segments"]);
+        }
+      });
+
+      //清除工具
+      graph.on("cell:mouseleave", ({ cell }) => {
+        cell.removeTools();
+      });
+
+      //自适应窗口大小
       this.parentResize(graph);
+
       // 画布事件
       graph.on("node:mouseenter", () => {
         this.changePortsShow(true);
@@ -439,21 +436,25 @@ export default {
         if (this.isPortsShow) return;
         this.changePortsShow(false);
       });
+
       // 右击编辑
       graph.on("cell:contextmenu", ({ cell }) => {
         console.log(cell);
         this.editForm(cell);
       });
+
       // 画布键盘事件
       graphBindKey(graph);
       //选择事件
       graph.on("cell:selected", ({ cell }) => {
         console.log("节点/边被选中", cell);
       });
+
       // 删除
       graph.bindKey(["delete", "backspace"], () => {
         this.handlerDel();
       });
+
       // 赋值
       this.graph = graph;
       if (this.value && JSON.parse(this.value).length) {
@@ -468,14 +469,42 @@ export default {
           graph.fromJSON(jsonTemp);
         }
       }
+
       // 画布有变化
       graph.on("cell:changed", () => {
         this.isChangeValue();
       });
+
       //获取新增的节点/边
       graph.on("cell:added", ({ cell }) => {
         console.log("新增==》", cell);
       });
+    },
+    //画布内容居中
+    changeContent(val) {
+      switch (val) {
+        case "center":
+          this.graph.centerContent();
+          break;
+        case "zoomToFit":
+          this.graph.zoomToFit();
+          this.zoom = this.graph.zoom();
+          break;
+      }
+    },
+    //改变画布缩放大小
+    changeZoom(val) {
+      this.zoom = val;
+      this.graph.zoomTo(val);
+    },
+    //是否显示网格
+    changeGrid(val) {
+      this.visiableGrid = val;
+      if (val) {
+        this.graph.showGrid();
+      } else {
+        this.graph.hideGrid();
+      }
     },
     //自定义HTML节点和VUE组件示例
     vueExample() {
@@ -634,10 +663,13 @@ export default {
       }
     },
     menuDrag(type) {
+      console.log("type", type);
       // 根据type获取到不同节点的预设参数
       this.menuItem = configNodeShape(type);
     },
     drop(event) {
+      console.log(event);
+      console.log(this.menuItem);
       // 节点预设 ，添加位置信息和链接桩信息组合成完整的节点
       const nodeItem = {
         ...this.menuItem,

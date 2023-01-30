@@ -7,56 +7,14 @@
   display: flex;
   overflow: hidden;
   position: relative;
-  .antv-menu {
-    width: 180px;
-    border-right: 1px solid #d5d5d5;
-    padding: 10px;
-    h3 {
-      padding: 10px;
-    }
-    li {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #555;
-      background: #fff;
-      margin: 5px 10px;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      &:hover {
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-      }
-      i {
-        font-size: 18px;
-        margin-right: 10px;
-      }
-      strong {
-        flex: 1;
-      }
-    }
-  }
   .antv-wrapper {
     flex: 1;
     display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
     position: relative;
     .wrapper-canvas {
       flex: 1;
-    }
-    .wrapper-tips {
-      padding: 10px;
-      display: flex;
-      align-items: center;
-      position: absolute;
-      top: 0;
-      left: 0;
-      .wrapper-tips-item {
-        span {
-          padding-left: 10px;
-          font-size: 12px;
-        }
-      }
     }
   }
 }

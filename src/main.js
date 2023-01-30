@@ -9,11 +9,12 @@ import store from './store'
 import 'animate.css/source/animate.css'
 import Plugins from '@/plugins'
 import bootstrap from '@/bootstrap'
+import MyIconComponent from '@/icons'
 import 'moment/locale/zh-cn'
 import { FormModel } from 'ant-design-vue';
 Vue.use(FormModel);
 const router = initRouter()
-
+Vue.component('my-icon', MyIconComponent)
 Vue.use(Antd)
 Vue.config.productionTip = false
 Vue.use(Viser)
