@@ -1,5 +1,6 @@
 import TabsView from "@/layouts/tabs/TabsView";
 import BlankView from "@/layouts/BlankView";
+import UserLayout from "@/layouts/UserLayout";
 // import PageView from "@/layouts/PageView";
 
 /**
@@ -15,9 +16,23 @@ import BlankView from "@/layouts/BlankView";
 const options = {
   routes: [
     {
-      path: "/login",
-      name: "登录页",
-      component: () => import("@/pages/login")
+      path: "/user",
+      redirect: '/user/login',
+      name: "流程管理工具",
+      component: UserLayout,
+      children: [    {
+        path: "login",
+        name: "登录页",
+        component: () => import("@/pages/login")
+      },]
+    },
+    {
+      path: '/auth',
+      name: 'auth',
+      component: () => import(/* webpackChunkName: "result" */ '@/pages/login/Auth'),
+      meta: {
+        invisible: true
+      },
     },
     {
       path: "*",
@@ -31,13 +46,13 @@ const options = {
     },
     {
       path: "/",
-      name: "流程管理工具",
+      name: "首页",
       component: TabsView,
-      redirect: "/login",
+      redirect: "/dashboard",
       children: [
         {
           path: "dashboard",
-          name: "首页",
+          name: "工作台",
           meta: {
             icon: "dashboard",
             page: {
@@ -46,53 +61,53 @@ const options = {
           },
           component: () => import("@/pages/dashboard/workplace")
         },
+        // {
+        //   path: "group",
+        //   name: "权限管理组",
+        //   redirect: "group/index",
+        //   meta: {
+        //     icon: "schedule"
+        //   },
+        //   component: BlankView,
+        //   children: [
+        //     {
+        //       path: "index",
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       name: "管理组列表",
+        //       component: () => import("@/pages/权限管理组/CardList")
+        //     },
+        //     {
+        //       path: "edit/:id",
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       name: "编辑管理组",
+        //       component: () => import("@/pages/权限管理组/BasicForm")
+        //     },
+        //     {
+        //       path: "add",
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       name: "新增管理组",
+        //       component: () => import("@/pages/权限管理组/BasicForm")
+        //     },
+        //     {
+        //       path: "detail/:id",
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       name: "管理组详情",
+        //       component: () => import("@/pages/权限管理组/BasicDetail")
+        //     },
+        //   ]
+        // },
         {
-          path: "group",
-          name: "权限管理组",
-          redirect: "group/index",
-          meta: {
-            icon: "schedule"
-          },
-          component: BlankView,
-          children: [
-            {
-              path: "index",
-              meta: {
-                invisible: true
-              },
-              name: "管理组列表",
-              component: () => import("@/pages/权限管理组/CardList")
-            },
-            {
-              path: "edit/:id",
-              meta: {
-                invisible: true
-              },
-              name: "编辑管理组",
-              component: () => import("@/pages/权限管理组/BasicForm")
-            },
-            {
-              path: "add",
-              meta: {
-                invisible: true
-              },
-              name: "新增管理组",
-              component: () => import("@/pages/权限管理组/BasicForm")
-            },
-            {
-              path: "detail/:id",
-              meta: {
-                invisible: true
-              },
-              name: "管理组详情",
-              component: () => import("@/pages/权限管理组/BasicDetail")
-            },
-          ]
-        },
-        {
-          path: "Flow",
+          path: "flow",
           name: "流程管理",
-          redirect: "Flow/list",
+          redirect: "flow/list",
           meta: {
             icon: "project"
           },
@@ -119,76 +134,76 @@ const options = {
             }
           ]
         },
-        {
-          path: "User",
-          name: "用户管理",
-          redirect: "User/index",
-          meta: {
-            icon: "team"
-          },
-          component: BlankView,
-          children: [
-            {
-              meta: {
-                invisible: true
-              },
-              path: "index",
-              name: "列表",
-              component: () => import("@/pages/用户管理/QueryList")
-            },
-            {
-              meta: {
-                invisible: true
-              },
-              path: "edit/:id",
-              name: "用户信息编辑",
-              component: () => import("@/pages/用户管理/BasicForm")
-            },
-            {
-              meta: {
-                invisible: true
-              },
-              path: "add",
-              name: "新增用户",
-              component: () => import("@/pages/用户管理/BasicForm")
-            },
-            {
-              meta: {
-                invisible: true
-              },
-              path: "detail/:id",
-              name: "查看用户信息",
-              component: () => import("@/pages/用户管理/BasicDetail")
-            }
-          ]
-        },
-        {
-          path: "Organization",
-          name: "组织机构树管理",
-          redirect: "Organization/index",
-          meta: {
-            icon: "table"
-          },
-          component: BlankView,
-          children: [
-            {
-              meta: {
-                invisible: true
-              },
-              path: "index",
-              name: "树形列表",
-              component: () => import("@/pages/组织机构树管理/QueryList")
-            }
-          ]
-        },
-        {
-          name: "个人中心",
-          path: "personalCenter",
-          meta: {
-            invisible: true
-          },
-          component: () => import("@/pages/个人中心/index")
-        },
+        // {
+        //   path: "User",
+        //   name: "用户管理",
+        //   redirect: "User/index",
+        //   meta: {
+        //     icon: "team"
+        //   },
+        //   component: BlankView,
+        //   children: [
+        //     {
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       path: "index",
+        //       name: "列表",
+        //       component: () => import("@/pages/用户管理/QueryList")
+        //     },
+        //     {
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       path: "edit/:id",
+        //       name: "用户信息编辑",
+        //       component: () => import("@/pages/用户管理/BasicForm")
+        //     },
+        //     {
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       path: "add",
+        //       name: "新增用户",
+        //       component: () => import("@/pages/用户管理/BasicForm")
+        //     },
+        //     {
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       path: "detail/:id",
+        //       name: "查看用户信息",
+        //       component: () => import("@/pages/用户管理/BasicDetail")
+        //     }
+        //   ]
+        // },
+        // {
+        //   path: "Organization",
+        //   name: "组织机构树管理",
+        //   redirect: "Organization/index",
+        //   meta: {
+        //     icon: "table"
+        //   },
+        //   component: BlankView,
+        //   children: [
+        //     {
+        //       meta: {
+        //         invisible: true
+        //       },
+        //       path: "index",
+        //       name: "树形列表",
+        //       component: () => import("@/pages/组织机构树管理/QueryList")
+        //     }
+        //   ]
+        // },
+        // {
+        //   name: "个人中心",
+        //   path: "personalCenter",
+        //   meta: {
+        //     invisible: true
+        //   },
+        //   component: () => import("@/pages/个人中心/index")
+        // },
         {
           name: "流程图展示",
           path: "antvShow",

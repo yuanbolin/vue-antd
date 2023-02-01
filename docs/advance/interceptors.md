@@ -22,8 +22,8 @@ const tokenCheck = {
   // 发送请求之前做些什么
   onFulfilled(config, options) {
     const {message} = options
-    const {url, xsrfCookieName} = config
-    if (url.indexOf('login') === -1 && xsrfCookieName && !Cookie.get(xsrfCookieName)) {
+    const {url, xsrfTokenName} = config
+    if (url.indexOf('login') === -1 && xsrfTokenName && !storage.get(xsrfTokenName)) {
       message.warning('认证 token 已过期，请重新登录')
     }
     return config
@@ -80,7 +80,7 @@ export default {
 
 :::details 点击查看完整的拦截器配置示例
 ```js
-import Cookie from 'js-cookie'
+import storage from 'storage'
 // 401拦截
 const resp401 = {
   onFulfilled(response, options) {
@@ -110,8 +110,8 @@ const resp403 = {
 const reqCommon = {
   onFulfilled(config, options) {
     const {message} = options
-    const {url, xsrfCookieName} = config
-    if (url.indexOf('login') === -1 && xsrfCookieName && !Cookie.get(xsrfCookieName)) {
+    const {url, xsrfTokenName} = config
+    if (url.indexOf('login') === -1 && xsrfTokenName && !storage.get(xsrfTokenName)) {
       message.warning('认证 token 已过期，请重新登录')
     }
     return config

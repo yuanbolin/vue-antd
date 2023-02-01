@@ -1,28 +1,66 @@
-import {LOGIN} from '@/services/api'
-import {request, METHOD, removeAuthorization} from '@/utils/request'
+import {
+  SYSTEMTOKEN,
+  USERTOKEN,
+  LOGIN,
+  LOGINOUT,
+  VISION
+} from "@/services/api";
+import { request, METHOD, removeAuthorization } from "@/utils/request";
+import storage from "store";
 
-/**
- * 登录服务
- * @param name 账户名
- * @param password 账户密码
- * @returns {Promise<AxiosResponse<T>>}
- */
 export async function login(name, password) {
   return request(LOGIN, METHOD.GET, {
     name: name,
     password: password
-  })
+  });
 }
+
+export function logout() {
+  storage.remove(process.env.VUE_APP_USER_ROUTES_KEY);
+  storage.remove(process.env.VUE_APP_USER_PERMISSIONS_KEY);
+  storage.remove(process.env.VUE_APP_USER_ROLES_KEY);
+  removeAuthorization();
+}
+
+export function SystemToken(parameter) {
+  return request(SYSTEMTOKEN, METHOD.GET, null, {
+    headers: { Timestamp: parameter }
+  });
+}
+
+export function vision(parameter) {
+  return request(VISION, METHOD.GET, null, {
+    headers: {
+      Timestamp: parameter.timeStamp,
+      Authorization: parameter.userToken
+    }
+  });
+}
+
+export function UserToken(parameter) {
+  return request(USERTOKEN, METHOD.POST, parameter.data, {
+    headers: parameter.hearders
+  });
+}
+
+/**
+ * 登录服务
+ * @returns {Promise<AxiosResponse<T>>}
+ * @param parameter
+ */
+export function Login(parameter) {
+
+  return request(LOGIN, METHOD.GET, null, {
+    headers: {
+      Timestamp: parameter.timeStamp,
+      Authorization: parameter.systemToken
+    }
+  });
+}
+
 /**
  * 退出登录
  */
-export function logout() {
-  localStorage.removeItem(process.env.VUE_APP_ROUTES_KEY)
-  localStorage.removeItem(process.env.VUE_APP_PERMISSIONS_KEY)
-  localStorage.removeItem(process.env.VUE_APP_ROLES_KEY)
-  removeAuthorization()
-}
-export default {
-  login,
-  logout
+export function Logout() {
+  return request(LOGINOUT, METHOD.GET);
 }

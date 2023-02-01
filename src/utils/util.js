@@ -3,6 +3,14 @@ import enquireJs from 'enquire.js'
 export function isDef (v){
   return v !== undefined && v !== null
 }
+/**
+ * 获取时间戳
+ * @returns {string}
+ */
+export function getTimestamp () {
+  const timestamp = (Date.parse(new Date()) + '').substr(0, 10)
+  return timestamp
+}
 
 /**
  * Remove an item from an array.

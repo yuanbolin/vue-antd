@@ -1,10 +1,10 @@
 <template>
   <div class="page-layout">
     <page-header
-      ref="pageHeader"
-      :style="`margin-top: ${multiPage ? 0 : -24}px`"
-      :breadcrumb="breadcrumb"
-      :title="pageTitle"
+        ref="pageHeader"
+        :style="`margin-top: ${multiPage ? 0 : -24}px`"
+        :breadcrumb="breadcrumb"
+        :title="pageTitle"
     >
       <slot name="action" slot="action"></slot>
       <slot slot="content" name="headerContent"></slot>
@@ -13,7 +13,7 @@
         <div v-if="this.linkList" class="link">
           <template v-for="(link, index) in linkList">
             <a :key="index" :href="link.href"
-              ><a-icon :type="link.icon" />{{ link.title }}</a
+            ><a-icon :type="link.icon" />{{ link.title }}</a
             >
           </template>
         </div>
@@ -29,11 +29,12 @@
 <script>
 import PageHeader from "@/components/page/header/PageHeader";
 import { mapState, mapMutations } from "vuex";
+import { getI18nKey } from "@/utils/routerUtil";
 
 export default {
   name: "PageLayout",
   components: { PageHeader },
-  props: ["desc", "linkList"],
+  props: ["desc", "logo", "linkList", "extraImage"],
   data() {
     return {
       page: {},
@@ -70,21 +71,31 @@ export default {
       "layout",
       "multiPage",
       "pageMinHeight",
-      "pageWidth"
+      "pageWidth",
+      "customTitles"
     ]),
     pageTitle() {
       let pageTitle = this.page && this.page.title;
-      return pageTitle || this.title || this.routeName;
+      return (
+          this.customTitle ||
+          (pageTitle && this.$t(pageTitle)) ||
+          this.title ||
+          this.routeName
+      );
     },
     routeName() {
       const route = this.$route;
-      return route.matched[route.matched.length - 1].name;
+      return this.$t(getI18nKey(route.matched[route.matched.length - 1].path));
     },
     breadcrumb() {
       let page = this.page;
       let breadcrumb = page && page.breadcrumb;
       if (breadcrumb) {
-        return breadcrumb;
+        let i18nBreadcrumb = [];
+        breadcrumb.forEach(item => {
+          i18nBreadcrumb.push(this.$t(item));
+        });
+        return i18nBreadcrumb;
       } else {
         return this.getRouteBreadcrumb();
       }
@@ -100,14 +111,14 @@ export default {
       const path = this.$route.path;
       let breadcrumb = [];
       routes
-        .filter(item => item.path.includes(":") || path.includes(item.path))
-        .forEach(route => {
-          const path = route.path.length === 0 ? "首页" : route.name;
-          breadcrumb.push(path);
-        });
-      let pageTitle = this.page && this.page.name;
-      if (pageTitle) {
-        breadcrumb[breadcrumb.length - 1] = pageTitle;
+          .filter(item => item.path.includes(":") || path.includes(item.path))
+          .forEach(route => {
+            const path = route.path.length === 0 ? "/dashboard" : route.path;
+            breadcrumb.push(this.$t(getI18nKey(path)));
+          });
+      let pageTitle = this.page && this.page.title;
+      if (this.customTitle || pageTitle) {
+        breadcrumb[breadcrumb.length - 1] = this.customTitle || pageTitle;
       }
       return breadcrumb;
     },
@@ -116,7 +127,7 @@ export default {
      * @param newHeight
      */
     updatePageHeight(
-      newHeight = this.$refs.pageHeader.$el.offsetHeight + this.marginCorrect
+        newHeight = this.$refs.pageHeader.$el.offsetHeight + this.marginCorrect
     ) {
       this.correctPageMinHeight(this.pageHeaderHeight - newHeight);
       this.pageHeaderHeight = newHeight;

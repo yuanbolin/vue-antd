@@ -28,6 +28,7 @@
     "js-cookie": "^2.2.1",
     "mockjs": "^1.1.0",
     "nprogress": "^0.2.0",
+    "store": "^2.0.12",
     "viser-vue": "^2.4.8",
     "vue": "^2.6.11",
     "vue-color": "^2.8.1",

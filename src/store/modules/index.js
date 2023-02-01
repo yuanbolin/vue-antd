@@ -1,4 +1,4 @@
 import account from './account'
 import setting from './setting'
-
-export default {account, setting}
+import user from './user'
+export default {account, setting,user}

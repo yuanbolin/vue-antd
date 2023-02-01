@@ -40,7 +40,7 @@ export default {
     // 退出登录
     logout() {
       logout();
-      this.$router.push("/login");
+      this.$router.push("/user/login");
     },
     // 前往个人中心
     personalCenter() {

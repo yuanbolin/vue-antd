@@ -8,6 +8,7 @@
 import {enquireScreen} from './utils/util'
 import {mapState, mapMutations} from 'vuex'
 import themeUtil from '@/utils/themeUtil';
+import {getI18nKey} from '@/utils/routerUtil'
 
 export default {
   name: 'App',
@@ -18,18 +19,18 @@ export default {
   },
   created () {
     this.setHtmlTitle()
-    this.locale = require('ant-design-vue/es/locale-provider/zh_CN').default
+    this.setLanguage(this.lang)
     enquireScreen(isMobile => this.setDevice(isMobile))
   },
   mounted() {
-   this.setWeekModeTheme(this.weekMode)
+    this.setWeekModeTheme(this.weekMode)
   },
   watch: {
     weekMode(val) {
       this.setWeekModeTheme(val)
     },
-    lang() {
-      this.locale = require('ant-design-vue/es/locale-provider/zh_CN').default
+    lang(val) {
+      this.setLanguage(val)
       this.setHtmlTitle()
     },
     $route() {
@@ -59,10 +60,25 @@ export default {
         document.body.classList.remove('week-mode')
       }
     },
+    setLanguage(lang) {
+      this.$i18n.locale = lang
+      switch (lang) {
+        case 'CN':
+          this.locale = require('ant-design-vue/es/locale-provider/zh_CN').default
+          break
+        case 'HK':
+          this.locale = require('ant-design-vue/es/locale-provider/zh_TW').default
+          break
+        case 'US':
+        default:
+          this.locale = require('ant-design-vue/es/locale-provider/en_US').default
+          break
+      }
+    },
     setHtmlTitle() {
       const route = this.$route
-      const key = route.path === '/' ? 'home' : route.matched[route.matched.length - 1].name
-      document.title = process.env.VUE_APP_NAME + ' | ' + key
+      const key = route.path === '/' ? 'home.name' : getI18nKey(route.matched[route.matched.length - 1].path)
+      document.title = process.env.VUE_APP_NAME + ' | ' + this.$t(key)
     },
     popContainer() {
       return document.getElementById("popContainer")
@@ -72,6 +88,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  #id{
-  }
+#id{
+}
 </style>

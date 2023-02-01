@@ -3,14 +3,14 @@ title: 登录认证
 lang: zn-CN
 ---
 # 登录认证
-Vue Antd Admin 使用 js-cookie.js 管理用户的 token，结合 axios 配置，可以为每个请求头加上 token 信息。
+Vue Antd Admin 使用 storage.js 管理用户的 token，结合 axios 配置，可以为每个请求头加上 token 信息。
 
 ## token名称
 后端系统通常会从请求 header 中获取用户的 token，因此我们需要配置好 token 名称，好让后端能正确的识别到用户 token。
 Vue Antd Admin 默认token 名称为 `Authorization`，你可以在 /utils/request.js 中修改它。
 ```js{5}
 import axios from 'axios'
-import Cookie from 'js-cookie'
+import storage from 'storage'
 
 // 跨域认证信息 header 名
 const xsrfHeaderName = 'Authorization'
@@ -27,13 +27,13 @@ login(name, password).then(res => {
 })
 ```
 ## token 校验
-Vue Antd Admin 默认添加了登录导航守卫，如检查到本地cookie 中不包含 token 信息，则会拦截跳转至登录页。你可以在 /router/index.js 中配置
+Vue Antd Admin 默认添加了登录导航守卫，如检查到本地storage 中不包含 token 信息，则会拦截跳转至登录页。你可以在 /router/index.js 中配置
 不需要登录拦截的路由
 ```js
 // 不需要登录拦截的路由配置
 const loginIgnore = {
   names: ['404', '403'],      //根据路由名称匹配
-  paths: ['/login'],   //根据路由fullPath匹配
+  paths: ['/user/login'],   //根据路由fullPath匹配
   /**
    * 判断路由是否包含在该配置中
    * @param route vue-router 的 route 对象

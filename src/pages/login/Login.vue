@@ -1,191 +1,157 @@
 <template>
-  <common-layout>
-    <div class="top">
-      <div class="header">
-        <img alt="logo" class="logo" src="@/assets/img/logo.png" />
-        <span class="title">{{systemName}}</span>
-      </div>
-      <div class="desc">浙江宏利汽配集团有限公司</div>
-    </div>
-    <div class="login">
-      <a-form @submit="onSubmit" :form="form">
-        <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
-          <a-tab-pane tab="账户密码登录" key="1">
-            <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon style="margin-bottom: 24px;" />
-            <a-form-item>
-              <a-input
-                autocomplete="autocomplete"
-                size="large"
-                placeholder="admin"
-                v-decorator="['name', {rules: [{ required: true, message: '请输入账户名', whitespace: true}]}]"
-              >
-                <a-icon slot="prefix" type="user" />
-              </a-input>
-            </a-form-item>
-            <a-form-item>
-              <a-input-password
-                size="large"
-                placeholder="888888"
-                autocomplete="autocomplete"
-                type="password"
-                v-decorator="['password', {rules: [{ required: true, message: '请输入密码', whitespace: true}]}]"
-              >
-                <a-icon slot="prefix" type="lock" />
-              </a-input-password>
-            </a-form-item>
-          </a-tab-pane>
-<!--          <a-tab-pane tab="手机号登录" key="2">-->
-<!--            <a-form-item>-->
-<!--              <a-input size="large" placeholder="mobile number" >-->
-<!--                <a-icon slot="prefix" type="mobile" />-->
-<!--              </a-input>-->
-<!--            </a-form-item>-->
-<!--            <a-form-item>-->
-<!--              <a-row :gutter="8" style="margin: 0 -4px">-->
-<!--                <a-col :span="16">-->
-<!--                  <a-input size="large" placeholder="captcha">-->
-<!--                    <a-icon slot="prefix" type="mail" />-->
-<!--                  </a-input>-->
-<!--                </a-col>-->
-<!--                <a-col :span="8" style="padding-left: 4px">-->
-<!--                  <a-button style="width: 100%" class="captcha-button" size="large">获取验证码</a-button>-->
-<!--                </a-col>-->
-<!--              </a-row>-->
-<!--            </a-form-item>-->
-<!--          </a-tab-pane>-->
-        </a-tabs>
-        <div>
-<!--          <a-checkbox :checked="true" >自动登录</a-checkbox>-->
-          <a @click="passwordHandle" class="forgetThePassword">忘记密码</a>
+  <div class="main">
+    <div class="login_container">
+      <div class="qrcode">
+        <div class="title-name">流程图管理工具</div>
+        <div class="edition-no">V 1.0.1</div>
+        <div id="system" class="system">{{ systemName }}</div>
+        <div id="login"></div>
+        <div class="privacy-clause">
+          <div class="title">阅读并接受</div>
+          <a href="https://www.honglee.net" class="title-blue">《使用条款》 </a>
+          <div class="title">和</div>
+          <a href="https://www.honglee.net" class="title-blue"> 《隐私政策》</a>
         </div>
-        <a-form-item>
-          <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
-        </a-form-item>
-      </a-form>
+      </div>
     </div>
-  </common-layout>
+  </div>
 </template>
-
 <script>
-import CommonLayout from '@/layouts/CommonLayout'
-import {login} from '@/services/user'
-import {setAuthorization} from '@/utils/request'
-import {mapMutations} from 'vuex'
-
+import { mapActions } from "vuex";
+import notification from "ant-design-vue/lib/notification";
 export default {
-  name: 'Login',
-  components: {CommonLayout},
-  data () {
+  components: {},
+  data() {
     return {
-      logging: false,
-      error: '',
-      form: this.$form.createForm(this)
-    }
+      systemName: ""
+    };
   },
-  computed: {
-    systemName () {
-      return this.$store.state.setting.systemName
-    }
+  mounted() {
+    this.getSystemToken().then(res => {
+      if (res && res === "OK") {
+        this.getQrcode();
+      }
+    });
   },
   methods: {
-    ...mapMutations('account', ['setUser', 'setPermissions', 'setRoles']),
-    onSubmit (e) {
-      e.preventDefault()
-      this.form.validateFields((err) => {
-        if (!err) {
-          this.logging = true
-          const name = this.form.getFieldValue('name')
-          const password = this.form.getFieldValue('password')
-          login(name, password).then(this.afterLogin)
+    ...mapActions(["getSystemToken", "Login"]),
+    getQrcode() {
+      const _this = this;
+      _this.Login().then(res => {
+        if (res) {
+          let systemName = "";
+          let systemColor = "#0089ff";
+          let systemObject = null;
+          switch (res.system_type) {
+            case 1:
+              systemName = "请使用钉钉扫码";
+              systemColor = "#0089ff";
+              systemObject = document.getElementById("system");
+              systemObject.style.setProperty("color", systemColor);
+              this.systemName = systemName;
+              window.DTFrameLogin(
+                {
+                  id: "login",
+                  width: 300,
+                  height: 300
+                },
+                {
+                  redirect_uri: encodeURIComponent(
+                    "http://localhost:8000/auth"
+                  ),
+                  client_id: res.client_id,
+                  scope: res.scope,
+                  response_type: res.response_type,
+                  state: res.state,
+                  prompt: res.prompt
+                },
+                loginResult => {
+                  const { redirectUrl, authCode } = loginResult;
+                  // 这里可以直接进行重定向
+                  console.log(redirectUrl);
+                  window.location.href = redirectUrl;
+                  // 也可以在不跳转页面的情况下，使用code进行授权
+                  console.log(authCode);
+                },
+                errorMsg => {
+                  notification.error({
+                    message: "登录失败",
+                    description: errorMsg
+                  });
+                }
+              );
+              break;
+            case 2:
+              systemName = "请使用企业微信扫码";
+              systemColor = "#0082ef";
+              // TODO 企业微信登录
+              break;
+            case 3:
+              systemName = "请使用微信扫码";
+              systemColor = "green";
+              // TODO 微信登录
+              break;
+            case 4:
+              systemName = "请使用飞书扫码";
+              systemColor = "green";
+              // TODO 飞书登录
+              break;
+          }
         }
-      })
-    },
-    afterLogin(res) {
-      console.log('login',res)
-      this.logging = false
-      const loginRes = res.data
-      loginRes.data.permissions = [{id: 'queryForm', operation: ['add', 'edit','delete']}]
-      loginRes.data.roles = []
-      if (res.status === 200) {
-        const {user, permissions, roles} = loginRes.data
-        this.setUser(user)
-        this.setPermissions(permissions)
-        this.setRoles(roles)
-        setAuthorization({token: loginRes.data.token, expireAt: null})
-        this.$router.push('/dashboard')
-        this.$message.success(loginRes.message, 3)
-      } else {
-        this.error = loginRes.message
-      }
-    },
-    passwordHandle(){
-      this.$notification['info']({
-        message: '请寻求本组织管理员的帮助',
-        description:
-            '非常抱歉！目前暂未开放个人密码重置服务，请联系本组织管理员进行密码重置！',
       });
     }
   }
-}
+};
 </script>
-
-<style lang="less" scoped>
-  .common-layout{
-    .top {
-      text-align: center;
-      .header {
-        height: 44px;
-        line-height: 44px;
-        a {
-          text-decoration: none;
-        }
-        .logo {
-          height: 44px;
-          vertical-align: top;
-          margin-right: 16px;
-        }
-        .title {
-          font-size: 33px;
-          color: @title-color;
-          font-family: 'Myriad Pro', 'Helvetica Neue', Arial, Helvetica, sans-serif;
-          font-weight: 600;
-          position: relative;
-          top: 2px;
-        }
-      }
-      .desc {
-        font-size: 14px;
-        color: @text-color-second;
-        margin-top: 12px;
-        margin-bottom: 40px;
-      }
-    }
-    .login{
-      width: 368px;
-      margin: 0 auto;
-      @media screen and (max-width: 576px) {
-        width: 95%;
-      }
-      @media screen and (max-width: 320px) {
-        .captcha-button{
-          font-size: 14px;
-        }
-      }
-      .icon {
-        font-size: 24px;
-        color: @text-color-second;
-        margin-left: 16px;
-        vertical-align: middle;
-        cursor: pointer;
-        transition: color 0.3s;
-
-        &:hover {
-          color: @primary-color;
-        }
-      }
-    }
-  }
-  .forgetThePassword{
-    cursor: pointer;
-  }
+<style>
+.main {
+  display: flex;
+  justify-items: center;
+  align-content: center;
+}
+.login_container {
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  text-align: center;
+  align-content: center;
+  width: 400px;
+}
+.qrcode {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  width: 400px;
+  height: 500px;
+  box-shadow: 0 3px 3px #888888;
+  background: white;
+  text-align: center;
+}
+.system {
+  font-size: 22px;
+  padding-top: 30px;
+  font-weight: bold;
+}
+.title-name {
+  font-size: 28px;
+  padding-top: 30px;
+  font-weight: bold;
+}
+.edition-no {
+  color: #888888;
+  margin-left: 80%;
+}
+.privacy-clause {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  font-weight: bold;
+  color: black;
+}
+.title {
+  color: #888888;
+}
+.title-blue {
+  color: black;
+}
 </style>
