@@ -14,10 +14,7 @@ const view = {
   component: () => import('@/pages/demo'),    //路由视图
   icon: 'permission',                         //路由的菜单icon，会注入到路由元数据meta中
   invisible: false,                           //是否隐藏菜单项，true 隐藏，false 不隐藏，会注入到路由元数据meta中。
-  authority: {                                //路由权限配置，会注入到路由元数据meta中。可缺省，默认为 ‘*’, 即无权限限制
-    permission: 'form',                       //路由需要的权限
-    role: 'admin'                             //路由需要的角色。当permission未设置，通过 role 检查权限
-  },
+  authority: 'admin',                               //路由权限配置，会注入到路由元数据meta中。可缺省，默认为 []
   page: {                                     //路由的页面数据，会注入到路由元数据meta中
     title: '演示页',                          //页面标题
     breadcrumb: ['首页', '演示页']            //页面面包屑

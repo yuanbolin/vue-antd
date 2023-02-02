@@ -1,12 +1,4 @@
 import Mock from 'mockjs'
-import '@/mock/user/current'
-import '@/mock/project'
-import '@/mock/user/login'
-import '@/mock/workplace'
-import '@/mock/user/routes'
-import '@/mock/goods'
-import '@/mock/list'
-import '@/mock/userList'
 
 /**
  * name 为属性名, rule 为规则, value 为值，属性名和生成规则之间用|分隔，生成规则的格式有7种：

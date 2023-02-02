@@ -23,8 +23,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { logout } from "@/services/user";
+import { mapGetters,mapActions } from "vuex";
 import avatar from "@/assets/img/avatar.png";
 export default {
   name: "HeaderAvatar",
@@ -34,17 +33,17 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("account", ["user"])
+    ...mapGetters("account", ["user"]),
+    ...mapActions("Logout")
   },
   methods: {
     // 退出登录
     logout() {
-      logout();
+      this.Logout();
       this.$router.push("/user/login");
     },
     // 前往个人中心
     personalCenter() {
-      console.log("geren");
       this.$router.push("/personalCenter");
     }
   }

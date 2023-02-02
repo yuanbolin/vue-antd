@@ -17,8 +17,6 @@ export async function login(name, password) {
 
 export function logout() {
   storage.remove(process.env.VUE_APP_USER_ROUTES_KEY);
-  storage.remove(process.env.VUE_APP_USER_PERMISSIONS_KEY);
-  storage.remove(process.env.VUE_APP_USER_ROLES_KEY);
   removeAuthorization();
 }
 

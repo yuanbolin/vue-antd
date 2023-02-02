@@ -1,4 +1,3 @@
-import {hasAuthority} from '@/utils/authority-utils'
 import {loginIgnore} from '@/router/index'
 import {checkAuthorization} from '@/utils/request'
 import NProgress from 'nprogress'
@@ -32,26 +31,6 @@ const loginGuard = (to, from, next, options) => {
   if (!loginIgnore.includes(to) && !checkAuthorization()) {
     message.warning('登录已失效，请重新登录')
     next({path: '/user/login'})
-  } else {
-    next()
-  }
-}
-
-/**
- * 权限守卫
- * @param to
- * @param form
- * @param next
- * @param options
- */
-const authorityGuard = (to, from, next, options) => {
-  const {store, message} = options
-  const permissions = store.getters['account/permissions']
-  const roles = store.getters['account/roles']
-  if (!hasAuthority(to, permissions, roles)) {
-    message.warning(`对不起，您无权访问页面: ${to.fullPath}，请联系管理员`)
-    next({path: '/403'})
-    // NProgress.done()
   } else {
     next()
   }
@@ -100,6 +79,6 @@ const progressDone = () => {
 }
 
 export default {
-  beforeEach: [progressStart, loginGuard, authorityGuard, redirectGuard],
+  beforeEach: [progressStart, loginGuard, redirectGuard],
   afterEach: [progressDone]
 }

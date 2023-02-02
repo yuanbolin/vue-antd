@@ -1,8 +1,12 @@
 import axios from "axios";
 import storage from "store";
-const { VUE_APP_USER_TOKEN,VUE_APP_API_BASE_URL } = process.env;
+const {
+  VUE_APP_USER_TOKEN,
+  VUE_APP_API_BASE_URL,
+  VUE_APP_SYSTEM_TOKEN
+} = process.env;
 axios.defaults.timeout = 240000;
-axios.defaults.baseURL = VUE_APP_API_BASE_URL+ "/api";
+axios.defaults.baseURL = VUE_APP_API_BASE_URL + "/api";
 axios.defaults.xsrfHeaderName = VUE_APP_USER_TOKEN;
 axios.defaults.xsrfTokenName = VUE_APP_USER_TOKEN;
 
@@ -34,16 +38,22 @@ async function request(url, method, params, config) {
  * 设置认证信息
  * @param auth {Object}
  */
-function setAuthorization(auth) {
-  storage.set(VUE_APP_USER_TOKEN, "Bearer " + auth.token, {
-    expires: auth.expireAt
-  });
+function setAuthorization(auth, time) {
+  storage.set(
+    VUE_APP_USER_TOKEN,
+    "Bearer " + auth.token,
+    {
+      expires: auth.expireAt
+    },
+    time
+  );
 }
 
 /**
  * 移出认证信息
  */
 function removeAuthorization() {
+  storage.remove(VUE_APP_SYSTEM_TOKEN);
   storage.remove(VUE_APP_USER_TOKEN);
 }
 
@@ -52,7 +62,7 @@ function removeAuthorization() {
  * @param authType
  * @returns {boolean}
  */
-function checkAuthorization(){
+function checkAuthorization() {
   if (storage.get(VUE_APP_USER_TOKEN)) {
     return true;
   }
