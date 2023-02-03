@@ -16,12 +16,11 @@ let appOptions = {
  * @param options
  */
 function setAppOptions(options) {
-  const {router, store, i18n} = options
-  appOptions.router = router
-  appOptions.store = store
-  appOptions.i18n = i18n
+  const { router, store, i18n } = options;
+  appOptions.router = router;
+  appOptions.store = store;
+  appOptions.i18n = i18n;
 }
-
 
 /**
  * 根据 路由配置 和 路由组件注册 解析路由
@@ -29,20 +28,23 @@ function setAppOptions(options) {
  * @param routerMap 本地路由组件注册配置
  */
 function parseRoutes(routesConfig, routerMap) {
-  let routes = []
+  let routes = [];
   routesConfig.forEach(item => {
     // 获取注册在 routerMap 中的 router，初始化 routeCfg
-    let router = undefined, routeCfg = {}
-    if (typeof item === 'string') {
-      router = routerMap[item]
-      routeCfg = {path: (router && router.path) || item, router: item}
-    } else if (typeof item === 'object') {
-      router = routerMap[item.router]
-      routeCfg = item
+    let router = undefined,
+      routeCfg = {};
+    if (typeof item === "string") {
+      router = routerMap[item];
+      routeCfg = { path: (router && router.path) || item, router: item };
+    } else if (typeof item === "object") {
+      router = routerMap[item.router];
+      routeCfg = item;
     }
     if (!router) {
-      console.warn(`can't find register for router ${routeCfg.router}, please register it in advance.`)
-      router = typeof item === 'string' ? {path: item, name: item} : item
+      console.warn(
+        `can't find register for router ${routeCfg.router}, please register it in advance.`
+      );
+      router = typeof item === "string" ? { path: item, name: item } : item;
     }
     // 从 router 和 routeCfg 解析路由
     const meta = {
@@ -53,7 +55,7 @@ function parseRoutes(routesConfig, routerMap) {
       params: router.params,
       query: router.query,
       ...router.meta
-    }
+    };
     const cfgMeta = {
       authority: routeCfg.authority,
       icon: routeCfg.icon,
@@ -62,29 +64,33 @@ function parseRoutes(routesConfig, routerMap) {
       params: routeCfg.params,
       query: routeCfg.query,
       ...routeCfg.meta
-    }
+    };
     Object.keys(cfgMeta).forEach(key => {
-      if (cfgMeta[key] === undefined || cfgMeta[key] === null || cfgMeta[key] === '') {
-        delete cfgMeta[key]
+      if (
+        cfgMeta[key] === undefined ||
+        cfgMeta[key] === null ||
+        cfgMeta[key] === ""
+      ) {
+        delete cfgMeta[key];
       }
-    })
-    Object.assign(meta, cfgMeta)
+    });
+    Object.assign(meta, cfgMeta);
     const route = {
       path: routeCfg.path || router.path || routeCfg.router,
       name: routeCfg.name || router.name,
       component: router.component,
       redirect: routeCfg.redirect || router.redirect,
-      meta: {...meta, authority: meta.authority || '*'}
-    }
+      meta: { ...meta, authority: meta.authority || "*" }
+    };
     if (routeCfg.invisible || router.invisible) {
-      route.meta.invisible = true
+      route.meta.invisible = true;
     }
     if (routeCfg.children && routeCfg.children.length > 0) {
-      route.children = parseRoutes(routeCfg.children, routerMap)
+      route.children = parseRoutes(routeCfg.children, routerMap);
     }
-    routes.push(route)
-  })
-  return routes
+    routes.push(route);
+  });
+  return routes;
 }
 
 /**
@@ -211,27 +217,27 @@ function formatRoutes(routes) {
  */
 function formatAuthority(routes, pAuthorities = []) {
   routes.forEach(route => {
-    const meta = route.meta
-    const defaultAuthority = pAuthorities[pAuthorities.length - 1] || []
+    const meta = route.meta;
+    const defaultAuthority = pAuthorities[pAuthorities.length - 1] || [];
     if (meta) {
-      let authority = {}
+      let authority = {};
       if (!meta.authority) {
-        authority = defaultAuthority
-      }else if (typeof meta.authority === 'string') {
-        authority = meta.authority.split(',')
+        authority = defaultAuthority;
+      } else if (typeof meta.authority === "string") {
+        authority = meta.authority.split(",");
       } else if (meta.authority instanceof Array) {
-        authority = meta.authority
+        authority = meta.authority;
       }
-      meta.authority = authority
+      meta.authority = authority;
     } else {
-      const authority = defaultAuthority
-      route.meta = {authority}
+      const authority = defaultAuthority;
+      route.meta = { authority };
     }
-    route.meta.pAuthorities = pAuthorities
+    route.meta.pAuthorities = pAuthorities;
     if (route.children) {
-      formatAuthority(route.children, [...pAuthorities, route.meta.authority])
+      formatAuthority(route.children, [...pAuthorities, route.meta.authority]);
     }
-  })
+  });
 }
 
 /**
@@ -274,8 +280,13 @@ function loadGuards(guards, options) {
  */
 function generator(routerMap) {
   return routerMap.map(item => {
-    item.authority=item.permission  //匹配authority 页面权限
-    item.router=item.title   //匹配 router.map.js 中注册名 registerName = root 的路由
+    item.authority = item.permission; //匹配authority 页面权限
+    item.router = item.code; //匹配 router.map.js 中注册名 registerName = root 的路由
+    item.invisible = item.hidden === 1; //是否隐藏菜单项
+    item.page = {
+      cacheAble: item.keep_alive === 1 //页面数据是否缓存
+    };
+    return item;
   });
 }
 
@@ -285,13 +296,29 @@ function generator(routerMap) {
  * @param tree 树
  * @param parentId 父ID
  */
-function listToTree(list, tree, parentId) {
+function listToTree(list, parentId) {
+  let tree = [];
   list.forEach(item => {
-    item.children = list.filter(r => r.parent_id === item.Id);
-    if (item.id === parentId) {
+    item.children = list.filter(r => {
+      return r.parent_id === item.Id;
+    });
+    if (item.parent_id === parentId) {
       tree.push(item);
     }
   });
+
+  return [
+    {
+      router: "root", //匹配 router.map.js 中注册名 registerName = root 的路由
+      children: [
+        //root 路由的子路由配置
+        {
+          router: "dashboard" //匹配 router.map.js 中注册名 registerName = dashboard 的路由
+        },
+        ...tree
+      ]
+    }
+  ];
 }
 
 export {

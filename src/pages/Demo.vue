@@ -1,11 +1,15 @@
 <template>
   <div>
-    <a-input-search style="margin-bottom: 8px" placeholder="Search" @change="onChange" />
+    <a-input-search
+      style="margin-bottom: 8px"
+      placeholder="Search"
+      @change="onChange"
+    />
     <a-tree
-        :expanded-keys="expandedKeys"
-        :auto-expand-parent="autoExpandParent"
-        :tree-data="gData"
-        @expand="onExpand"
+      :expanded-keys="expandedKeys"
+      :auto-expand-parent="autoExpandParent"
+      :tree-data="gData"
+      @expand="onExpand"
     >
       <template slot="title" slot-scope="{ title }">
         <span v-if="title.indexOf(searchValue) > -1">
@@ -26,13 +30,13 @@ const z = 1;
 const gData = [];
 
 const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0';
+  const preKey = _preKey || "0";
   const tns = _tns || gData;
 
   const children = [];
   for (let i = 0; i < x; i++) {
     const key = `${preKey}-${i}`;
-    tns.push({ title: key, key, scopedSlots: { title: 'title' } });
+    tns.push({ title: key, key, scopedSlots: { title: "title" } });
     if (i < y) {
       children.push(key);
     }
@@ -79,9 +83,9 @@ export default {
   data() {
     return {
       expandedKeys: [],
-      searchValue: '',
+      searchValue: "",
       autoExpandParent: true,
-      gData,
+      gData
     };
   },
   methods: {
@@ -92,20 +96,20 @@ export default {
     onChange(e) {
       const value = e.target.value;
       const expandedKeys = dataList
-          .map(item => {
-            if (item.title.indexOf(value) > -1) {
-              return getParentKey(item.key, gData);
-            }
-            return null;
-          })
-          .filter((item, i, self) => item && self.indexOf(item) === i);
-      console.log("expandedKeys",expandedKeys)
+        .map(item => {
+          if (item.title.indexOf(value) > -1) {
+            return getParentKey(item.key, gData);
+          }
+          return null;
+        })
+        .filter((item, i, self) => item && self.indexOf(item) === i);
+      console.log("expandedKeys", expandedKeys);
       Object.assign(this, {
         expandedKeys,
         searchValue: value,
-        autoExpandParent: true,
+        autoExpandParent: true
       });
-    },
-  },
+    }
+  }
 };
 </script>

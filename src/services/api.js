@@ -14,5 +14,5 @@ module.exports = {
   ORGANIZATION: `/organization/org_tree`,
   ORGANIZATIONADD: `/organization/add`,
   ORGANIZATIONEDIT: `/organization/update`,
-  ORGANIZATIONDELETE: `/organization/delete`,
+  ORGANIZATIONDELETE: `/organization/delete`
 };

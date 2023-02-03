@@ -33,9 +33,7 @@
           ></select-tree>
         </a-form-model-item>
         <a-form-model-item label="权限分配" prop="resource">
-          <a-radio-group
-            v-model="form.resource"
-          >
+          <a-radio-group v-model="form.resource">
             <a-radio value="1">
               查看
             </a-radio>

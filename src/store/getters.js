@@ -7,9 +7,9 @@ const getters = {
   avatar: state => state.user.avatar,
   nickname: state => state.user.name,
   welcome: state => state.user.welcome,
-  userInfo: state => state.user.info,
+  userInfo: state => state.user.info
   // addRouters: state => state.permission.addRouters,
   // multiTab: state => state.app.multiTab
-}
+};
 
-export default getters
+export default getters;

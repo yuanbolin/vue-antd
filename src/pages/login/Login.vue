@@ -1,26 +1,35 @@
 <template>
-  <div class="main">
-    <div class="login_container">
-      <div class="qrcode">
-        <div class="title-name">流程图管理工具</div>
-        <div class="edition-no">V 1.0.1</div>
-        <div id="system" class="system">{{ systemName }}</div>
-        <div id="login"></div>
-        <div class="privacy-clause">
-          <div class="title">阅读并接受</div>
-          <a href="https://www.honglee.net" class="title-blue">《使用条款》 </a>
-          <div class="title">和</div>
-          <a href="https://www.honglee.net" class="title-blue"> 《隐私政策》</a>
+  <user-layout>
+    <div class="main">
+      <div class="login_container">
+        <div class="qrcode">
+          <div class="title-name">流程图管理工具</div>
+          <div class="edition-no">V 1.0.1</div>
+          <div id="system" class="system">{{ systemName }}</div>
+          <div id="login"></div>
+          <div class="privacy-clause">
+            <div class="title">阅读并接受</div>
+            <a href="https://www.honglee.net" class="title-blue"
+              >《使用条款》
+            </a>
+            <div class="title">和</div>
+            <a href="https://www.honglee.net" class="title-blue">
+              《隐私政策》</a
+            >
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </user-layout>
 </template>
 <script>
 import { mapActions } from "vuex";
 import notification from "ant-design-vue/lib/notification";
+import UserLayout from "@/layouts/UserLayout";
 export default {
-  components: {},
+  components: {
+    UserLayout
+  },
   data() {
     return {
       systemName: ""
@@ -34,10 +43,9 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["getSystemToken", "Login"]),
+    ...mapActions("login", ["getSystemToken", "Login"]),
     getQrcode() {
-      const _this = this;
-      _this.Login().then(res => {
+      this.Login().then(res => {
         if (res) {
           let systemName = "";
           let systemColor = "#0089ff";

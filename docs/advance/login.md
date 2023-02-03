@@ -33,7 +33,7 @@ Vue Antd Admin 默认添加了登录导航守卫，如检查到本地storage 中
 // 不需要登录拦截的路由配置
 const loginIgnore = {
   names: ['404', '403'],      //根据路由名称匹配
-  paths: ['/user/login'],   //根据路由fullPath匹配
+  paths: ['/login'],   //根据路由fullPath匹配
   /**
    * 判断路由是否包含在该配置中
    * @param route vue-router 的 route 对象

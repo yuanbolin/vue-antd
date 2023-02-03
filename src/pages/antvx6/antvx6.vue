@@ -367,6 +367,7 @@ export default {
   },
   created() {},
   mounted() {
+    console.log("流程id==》", this.$route.params.id);
     //因直接初始化偶尔存在找不到节点的bug，推迟半秒初始化
     setTimeout(() => {
       this.initGraph();

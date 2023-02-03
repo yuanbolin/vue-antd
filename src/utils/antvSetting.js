@@ -71,19 +71,19 @@ export const configSetting = Shape => {
     resizing: {
       // 节点缩放 最小限制为20px，最大限制为200px
       enabled: true,
-      preserveAspectRatio:true, //等比例缩放
+      preserveAspectRatio: true, //等比例缩放
       minWidth: 20,
       minHeight: 20,
-      maxWidth:200,
-      maxHeight:200,
-      restricted:true //限制画布边缘缩放
+      maxWidth: 200,
+      maxHeight: 200,
+      restricted: true //限制画布边缘缩放
     },
     rotating: true, // 节点选转
     selecting: {
       enabled: true,
-      multiple:false, // 关闭多选
+      multiple: false, // 关闭多选
       rubberband: true, // 框选
-      modifiers:'ctrl',
+      modifiers: "ctrl",
       showNodeSelectionBox: true // 展示选择框效果
     },
     snapline: true, // 辅助对齐线
@@ -92,7 +92,7 @@ export const configSetting = Shape => {
     clipboard: false, // 剪切板 开启后可复制黏贴
     scroller: {
       enabled: true,
-      pannable:true,
+      pannable: true
     },
     embedding: {
       // 父子节点交互嵌套
@@ -332,10 +332,10 @@ export const configNodeShape = type => {
           text: "成功",
           fontSize: 16,
           fill: "#333",
-          style:{
+          style: {
             "text-shadow": "0px 0px 2px #333",
-            "font-weight":'bold',
-          },
+            "font-weight": "bold"
+          }
         },
         body: {
           filter: "url(#f4)",
@@ -372,10 +372,10 @@ export const configNodeShape = type => {
           text: "失败",
           fontSize: 16,
           fill: "#333",
-          style:{
+          style: {
             "text-shadow": "0px 0px 2px #333",
-            "font-weight":'bold',
-          },
+            "font-weight": "bold"
+          }
         },
         body: {
           fill: "#e11313",
@@ -412,10 +412,10 @@ export const configNodeShape = type => {
           text: "文档",
           fontSize: 16,
           fill: "#333",
-          style:{
+          style: {
             "text-shadow": "0px 0px 2px #333",
-            "font-weight":'bold',
-          },
+            "font-weight": "bold"
+          }
         },
         body: {
           fill: "#13e199",
@@ -444,10 +444,10 @@ export const configNodeShape = type => {
         {
           tagName: "text",
           selector: "label",
-          style:{
+          style: {
             "text-shadow": "0px 0px 2px #666",
             "font-weight": 500,
-            "text-decoration":'underline'
+            "text-decoration": "underline"
           }
         }
       ],
@@ -457,10 +457,10 @@ export const configNodeShape = type => {
           text: "财务",
           fontSize: 16,
           fill: "#333",
-          style:{
+          style: {
             "text-shadow": "0px 0px 2px #333",
-            "font-weight":'bold',
-          },
+            "font-weight": "bold"
+          }
         },
         body: {
           fill: "#dcb713",
@@ -489,21 +489,21 @@ export const configNodeShape = type => {
         {
           tagName: "text",
           selector: "label",
-          style:{
+          style: {
             "text-shadow": "0px 0px 2px #333",
-            "font-weight":'bold',
-          },
+            "font-weight": "bold"
+          }
         }
       ],
-      style:{
-        position:'relative'
+      style: {
+        position: "relative"
       },
       // https://www.svgrepo.com/svg/13653/like
       attrs: {
         label: {
           text: "物流",
           fontSize: 16,
-          fill: "#333",
+          fill: "#333"
         },
         body: {
           fill: "#13addc",
@@ -511,7 +511,7 @@ export const configNodeShape = type => {
           strokeWidth: 2,
           filter: "url(#f4)",
           refD:
-          "M960 768 928 768C928 838.72 870.72 896 800 896 729.28 896 672 838.72 672 768L352 768C352 838.72 294.72 896 224 896 153.28 896 96 838.72 96 768L64 768C46.336 768 32 753.664 32 736L32 256C32 185.28 89.28 128 160 128L480 128C550.72 128 608 185.28 608 256L766.016 256C775.488 255.232 785.088 257.984 792.32 265.216L980.672 453.632C981.632 454.528 981.312 456 982.144 457.024 988.16 462.848 992 470.912 992 480L992 736C992 753.664 977.664 768 960 768ZM224 704C188.672 704 160 732.672 160 768 160 803.328 188.672 832 224 832 259.328 832 288 803.328 288 768 288 732.672 259.328 704 224 704ZM800 832C835.328 832 864 803.328 864 768 864 732.672 835.328 704 800 704 764.672 704 736 732.672 736 768 736 803.328 764.672 832 800 832ZM736 320 608 320 608 512 928 512 736 320Z"
+            "M960 768 928 768C928 838.72 870.72 896 800 896 729.28 896 672 838.72 672 768L352 768C352 838.72 294.72 896 224 896 153.28 896 96 838.72 96 768L64 768C46.336 768 32 753.664 32 736L32 256C32 185.28 89.28 128 160 128L480 128C550.72 128 608 185.28 608 256L766.016 256C775.488 255.232 785.088 257.984 792.32 265.216L980.672 453.632C981.632 454.528 981.312 456 982.144 457.024 988.16 462.848 992 470.912 992 480L992 736C992 753.664 977.664 768 960 768ZM224 704C188.672 704 160 732.672 160 768 160 803.328 188.672 832 224 832 259.328 832 288 803.328 288 768 288 732.672 259.328 704 224 704ZM800 832C835.328 832 864 803.328 864 768 864 732.672 835.328 704 800 704 764.672 704 736 732.672 736 768 736 803.328 764.672 832 800 832ZM736 320 608 320 608 512 928 512 736 320Z"
         }
       }
     }

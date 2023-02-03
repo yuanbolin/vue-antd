@@ -25,11 +25,9 @@ export default {
   name: "PersonalCenter",
   components: { PageLayout, ForgetPassword, UserInfo, Team },
   data() {
-    return {
-    };
+    return {};
   },
-  methods: {
-  }
+  methods: {}
 };
 </script>
 

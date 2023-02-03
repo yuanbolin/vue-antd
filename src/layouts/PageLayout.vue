@@ -1,10 +1,10 @@
 <template>
   <div class="page-layout">
     <page-header
-        ref="pageHeader"
-        :style="`margin-top: ${multiPage ? 0 : -24}px`"
-        :breadcrumb="breadcrumb"
-        :title="pageTitle"
+      ref="pageHeader"
+      :style="`margin-top: ${multiPage ? 0 : -24}px`"
+      :breadcrumb="breadcrumb"
+      :title="pageTitle"
     >
       <slot name="action" slot="action"></slot>
       <slot slot="content" name="headerContent"></slot>
@@ -13,7 +13,7 @@
         <div v-if="this.linkList" class="link">
           <template v-for="(link, index) in linkList">
             <a :key="index" :href="link.href"
-            ><a-icon :type="link.icon" />{{ link.title }}</a
+              ><a-icon :type="link.icon" />{{ link.title }}</a
             >
           </template>
         </div>
@@ -77,10 +77,10 @@ export default {
     pageTitle() {
       let pageTitle = this.page && this.page.title;
       return (
-          this.customTitle ||
-          (pageTitle && this.$t(pageTitle)) ||
-          this.title ||
-          this.routeName
+        this.customTitle ||
+        (pageTitle && this.$t(pageTitle)) ||
+        this.title ||
+        this.routeName
       );
     },
     routeName() {
@@ -111,11 +111,11 @@ export default {
       const path = this.$route.path;
       let breadcrumb = [];
       routes
-          .filter(item => item.path.includes(":") || path.includes(item.path))
-          .forEach(route => {
-            const path = route.path.length === 0 ? "/dashboard" : route.path;
-            breadcrumb.push(this.$t(getI18nKey(path)));
-          });
+        .filter(item => item.path.includes(":") || path.includes(item.path))
+        .forEach(route => {
+          const path = route.path.length === 0 ? "/dashboard" : route.path;
+          breadcrumb.push(this.$t(getI18nKey(path)));
+        });
       let pageTitle = this.page && this.page.title;
       if (this.customTitle || pageTitle) {
         breadcrumb[breadcrumb.length - 1] = this.customTitle || pageTitle;
@@ -127,7 +127,7 @@ export default {
      * @param newHeight
      */
     updatePageHeight(
-        newHeight = this.$refs.pageHeader.$el.offsetHeight + this.marginCorrect
+      newHeight = this.$refs.pageHeader.$el.offsetHeight + this.marginCorrect
     ) {
       this.correctPageMinHeight(this.pageHeaderHeight - newHeight);
       this.pageHeaderHeight = newHeight;

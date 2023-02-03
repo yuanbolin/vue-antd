@@ -3,13 +3,13 @@
     <a-card :bordered="false">
       <a-descriptions :title="form.name" bordered>
         <a-descriptions-item label="管理组成员" :span="2">
-          {{form.chengyuan}}
+          {{ form.chengyuan }}
         </a-descriptions-item>
         <a-descriptions-item label="权限分配">
-          {{form.quanxian}}
+          {{ form.quanxian }}
         </a-descriptions-item>
         <a-descriptions-item label="管理范围" :span="3">
-          {{form.guanlifanwei}}
+          {{ form.guanlifanwei }}
         </a-descriptions-item>
       </a-descriptions>
     </a-card>
@@ -31,9 +31,9 @@ export default {
     this.form = {
       id: 0,
       name: "xxx管理组",
-      chengyuan:"张三，李四",
-      guanlifanwei:"财务中心，信息部，嘉兴汽配零部件有限公司",
-      quanxian:"查看"
+      chengyuan: "张三，李四",
+      guanlifanwei: "财务中心，信息部，嘉兴汽配零部件有限公司",
+      quanxian: "查看"
     };
   }
 };

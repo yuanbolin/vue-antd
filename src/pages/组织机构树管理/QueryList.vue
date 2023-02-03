@@ -49,7 +49,7 @@
           </a-tag>
         </template>
         <template slot="action" slot-scope="text, record">
-          <a-dropdown>
+          <a-dropdown :getPopupContainer="getBody">
             <a style="margin-right: 8px">
               <a-icon style="margin-right: 5px" type="plus" />新增
             </a>
@@ -357,7 +357,7 @@ export default {
       organization.deleteTree({ orgId }).then(res => {
         if (res.data.code === "1000") {
           this.$message.success(res.data.msg, 3);
-          this.getData()
+          this.getData();
         }
       });
     },
@@ -383,7 +383,7 @@ export default {
                   this.onClose();
                   this.$message.success(res.data.msg, 3);
                   this.$nextTick(() => {
-                    this.getData()
+                    this.getData();
                   });
                 }
               });
@@ -400,7 +400,7 @@ export default {
                     this.onClose();
                     this.$message.success(res.data.msg, 3);
                     this.$nextTick(() => {
-                      this.getData()
+                      this.getData();
                     });
                   }
                 });

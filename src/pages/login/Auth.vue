@@ -13,7 +13,7 @@ import { mapActions, mapMutations } from "vuex";
 import storage from "store";
 import { setAuthorization } from "@/utils/request";
 import { getTimestamp } from "@/utils/util";
-import { listToTree, generator } from "@/utils/routerUtil";
+import { listToTree, generator, loadRoutes } from "@/utils/routerUtil";
 const { VUE_APP_SYSTEM_TOKEN } = process.env;
 export default {
   name: "AuthResult",
@@ -24,8 +24,8 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["Login", "UserToken"]),
-    ...mapMutations(["setUser", "setRoutesConfig"])
+    ...mapActions("login", ["Login", "UserToken"]),
+    ...mapMutations("account", ["setUser", "setRoutesConfig"])
   },
   created() {
     const authCode = this.$route.query.authCode;
@@ -37,30 +37,39 @@ export default {
         hearders: { Authorization: systemToken, Timestamp: timeStamp },
         data: { code: authCode, state: state }
       };
-      this.$store.dispatch("UserToken", params).then(res => {
-        if (res.code === "1000") {
-          //处理路由
-          const treeNav = [];
-          const list = generator(res.data.authority);
-          //      经过字段格式化后的原始数组, 路由树形数组,  根级PID
-          listToTree(list, treeNav, 0);
-          this.setRoutesConfig(treeNav);
-          this.setUser(
-            JSON.stringify({
+      this.UserToken(params)
+        .then(res => {
+          if (res.code === "1000") {
+            //处理路由
+            let treeNav = [];
+            const list = generator(res.data.authority);
+            //      经过字段格式化后的原始数组, 路由树形数组,  根级PID
+            treeNav = listToTree(list, 0);
+            console.log("treeNav", treeNav);
+            this.setRoutesConfig(treeNav);
+            loadRoutes(treeNav);
+            this.setUser({
               name: res.data.name,
               description: res.data.description,
-              info: res.data.role  //不具备额外权限效应，只作为用户信息展示
-            })
-          );
-          setAuthorization({
-            token: res.data.token,
-            expireAt: new Date(new Date().getTime() + 30 * 60 * 1000)
-          },15*60*60);
-          console.log("进入首页");
-          this.$router.push({ path: "/dashboard" });
-          this.$message.success("登录成功！", 3);
-        }
-      });
+              info: res.data.role //不具备额外权限效应，只作为用户信息展示
+            });
+            setAuthorization(
+              {
+                token: res.data.token,
+                expireAt: new Date(new Date().getTime() + 30 * 60 * 1000)
+              },
+              15 * 60 * 60
+            );
+            console.log("进入首页");
+            this.$router.push({ path: "/dashboard" });
+            this.$message.success("登录成功！", 3);
+          }
+        })
+        .catch(() => {
+          // this.$router.replace({ path: "/" });
+        });
+    } else {
+      this.$router.replace({ path: "/" });
     }
   }
 };

@@ -4,21 +4,23 @@
       <div class="breadcrumb">
         <a-breadcrumb>
           <a-breadcrumb-item :key="index" v-for="(item, index) in breadcrumb">
-            <span>{{item}}</span>
+            <span>{{ item }}</span>
           </a-breadcrumb-item>
         </a-breadcrumb>
       </div>
       <div class="detail">
         <div class="main">
           <div class="row">
-            <h1 v-if="title" class="title">{{title}}</h1>
+            <h1 v-if="title" class="title">{{ title }}</h1>
             <div class="action"><slot name="action"></slot></div>
           </div>
           <div class="row">
             <div v-if="this.$slots.content" class="content">
               <slot name="content"></slot>
             </div>
-            <div v-if="this.$slots.extra" class="extra"><slot name="extra"></slot></div>
+            <div v-if="this.$slots.extra" class="extra">
+              <slot name="extra"></slot>
+            </div>
           </div>
         </div>
       </div>
@@ -27,9 +29,9 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from "vuex";
 export default {
-  name: 'PageHeader',
+  name: "PageHeader",
   props: {
     title: {
       type: [String, Boolean],
@@ -41,11 +43,11 @@ export default {
     }
   },
   computed: {
-    ...mapState('setting', ['layout', 'pageWidth'])
+    ...mapState("setting", ["layout", "pageWidth"])
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
-  @import "index";
+@import "index";
 </style>

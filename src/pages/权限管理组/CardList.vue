@@ -30,13 +30,17 @@
       >
         <a-list-item slot="renderItem" slot-scope="item">
           <template v-if="item.add">
-            <a-button class="new-btn" type="dashed" @click="$router.push('add')">
+            <a-button
+              class="new-btn"
+              type="dashed"
+              @click="$router.push('add')"
+            >
               <a-icon type="plus" />新增产品
             </a-button>
           </template>
           <template v-else>
             <a-card :hoverable="true">
-              <a-card-meta @click="()=>toDetail(item)">
+              <a-card-meta @click="() => toDetail(item)">
                 <div style="margin-bottom: 3px" slot="title">
                   {{ item.title }}
                 </div>
@@ -51,7 +55,10 @@
                 </div>
               </a-card-meta>
               <router-link slot="actions" :to="`edit/${item.id}`"
-                ><a-icon style="margin-right: 5px" type="edit" />编辑</router-link
+                ><a-icon
+                  style="margin-right: 5px"
+                  type="edit"
+                />编辑</router-link
               >
               <a slot="actions">
                 <a-popconfirm
@@ -106,7 +113,8 @@ export default {
       rules: {
         name: []
       },
-      desc: '将员工以小组形式分配流程模块的操作权限，分配“编辑”权限的用户可对管理范围内的流程进行新增、编辑、查阅。分配“查看”权限的用户可对管理范围内的流程进行查阅。',
+      desc:
+        "将员工以小组形式分配流程模块的操作权限，分配“编辑”权限的用户可对管理范围内的流程进行新增、编辑、查阅。分配“查看”权限的用户可对管理范围内的流程进行查阅。",
       dataSource
     };
   },
@@ -132,9 +140,9 @@ export default {
       console.log(this.form.name);
     },
     //前往详情页
-    toDetail(item){
-      console.log(item)
-      this.$router.push(`detail/${1}`)
+    toDetail(item) {
+      console.log(item);
+      this.$router.push(`detail/${1}`);
     }
   }
 };

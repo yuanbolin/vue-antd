@@ -1,20 +1,20 @@
 <template>
-  <a-dropdown>
+  <a-dropdown :getPopupContainer="getBody">
     <div class="header-avatar" style="cursor: pointer">
       <a-avatar class="avatar" size="small" shape="circle" :src="avatar" />
       <span class="name">{{ user.name }}</span>
     </div>
     <a-menu :class="['avatar-menu']" slot="overlay">
-      <a-menu-item @click="personalCenter">
+      <a-menu-item key="user" @click="personalCenter">
         <a-icon type="user" />
         <span>个人中心</span>
       </a-menu-item>
-      <!--      <a-menu-item>-->
+      <!--      <a-menu-item key="setting">-->
       <!--        <a-icon type="setting" />-->
       <!--        <span>设置</span>-->
       <!--      </a-menu-item>-->
       <a-menu-divider />
-      <a-menu-item @click="logout">
+      <a-menu-item key="exit" @click="logout">
         <a-icon style="margin-right: 8px;" type="poweroff" />
         <span>退出登录</span>
       </a-menu-item>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapGetters,mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import avatar from "@/assets/img/avatar.png";
 export default {
   name: "HeaderAvatar",
@@ -34,13 +34,14 @@ export default {
   },
   computed: {
     ...mapGetters("account", ["user"]),
-    ...mapActions("Logout")
+    ...mapActions("login", ["Logout"])
   },
   methods: {
     // 退出登录
     logout() {
-      this.Logout();
-      this.$router.push("/user/login");
+      this.Logout.then(()=>{
+        this.$router.push("/login");
+      });
     },
     // 前往个人中心
     personalCenter() {

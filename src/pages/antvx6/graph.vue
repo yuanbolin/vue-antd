@@ -60,17 +60,16 @@ export default {
       default: false
     }
   },
-  emits:['menuDrag','handlerSend'],
+  emits: ["menuDrag", "handlerSend"],
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
-    menuDrag(type){
-      this.$emit('menuDrag',type)
+    menuDrag(type) {
+      this.$emit("menuDrag", type);
     },
-    handlerSend(){
-      this.$emit('handlerSend')
+    handlerSend() {
+      this.$emit("handlerSend");
     }
   }
 };

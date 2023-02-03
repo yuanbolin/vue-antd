@@ -58,7 +58,7 @@
         :pagination="{ ...pagination, onChange: onPageChange }"
       >
         <template slot="action" slot-scope="record">
-          <a-dropdown>
+          <a-dropdown :getPopupContainer="getBody">
             <a class="ant-dropdown-link" @click="e => e.preventDefault()">
               相关操作 <a-icon type="down" />
             </a>

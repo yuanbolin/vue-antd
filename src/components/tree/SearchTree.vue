@@ -30,7 +30,6 @@
           <span class="tree-title" v-else>{{ name }}</span>
         </a-tooltip>
       </template>
-
     </a-tree>
   </div>
 </template>

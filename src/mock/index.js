@@ -1,4 +1,4 @@
-import Mock from 'mockjs'
+import Mock from "mockjs";
 
 /**
  * name 为属性名, rule 为规则, value 为值，属性名和生成规则之间用|分隔，生成规则的格式有7种：
@@ -39,5 +39,5 @@ import Mock from 'mockjs'
 
 // 设置全局延时
 Mock.setup({
-  timeout: '200-400'
-})
+  timeout: "200-400"
+});

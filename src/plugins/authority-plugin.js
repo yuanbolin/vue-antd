@@ -82,6 +82,9 @@ const AuthorityPlugin = {
          */
         $auth(check, permissions) {
           return permissions.indexOf(check) !== -1;
+        },
+        getBody() {
+          return document.body;
         }
       }
     });

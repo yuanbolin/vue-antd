@@ -1,35 +1,23 @@
 <template>
-  <a-form-model
-      ref="ruleForm"
-      :model="ruleForm"
-      :rules="rules"
-      v-bind="layout"
-  >
+  <a-form-model ref="ruleForm" :model="ruleForm" :rules="rules" v-bind="layout">
     <a-form-model-item has-feedback label="旧密码" prop="oldpass">
       <a-input v-model.number="ruleForm.oldpass" />
     </a-form-model-item>
     <a-form-model-item has-feedback label="新密码" prop="pass">
-      <a-input
-          v-model="ruleForm.pass"
-          type="password"
-          autocomplete="off"
-      />
+      <a-input v-model="ruleForm.pass" type="password" autocomplete="off" />
     </a-form-model-item>
     <a-form-model-item has-feedback label="确认密码" prop="checkPass">
       <a-input
-          v-model="ruleForm.checkPass"
-          type="password"
-          autocomplete="off"
+        v-model="ruleForm.checkPass"
+        type="password"
+        autocomplete="off"
       />
     </a-form-model-item>
     <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
       <a-button type="primary" @click="submitForm('ruleForm')">
         确认修改
       </a-button>
-      <a-button
-          style="margin-left: 10px"
-          @click="resetForm('ruleForm')"
-      >
+      <a-button style="margin-left: 10px" @click="resetForm('ruleForm')">
         重置表单
       </a-button>
     </a-form-model-item>
@@ -48,7 +36,7 @@ export default {
     let validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入新密码"));
-      }else if (value.length<5 || value.length>20) {
+      } else if (value.length < 5 || value.length > 20) {
         callback(new Error("密码长度要求在5到20之内"));
       } else {
         if (this.ruleForm.checkPass !== "") {
@@ -90,7 +78,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log("submit!",this.ruleForm);
+          console.log("submit!", this.ruleForm);
         } else {
           console.log("error submit!!");
           return false;

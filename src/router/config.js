@@ -1,6 +1,4 @@
 import TabsView from "@/layouts/tabs/TabsView";
-import BlankView from "@/layouts/BlankView";
-import UserLayout from "@/layouts/UserLayout";
 // import PageView from "@/layouts/PageView";
 
 /**
@@ -16,23 +14,18 @@ import UserLayout from "@/layouts/UserLayout";
 const options = {
   routes: [
     {
-      path: "/user",
-      redirect: '/user/login',
-      name: "流程管理工具",
-      component: UserLayout,
-      children: [    {
-        path: "login",
-        name: "登录页",
-        component: () => import("@/pages/login")
-      },]
+      path: "/login",
+      name: "登录",
+      component: () => import("@/pages/login")
     },
     {
-      path: '/auth',
-      name: 'auth',
-      component: () => import(/* webpackChunkName: "result" */ '@/pages/login/Auth'),
+      path: "/auth",
+      name: "用户授权",
+      component: () =>
+        import(/* webpackChunkName: "result" */ "@/pages/login/Auth"),
       meta: {
         invisible: true
-      },
+      }
     },
     {
       path: "*",
@@ -48,7 +41,7 @@ const options = {
       path: "/",
       name: "首页",
       component: TabsView,
-      redirect: "/dashboard",
+      redirect: "/login",
       children: [
         {
           path: "dashboard",
@@ -105,34 +98,23 @@ const options = {
         //   ]
         // },
         {
-          path: "flow",
+          path: "/flow",
           name: "流程管理",
-          redirect: "flow/list",
           meta: {
             icon: "project"
           },
-          component: BlankView,
-          children: [
-            {
-              path: "list",
-              name: "流程目录",
-              meta: {
-                invisible: true
-              },
-              component: () => import("@/pages/流程管理/QueryList")
-            },
-            {
-              name: "流程图绘制",
-              path: "antvx6/:id",
-              meta: {
-                invisible: true,
-                page: {
-                  cacheAble: false
-                }
-              },
-              component: () => import("@/pages/antvx6/index")
+          component: () => import("@/pages/流程管理/QueryList")
+        },
+        {
+          name: "流程图绘制",
+          path: "/antvx6/:id",
+          meta: {
+            invisible: true,
+            page: {
+              cacheAble: false
             }
-          ]
+          },
+          component: () => import("@/pages/antvx6/index")
         },
         // {
         //   path: "User",

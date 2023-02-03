@@ -9,14 +9,15 @@ const {
 } = process.env;
 
 export default {
+  namespaced: true,
   state: {
     token: "",
-    name: "",
+    name: ""
   },
   mutations: {
     SET_TOKEN: (state, payload) => {
       state.token = payload;
-    },
+    }
   },
 
   actions: {
@@ -60,13 +61,6 @@ export default {
           UserToken(payload)
             .then(res => {
               const response = res.data;
-              console.log(
-                "UserToken",
-                response,
-                response.code === "1000",
-                response.data,
-                response.data.token
-              );
               if (
                 response &&
                 response.code === "1000" &&
@@ -78,7 +72,7 @@ export default {
               } else {
                 notification.error({
                   message: "错误",
-                  description: "人员信息未获取"
+                  description: "人员信息未获取,请重新扫码"
                 });
                 reject(new Error("人员授权无效"));
               }
@@ -86,7 +80,7 @@ export default {
             .catch(error => {
               notification.error({
                 message: "错误",
-                description: error
+                description: error || "人员信息未获取"
               });
               reject(error);
             });
@@ -123,7 +117,7 @@ export default {
             .catch(error => {
               notification.error({
                 message: "错误",
-                description: error
+                description: error || "钉钉二维码未获取"
               });
               reject(error);
             });

@@ -77,7 +77,7 @@ const options = {
       path: '/',
       name: '首页',
       component: TabsView,
-      redirect: '/user/login',
+      redirect: '/login',
       children: [
         {
           path: 'newPage',
@@ -116,7 +116,7 @@ const options = {
       path: '/',
       name: '首页',
       component: TabsView,
-      redirect: '/user/login',
+      redirect: '/login',
       children: [
         {
           path: 'parent',

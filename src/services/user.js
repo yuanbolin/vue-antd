@@ -47,7 +47,6 @@ export function UserToken(parameter) {
  * @param parameter
  */
 export function Login(parameter) {
-
   return request(LOGIN, METHOD.GET, null, {
     headers: {
       Timestamp: parameter.timeStamp,
