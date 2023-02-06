@@ -36,7 +36,7 @@ const routerMap = {
     name: "用户授权",
     component: () => import("@/pages/login/Auth")
   },
-  root: {
+  home: {
     path: "/",
     name: "首页",
     redirect: "/login",

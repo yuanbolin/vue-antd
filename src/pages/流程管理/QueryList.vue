@@ -8,28 +8,29 @@
               :labelCol="{ span: 5 }"
               :wrapperCol="{ span: 18, offset: 1 }"
               ref="name"
-              label="目录名称"
+              :label="$t('form.name')"
               prop="name"
             >
-              <a-input placeholder="请输入" v-model="form.name" />
+              <a-input :placeholder="$t('form.nameph')" v-model="form.name" />
             </a-form-model-item>
           </a-col>
         </a-row>
         <span style="float: right; margin-top: 3px;">
-          <a-button @click="search" type="primary">查询</a-button>
-          <a-button @click="resetSearchForm" style="margin-left: 8px"
-            >重置</a-button
-          >
+          <a-button @click="search" type="primary">{{
+            $t("form.search")
+          }}</a-button>
+          <a-button @click="resetSearchForm" style="margin-left: 8px">{{
+            $t("form.reset")
+          }}</a-button>
         </span>
       </a-form-model>
     </div>
     <div>
       <a-space class="operator">
-        <a-button @click="addNew" type="primary">新建</a-button>
+        <a-button @click="addNew" type="primary">{{ $t("form.add") }}</a-button>
         <a-button @click="openRow"
-          ><a-icon :type="isOpen ? 'down' : 'up'"></a-icon>全部{{
-            isOpen ? "闭合" : "展开"
-          }}</a-button
+          ><a-icon :type="isOpen ? 'down' : 'up'"></a-icon
+          >{{ isOpen ? $t("form.rowClose") : $t("form.rowOpen") }}</a-button
         >
       </a-space>
       <a-table
@@ -81,19 +82,16 @@
         </template>
         <template slot="level" slot-scope="text, record">
           <a-tag v-if="record.type === CatalogueType.CATALOGUE" color="#f35a19">
-            {{ text }} 级目录
+            {{ text }} {{$t("table_row.level1")}}
           </a-tag>
           <a-tag v-else color="#33aecd">
-            {{ parseInt(text) - 1 }} 级流程
+            {{ parseInt(text) - 1 }} {{$t("table_row.level2")}}
           </a-tag>
         </template>
         <template slot="action" slot-scope="text, record">
-          <a-dropdown
-            :getPopupContainer="getBody"
-            v-if="record.type === CatalogueType.CATALOGUE"
-          >
+          <a-dropdown v-if="record.type === CatalogueType.CATALOGUE">
             <a style="margin-right: 8px">
-              <a-icon style="margin-right: 5px" type="plus" />新增
+              <a-icon style="margin-right: 5px" type="plus" />{{$t("table_row.add")}}
             </a>
             <a-menu slot="overlay">
               <a-menu-item
@@ -105,7 +103,7 @@
                     )
                 "
               >
-                <a href="javascript:;">新增子目录</a>
+                <a href="javascript:;">{{$t("table_row.add1")}}</a>
               </a-menu-item>
               <a-menu-item
                 @click="
@@ -113,14 +111,14 @@
                     showAddDrawer(record, CatalogueType.INFO + 'ChildrenAdd')
                 "
               >
-                <a href="javascript:;">新增子流程</a>
+                <a href="javascript:;">{{$t("table_row.add2")}}</a>
               </a-menu-item>
               <a-menu-item
                 @click="
                   () => showAddDrawer(record, CatalogueType.CATALOGUE) + 'Add'
                 "
               >
-                <a href="javascript:;">新增同级目录</a>
+                <a href="javascript:;">{{$t("table_row.add3")}}</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -128,29 +126,29 @@
             v-if="record.type === CatalogueType.INFO"
             style="margin-right: 8px"
             :to="`/antvx6/${record.key}`"
-            ><a-icon style="margin-right: 5px" type="highlight" />绘制
+            ><a-icon style="margin-right: 5px" type="highlight" />{{$t("table_row.draw")}}
           </router-link>
           <a style="margin-right: 8px" @click="() => showEditDrawer(record)">
-            <a-icon style="margin-right: 5px" type="edit" />编辑
+            <a-icon style="margin-right: 5px" type="edit" />{{$t("table_row.edit")}}
           </a>
           <a-popconfirm
             v-if="record.type === CatalogueType.INFO && record.public === 0"
-            title="发布后将不可删除，确定要发布此流程吗?"
+            :title="$t('table_action.publish')"
             @confirm="() => push(record.key)"
           >
             <a style="margin-right: 8px" @click="() => showEditDrawer(record)">
-              <a-icon style="margin-right: 5px" type="edit" />发布
+              <a-icon style="margin-right: 5px" type="edit" />{{$t("table_row.publish")}}
             </a>
           </a-popconfirm>
           <a-popconfirm
             v-if="
               record.type === CatalogueType.CATALOGUE || record.public === 0
             "
-            title="确定要删除吗?"
+            :title="$t('table_action.delete')"
             @confirm="() => deleteRecord(record.key)"
           >
             <a style="margin-right: 8px">
-              <a-icon style="margin-right: 5px" type="delete" />删除
+              <a-icon style="margin-right: 5px" type="delete" />{{$t("table_row.delete")}}
             </a>
           </a-popconfirm>
           <!--          <router-link :to="`/list/query/detail/${record.key}`"-->
@@ -161,7 +159,7 @@
     </div>
     <a-drawer
       :title="
-        chooseType.indexOf(CatalogueType.INFO) !== -1 ? '流程信息' : '目录信息'
+        chooseType.indexOf(CatalogueType.INFO) !== -1 ? $t('drawer_form.title1') : $t('drawer_form.title2')
       "
       :width="500"
       :visible="drawerVisible"
@@ -173,76 +171,76 @@
         ref="infoForm"
         :model="infoForm"
         :rules="infoRules"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 17 }"
+        :label-col="{ span: 8 }"
+        :wrapper-col="{ span: 14 }"
       >
-        <a-form-model-item has-feedback label="所属目录" prop="shangji">
+        <a-form-model-item has-feedback :label="$t('drawer_form.directory')" prop="directory">
           <select-tree
             :treeData="treeData"
-            v-model="infoForm.shangji"
+            v-model="infoForm.directory"
           ></select-tree>
         </a-form-model-item>
-        <a-form-model-item has-feedback label="流程名称" prop="name">
+        <a-form-model-item has-feedback :label="$t('drawer_form.name')" prop="name">
           <a-input
             v-model="infoForm.name"
             type="text"
-            placeholder="请输入名称"
+            :placeholder="$t('drawer_form.nameph')"
             autocomplete="off"
           />
         </a-form-model-item>
-        <a-form-model-item has-feedback label="流程描述" prop="message">
+        <a-form-model-item has-feedback :label="$t('drawer_form.message')" prop="message">
           <a-textarea
             v-model="infoForm.message"
             type="text"
-            placeholder="请输入描述"
+            :placeholder="$t('drawer_form.messageph')"
             autocomplete="off"
           />
         </a-form-model-item>
-        <a-form-model-item has-feedback label="输入" prop="input">
+        <a-form-model-item has-feedback :label="$t('drawer_form.input')" prop="input">
           <a-input
             v-model="infoForm.input"
             type="text"
-            placeholder="请输入流程输入"
+            :placeholder="$t('drawer_form.inputph')"
             autocomplete="off"
           />
         </a-form-model-item>
-        <a-form-model-item has-feedback label="输出" prop="output">
+        <a-form-model-item has-feedback :label="$t('drawer_form.output')" prop="output">
           <a-input
             v-model="infoForm.output"
             type="text"
-            placeholder="请输入流程输出"
+            :placeholder="$t('drawer_form.outputph')"
             autocomplete="off"
           />
         </a-form-model-item>
-        <a-form-model-item has-feedback label="驱动类型" prop="qudongleixing">
+        <a-form-model-item has-feedback :label="$t('drawer_form.driveType')" prop="driveType">
           <a-select
-            v-model="infoForm.qudongleixing"
-            placeholder="请选择驱动类型"
+            v-model="infoForm.driveType"
+            :placeholder="$t('drawer_form.driveTypeph')"
           >
             <a-select-option value="incident">
-              事件驱动
+              {{$t('drawer_form.drive1')}}
             </a-select-option>
             <a-select-option value="time">
-              时间驱动
+              {{$t('drawer_form.drive2')}}
             </a-select-option>
             <a-select-option value="incidentAndTime">
-              时间驱动/事件驱动
+              {{$t('drawer_form.drive3')}}
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item has-feedback label="驱动规则" prop="guize">
+        <a-form-model-item has-feedback :label="$t('drawer_form.driveRule')" prop="driveRule">
           <a-textarea
-            v-model="infoForm.guize"
+            v-model="infoForm.driveRule"
             type="text"
-            placeholder="请输入驱动规则"
+            :placeholder="$t('drawer_form.driveRuleph')"
             autocomplete="off"
           />
         </a-form-model-item>
-        <a-form-model-item has-feedback label="适用范围" prop="shiyongfanwei">
+        <a-form-model-item has-feedback :label="$t('drawer_form.scope')" prop="scope">
           <a-textarea
-            v-model="infoForm.shiyongfanwei"
+            v-model="infoForm.scope"
             type="text"
-            placeholder="请输入适用范围"
+            :placeholder="$t('drawer_form.scopeph')"
             autocomplete="off"
           />
         </a-form-model-item>
@@ -252,28 +250,28 @@
         ref="catalogueForm"
         :model="catalogueForm"
         :rules="catalogueRules"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 17 }"
+        :label-col="{ span: 8 }"
+        :wrapper-col="{ span: 14 }"
       >
-        <a-form-model-item has-feedback label="上级目录" prop="shangji">
+        <a-form-model-item has-feedback :label="$t('drawer_form.directory')" prop="directory">
           <select-tree
             :treeData="treeData"
-            v-model="catalogueForm.shangji"
+            v-model="catalogueForm.directory"
           ></select-tree>
         </a-form-model-item>
-        <a-form-model-item has-feedback label="目录名称" prop="name">
+        <a-form-model-item has-feedback :label="$t('drawer_form.dirname')" prop="name">
           <a-input
             v-model="catalogueForm.name"
             type="text"
-            placeholder="请输入名称"
+            :placeholder="$t('drawer_form.nameph')"
             autocomplete="off"
           />
         </a-form-model-item>
-        <a-form-model-item has-feedback label="目录描述" prop="message">
+        <a-form-model-item has-feedback :label="$t('drawer_form.message')" prop="message">
           <a-textarea
             v-model="catalogueForm.message"
             type="text"
-            placeholder="请输入描述"
+            :placeholder="$t('drawer_form.messageph')"
             autocomplete="off"
           />
         </a-form-model-item>
@@ -292,10 +290,10 @@
         }"
       >
         <a-button :style="{ marginRight: '8px' }" @click="resetForm">
-          取消
+          {{$t('drawer_form.cancel')}}
         </a-button>
         <a-button type="primary" @click="submitForm">
-          提交
+          {{$t('drawer_form.submit')}}
         </a-button>
       </div>
     </a-drawer>
@@ -319,45 +317,6 @@ const getParentKey = (key, tree) => {
   }
   return parentKey;
 };
-const columns = [
-  {
-    title: "目录名称",
-    dataIndex: "name",
-    key: "name",
-    scopedSlots: { customRender: "name" },
-    filters: [
-      {
-        text: "公开",
-        value: 1
-      },
-      {
-        text: "未公开",
-        value: 0
-      }
-    ],
-    // specify the condition of filtering result
-    // here is that finding the name started with `value`
-    onFilter: (value, record) => record.public === value
-  },
-  {
-    title: "标识",
-    dataIndex: "level",
-    key: "level",
-    width: "12%",
-    scopedSlots: { customRender: "level" }
-  },
-  {
-    title: "目录描述",
-    dataIndex: "message",
-    width: "30%",
-    ellipsis: true,
-    key: "message"
-  },
-  {
-    title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
-];
 
 /**
  * 目录类型枚举
@@ -372,6 +331,7 @@ const CatalogueType = {
 
 export default {
   name: "FlowQueryList",
+  i18n: require("./i18n"),
   data() {
     return {
       //搜索框
@@ -381,7 +341,6 @@ export default {
       rules: {
         name: []
       },
-      columns: columns,
       dataSource: [], //表格数据
       selectedRows: [],
       isOpen: false,
@@ -395,58 +354,7 @@ export default {
         showQuickJumper: true
       },
       catalogueForm: {},
-      catalogueRules: {
-        name: [
-          { required: true, message: "请输入目录名称", trigger: "blur" },
-          {
-            min: 2,
-            max: 15,
-            message: "字符长度要求在2-15字内",
-            trigger: "blur"
-          }
-        ],
-        message: [
-          { required: true, message: "请输入目录描述", trigger: "blur" },
-          {
-            min: 2,
-            max: 50,
-            message: "字符长度要求在2-50字内",
-            trigger: "blur"
-          }
-        ],
-        shangji: []
-      },
       infoForm: {},
-      infoRules: {
-        name: [
-          { required: true, message: "请输入目录名称", trigger: "blur" },
-          {
-            min: 2,
-            max: 15,
-            message: "字符长度要求在2-15字内",
-            trigger: "blur"
-          }
-        ],
-        message: [
-          { required: true, message: "请输入目录描述", trigger: "blur" },
-          {
-            min: 2,
-            max: 50,
-            message: "字符长度要求在2-50字内",
-            trigger: "blur"
-          }
-        ],
-        shangji: [
-          { required: true, message: "请选择所属目录", trigger: "change" }
-        ],
-        input: [{ required: true, message: "请输入流程输入", trigger: "blur" }],
-        output: [
-          { required: true, message: "请输入流程输出", trigger: "blur" }
-        ],
-        qudongleixing: [],
-        guize: [],
-        shiyongfanwei: []
-      },
       treeData: [],
       chooseType: "",
       drawerVisible: false,
@@ -460,6 +368,104 @@ export default {
   authorize: {
     deleteRecord: "delete"
   },
+  computed: {
+    columns() {
+      return [
+        {
+          title: this.$t("table_cloumns.name"),
+          dataIndex: "name",
+          key: "name",
+          scopedSlots: { customRender: "name" },
+          filters: [
+            {
+              text:this.$t("table_cloumns.published"),
+              value: true
+            },
+            {
+              text: this.$t("table_cloumns.nopublished"),
+              value: false
+            }
+          ],
+          // specify the condition of filtering result
+          // here is that finding the name started with `value`
+          onFilter: (value, record) => record.published === value
+        },
+        {
+          title: this.$t("table_cloumns.level"),
+          dataIndex: "level",
+          key: "level",
+          width: "12%",
+          scopedSlots: { customRender: "level" }
+        },
+        {
+          title: this.$t("table_cloumns.message"),
+          dataIndex: "message",
+          width: "30%",
+          ellipsis: true,
+          key: "message"
+        },
+        {
+          title: this.$t("table_cloumns.action"),
+          scopedSlots: { customRender: "action" }
+        }
+      ];
+    },
+    catalogueRules(){
+      return {
+        name: [
+          { required: true, message: this.$t("form_rules.name"), trigger: "blur" },
+          {
+            min: 2,
+            max: 15,
+            message: this.$t("form_rules.namelen"),
+            trigger: "blur"
+          }
+        ],
+        message: [
+          { required: true, message: this.$t("form_rules.messages"), trigger: "blur" },
+          {
+            min: 2,
+            max: 50,
+            message: this.$t("form_rules.messageslen"),
+            trigger: "blur"
+          }
+        ],
+        directory: []
+      }
+    },
+    infoRules(){
+      return  {
+        name: [
+          { required: true, message: this.$t("form_rules.name"), trigger: "blur" },
+          {
+            min: 2,
+            max: 15,
+            message: this.$t("form_rules.namelen"),
+            trigger: "blur"
+          }
+        ],
+        message: [
+          { required: true, message: this.$t("form_rules.messages"), trigger: "blur" },
+          {
+            min: 2,
+            max: 50,
+            message: this.$t("form_rules.messageslen"),
+            trigger: "blur"
+          }
+        ],
+        directory: [
+          { required: true, message: this.$t("form_rules.directory"), trigger: "change" }
+        ],
+        input: [{ required: true, message: this.$t("form_rules.input"), trigger: "blur" }],
+        output: [
+          { required: true, message: this.$t("form_rules.output"), trigger: "blur" }
+        ],
+        driveType: [],
+        driveRule: [],
+        scope: []
+      }
+    }
+  },
   mounted() {
     this.fetch();
     this.getTreeData();
@@ -469,9 +475,9 @@ export default {
       if (type.indexOf("Children") !== -1) {
         const parentKey = obj.id;
         if (type.indexOf(CatalogueType.CATALOGUE) !== -1) {
-          this.catalogueForm.shangji = parentKey + "";
+          this.catalogueForm.directory = parentKey + "";
         } else if (type.indexOf(CatalogueType.INFO) !== -1) {
-          this.infoForm.shangji = parentKey + "";
+          this.infoForm.directory = parentKey + "";
         }
       } else {
         const parentKey = getParentKey(obj.id, this.dataSource);
@@ -480,9 +486,9 @@ export default {
         console.log(parentKey);
         console.log("==========");
         if (type.indexOf(CatalogueType.CATALOGUE) !== -1) {
-          this.catalogueForm.shangji = parentKey + "";
+          this.catalogueForm.directory = parentKey + "";
         } else if (type.indexOf(CatalogueType.INFO) !== -1) {
-          this.infoForm.shangji = parentKey + "";
+          this.infoForm.directory = parentKey + "";
         }
       }
       this.chooseType = type;
@@ -496,14 +502,14 @@ export default {
       if (obj.type.indexOf(CatalogueType.CATALOGUE) !== -1) {
         this.chooseType = obj.type;
         this.catalogueForm = {
-          shangji: parentKey + "",
+          directory: parentKey + "",
           name: obj.name,
           message: obj.message
         };
       } else if (obj.type.indexOf(CatalogueType.INFO) !== -1) {
         this.chooseType = obj.type;
         this.infoForm = {
-          shangji: parentKey + "",
+          directory: parentKey + "",
           name: obj.name,
           message: obj.message
         };
@@ -685,18 +691,6 @@ export default {
         item => this.selectedRows.findIndex(row => row.key === item.key) === -1
       );
       this.selectedRows = [];
-    },
-    onClear() {
-      this.$message.info("您清空了勾选的所有行");
-    },
-    onStatusTitleClick() {
-      this.$message.info("你点击了状态栏表头");
-    },
-    onChange() {
-      this.$message.info("表格状态改变了");
-    },
-    onSelectChange() {
-      this.$message.info("选中行改变了");
     },
     addNew() {
       this.dataSource.unshift({

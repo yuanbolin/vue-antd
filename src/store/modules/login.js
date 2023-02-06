@@ -46,6 +46,7 @@ export default {
             }
           })
           .catch(error => {
+            console.log("systemToken==>", error);
             notification.error({
               message: "错误",
               description: error || "获取二维码失败"

@@ -1,7 +1,7 @@
 module.exports = {
   messages: {
     CN: {
-      root: { name: "首页" },
+      home: { name: "首页" },
       dashboard: {
         name: "工作台"
       },
@@ -16,22 +16,10 @@ module.exports = {
       }
     },
     US: {
-      root: { name: "首页" },
-      dashboard: {
-        name: "工作台"
-      },
-      flow: {
-        name: "流程管理"
-      },
-      antvx6: {
-        name: "流程绘制"
-      },
-      antvShow: {
-        name: "流程展示"
-      }
+      home: { name: "home" },
     },
     HK: {
-      root: { name: "首页" },
+      home: { name: "首頁" },
       dashboard: {
         name: "工作台"
       },
@@ -39,7 +27,7 @@ module.exports = {
         name: "流程管理"
       },
       antvx6: {
-        name: "流程绘制"
+        name: "流程繪制"
       },
       antvShow: {
         name: "流程展示"

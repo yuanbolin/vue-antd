@@ -49,7 +49,7 @@
           </a-tag>
         </template>
         <template slot="action" slot-scope="text, record">
-          <a-dropdown :getPopupContainer="getBody">
+          <a-dropdown>
             <a style="margin-right: 8px">
               <a-icon style="margin-right: 5px" type="plus" />新增
             </a>

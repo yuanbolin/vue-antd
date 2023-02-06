@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown :getPopupContainer="getBody" :trigger="['click']" v-model="show">
+  <a-dropdown :trigger="['click']" v-model="show">
     <div slot="overlay">
       <a-spin :spinning="loading">
         <a-tabs

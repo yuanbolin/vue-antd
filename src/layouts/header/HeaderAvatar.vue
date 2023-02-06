@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown :getPopupContainer="getBody">
+  <a-dropdown>
     <div class="header-avatar" style="cursor: pointer">
       <a-avatar class="avatar" size="small" shape="circle" :src="avatar" />
       <span class="name">{{ user.name }}</span>
@@ -39,7 +39,7 @@ export default {
   methods: {
     // 退出登录
     logout() {
-      this.Logout.then(()=>{
+      this.Logout.then(() => {
         this.$router.push("/login");
       });
     },

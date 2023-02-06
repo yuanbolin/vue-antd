@@ -23,7 +23,7 @@ const resp401 = {
    */
   onFulfilled(response, options) {
     const { message } = options;
-    if (response.code === 401) {
+    if (response?.code === 401) {
       message.error("无此权限");
     }
     return response;
@@ -37,7 +37,7 @@ const resp401 = {
   onRejected(error, options) {
     const { message } = options;
     const { response } = error;
-    if (response.status === 401) {
+    if (response?.status === 401) {
       message.error("无此权限");
     }
     return Promise.reject(error);
@@ -56,7 +56,7 @@ const resp403 = {
     console.log(error);
     const { message } = options;
     const { response } = error;
-    if (response.status === 403) {
+    if (response?.status === 403) {
       message.error("请求被拒绝");
     }
     return Promise.reject(error);

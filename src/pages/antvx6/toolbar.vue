@@ -2,7 +2,6 @@
   <div class="toolbar-container">
     <div class="col line1">
       <a-dropdown
-        :getPopupContainer="getBody"
         placement="bottomCenter"
         v-model="visible"
         :trigger="['click']"
@@ -41,11 +40,7 @@
     </div>
     <a-divider class="divider" type="vertical" />
     <div class="col line2">
-      <a-dropdown
-        :getPopupContainer="getBody"
-        placement="bottomCenter"
-        :trigger="['click']"
-      >
+      <a-dropdown placement="bottomCenter" :trigger="['click']">
         <a
           class="toolbar-box"
           title="缩放（按住Alt+鼠标滚轮）"

@@ -113,7 +113,8 @@ export default {
       routes
         .filter(item => item.path.includes(":") || path.includes(item.path))
         .forEach(route => {
-          const path = route.path.length === 0 ? "/dashboard" : route.path;
+          console.log("route", route);
+          const path = route.path.length === 0 ? "/" : route.path;
           breadcrumb.push(this.$t(getI18nKey(path)));
         });
       let pageTitle = this.page && this.page.title;

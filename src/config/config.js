@@ -4,7 +4,7 @@ module.exports = {
     color: "#e85311",
     mode: "dark"
   },
-  multiPage: true,
+  multiPage: true, //多页签模式，true:开启，false:不开启
   hideSetting: true,
   asyncRoutes: true, //异步加载路由，true:开启，false:不开启
   animate: {

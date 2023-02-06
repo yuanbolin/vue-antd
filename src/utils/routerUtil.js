@@ -249,6 +249,7 @@ function getI18nKey(path) {
   const keys = path
     .split("/")
     .filter(item => !item.startsWith(":") && item != "");
+  if (keys.length === 0) keys.push("home");
   keys.push("name");
   return keys.join(".");
 }
@@ -309,7 +310,7 @@ function listToTree(list, parentId) {
 
   return [
     {
-      router: "root", //匹配 router.map.js 中注册名 registerName = root 的路由
+      router: "home", //匹配 router.map.js 中注册名 registerName = root 的路由
       children: [
         //root 路由的子路由配置
         {

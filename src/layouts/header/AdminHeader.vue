@@ -47,7 +47,7 @@
         </a-tooltip>
         <header-notice v-if="hidden" class="header-item" />
         <header-avatar class="header-item" />
-        <a-dropdown :getPopupContainer="getBody" class="lang header-item">
+        <a-dropdown class="lang header-item">
           <div><a-icon type="global" /> {{ langAlias }}</div>
           <a-menu
             @click="val => setLang(val.key)"

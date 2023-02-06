@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>logo.png">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" href="<%= BASE_URL %>logo.png" />
     <title>浙江宏利汽配集团</title>
-    <style>.first-loading-wrp {
+    <style>
+      .first-loading-wrp {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         min-height: 700px;
-        height: 100%
-    }
+        height: 100%;
+      }
 
-    .first-loading-wrp > h1 {
-        font-size: 128px
-    }
+      .first-loading-wrp > h1 {
+        font-size: 128px;
+      }
 
-    .first-loading-wrp .loading-wrp {
+      .first-loading-wrp .loading-wrp {
         padding: 98px;
         display: flex;
         justify-content: center;
-        align-items: center
-    }
+        align-items: center;
+      }
 
-    .dot {
+      .dot {
         animation: antRotate 1.2s infinite linear;
         transform: rotate(45deg);
         position: relative;
@@ -34,96 +35,112 @@
         font-size: 32px;
         width: 32px;
         height: 32px;
-        box-sizing: border-box
-    }
+        box-sizing: border-box;
+      }
 
-    .dot i {
+      .dot i {
         width: 14px;
         height: 14px;
         position: absolute;
         display: block;
         background-color: #e85311;
         border-radius: 100%;
-        transform: scale(.75);
+        transform: scale(0.75);
         transform-origin: 50% 50%;
-        opacity: .3;
-        animation: antSpinMove 1s infinite linear alternate
-    }
+        opacity: 0.3;
+        animation: antSpinMove 1s infinite linear alternate;
+      }
 
-    .dot i:nth-child(1) {
+      .dot i:nth-child(1) {
         top: 0;
-        left: 0
-    }
+        left: 0;
+      }
 
-    .dot i:nth-child(2) {
+      .dot i:nth-child(2) {
         top: 0;
         right: 0;
-        -webkit-animation-delay: .4s;
-        animation-delay: .4s
-    }
+        -webkit-animation-delay: 0.4s;
+        animation-delay: 0.4s;
+      }
 
-    .dot i:nth-child(3) {
+      .dot i:nth-child(3) {
         right: 0;
         bottom: 0;
-        -webkit-animation-delay: .8s;
-        animation-delay: .8s
-    }
+        -webkit-animation-delay: 0.8s;
+        animation-delay: 0.8s;
+      }
 
-    .dot i:nth-child(4) {
+      .dot i:nth-child(4) {
         bottom: 0;
         left: 0;
         -webkit-animation-delay: 1.2s;
-        animation-delay: 1.2s
-    }
+        animation-delay: 1.2s;
+      }
 
-    @keyframes antRotate {
+      @keyframes antRotate {
         to {
-            -webkit-transform: rotate(405deg);
-            transform: rotate(405deg)
+          -webkit-transform: rotate(405deg);
+          transform: rotate(405deg);
         }
-    }
+      }
 
-    @-webkit-keyframes antRotate {
+      @-webkit-keyframes antRotate {
         to {
-            -webkit-transform: rotate(405deg);
-            transform: rotate(405deg)
+          -webkit-transform: rotate(405deg);
+          transform: rotate(405deg);
         }
-    }
+      }
 
-    @keyframes antSpinMove {
+      @keyframes antSpinMove {
         to {
-            opacity: 1
+          opacity: 1;
         }
-    }
+      }
 
-    @-webkit-keyframes antSpinMove {
+      @-webkit-keyframes antSpinMove {
         to {
-            opacity: 1
+          opacity: 1;
         }
-    }</style>
+      }
+    </style>
     <!-- require cdn assets css -->
-    <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.css) { %>
-    <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.cdn.css[i] %>"/>
+    <% for (var i in htmlWebpackPlugin.options.cdn &&
+    htmlWebpackPlugin.options.cdn.css) { %>
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" />
     <% } %>
     <script src="https://g.alicdn.com/dingding/h5-dingtalk-login/0.21.0/ddlogin.js"></script>
-</head>
-<body>
-<noscript>
-    <strong>您的浏览器不支持JavaScript，请启用！</strong>
-</noscript>
-<div id="app">
-    <div class="first-loading-wrp">
-        <img style="width: 200px;" src="<%= BASE_URL %>logo.png"/>
-        <div class="loading-wrp">
+  </head>
+  <body>
+    <noscript>
+      <strong>您的浏览器不支持JavaScript，请启用！</strong>
+    </noscript>
+    <div
+      id="popContainer"
+      class="beauty-scroll"
+      style="height: 100vh; overflow-y: scroll"
+    >
+      <div id="app">
+        <div class="first-loading-wrp">
+          <img style="width: 200px;" src="<%= BASE_URL %>logo.png" />
+          <div class="loading-wrp">
             <span class="dot dot-spin"><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div
+            style="display: flex; justify-content: center; align-items: center;"
+          >
+            @版权所有 2021-2023 浙江宏利汽配集团有限公司
+          </div>
         </div>
-        <div style="display: flex; justify-content: center; align-items: center;">@版权所有 2021-2023 浙江宏利汽配集团有限公司</div>
+      </div>
     </div>
-</div>
-<!-- require cdn assets js -->
-<% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.js) { %>
-<script type="text/javascript" src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
-<% } %>
-<!-- built files will be auto injected -->
-</body>
+    <!-- require cdn assets js -->
+    <% for (var i in htmlWebpackPlugin.options.cdn &&
+    htmlWebpackPlugin.options.cdn.js) { %>
+    <script
+      type="text/javascript"
+      src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"
+    ></script>
+    <% } %>
+    <!-- built files will be auto injected -->
+  </body>
 </html>
