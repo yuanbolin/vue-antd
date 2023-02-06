@@ -44,10 +44,6 @@
         <a-icon type="pay-circle" /><strong>物流</strong>
       </li>
     </ul>
-    <div v-if="isChange" class="wrapper-btn">
-      <a-button type="primary" @click="handlerSend">保存当前方案</a-button>
-      <!--          <a-button type="success" @click="toPNG">保存为PNG图片</a-button>-->
-    </div>
   </div>
 </template>
 
@@ -55,21 +51,14 @@
 export default {
   name: "MyGraph",
   props: {
-    isChange: {
-      type: Boolean,
-      default: false
-    }
   },
-  emits: ["menuDrag", "handlerSend"],
+  emits: ["menuDrag"],
   data() {
     return {};
   },
   methods: {
     menuDrag(type) {
       this.$emit("menuDrag", type);
-    },
-    handlerSend() {
-      this.$emit("handlerSend");
     }
   }
 };

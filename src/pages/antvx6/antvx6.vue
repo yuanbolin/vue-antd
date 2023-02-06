@@ -10,13 +10,19 @@
       <div :style="{ height: height }" class="antv-wrapper">
         <!--      流程图工具栏-->
         <my-toolbar
+          :is-change="isChange"
+          @handlerSend="handlerSend"
           :zoom="zoom"
           :visiable-grid="visiableGrid"
           @changeZoom="changeZoom"
           @changeGrid="changeGrid"
           @changeContent="changeContent"
           @changePortsShow="changePortsShow"
+          @undoHandle="undoHandle"
+          @redoHandle="redoHandle"
           :is-ports-show="isPortsShow"
+          :can-redo="canRedo"
+          :can-undo="canUndo"
         ></my-toolbar>
         <!--      流程图绘制区域-->
         <div
@@ -317,7 +323,9 @@ export default {
       menuVisible: false, //右击导航是否显示
       contextmenuType: "", //右击的节点类型
       visible: false, //弹窗是否显示
-      confirmLoading: false //节点信息提交状态
+      confirmLoading: false, //节点信息提交状态
+      canRedo: false, //是否可重做
+      canUndo: false //是否可撤销
     };
   },
   computed: {
@@ -397,17 +405,22 @@ export default {
         container: document.getElementById("wrapper"),
         ...configSetting(Shape)
       });
-
+      console.log(graph);
       //画布缩放
 
       //历史记录（撤销/重做）
       graph.history.on("undo", args => {
         // code here
-        console.log(args);
+        console.log("undo", args);
       });
       graph.history.on("redo", args => {
         // code here
-        console.log(args);
+        console.log("redo", args);
+      });
+      graph.history.on("change", args => {
+        console.log("history change", args);
+        this.canRedo = graph.history.canRedo();
+        this.canUndo = graph.history.canUndo();
       });
 
       //添加点/边自带工具
@@ -656,6 +669,14 @@ export default {
           }
         }
       });
+    },
+    //撤回
+    undoHandle() {
+      this.graph.history.undo();
+    },
+    //重做
+    redoHandle() {
+      this.graph.history.redo();
     },
     // 画布是否有变动
     isChangeValue() {

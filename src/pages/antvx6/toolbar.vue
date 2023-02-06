@@ -8,7 +8,7 @@
       >
         <a
           class="toolbar-box"
-          title="查看（鼠标按住并拖拽以移动画布）"
+          :title="$t('title1')"
           @click="e => e.preventDefault()"
         >
           <a-icon type="control" style="color: #555;margin-right: 3px;" />
@@ -16,20 +16,20 @@
         </a>
         <a-menu slot="overlay" class="menu">
           <a-menu-item style="border-bottom: 1px dashed #ccc;">
-            <div class="option">
-              <a class="title" href="javascript:;" @click="changePortsShow"
-                >链接桩常显</a
-              >
+            <div class="option" @click="changePortsShow">
+              <a class="title" href="javascript:;">{{
+                $t("portShow")
+              }}</a>
               <div class="state">
                 <a-icon v-if="isPortsShow" type="check" />
               </div>
             </div>
           </a-menu-item>
           <a-menu-item>
-            <div class="option">
-              <a class="title" href="javascript:;" @click="changeGrid"
-                >网格显示/隐藏</a
-              >
+            <div class="option" @click="changeGrid">
+              <a class="title" href="javascript:;">{{
+                $t("visibleGrid")
+              }}</a>
               <div class="state">
                 <a-icon v-if="visiableGrid" type="check" />
               </div>
@@ -43,7 +43,7 @@
       <a-dropdown placement="bottomCenter" :trigger="['click']">
         <a
           class="toolbar-box"
-          title="缩放（按住Alt+鼠标滚轮）"
+          :title="$t('title2')"
           @click="e => e.preventDefault()"
         >
           <span style="color: #555;">{{ parseInt(zoom * 100) }}%</span>
@@ -52,8 +52,11 @@
         <a-menu slot="overlay" class="menu">
           <a-menu-item style="border-bottom: 1px dashed #ccc;">
             <div class="option">
-              <a class="title" href="javascript:;" @click="transform('center')"
-                >内容居中</a
+              <a
+                class="title"
+                href="javascript:;"
+                @click="transform('center')"
+                >{{ $t("contentCenter") }}</a
               >
               <div class="state"></div>
             </div>
@@ -134,7 +137,7 @@
                 class="title"
                 href="javascript:;"
                 @click="transform('zoomToFit')"
-                >整页显示</a
+                >{{ $t("contentFull") }}</a
               >
               <div class="state"></div>
             </div>
@@ -146,39 +149,48 @@
     <div class="col line3">
       <a
         class="toolbar-box"
-        title="放大（按住Alt+鼠标滚轮向上滚动）"
+        :title="$t('title3')"
         href="javascript:;"
         @click="transform(zoom + 0.1)"
       >
-        <a-icon type="zoom-in" style="color: #555;" />
+        <a-icon type="zoom-in" />
       </a>
       <a
         class="toolbar-box"
-        title="缩小（按住Alt+鼠标滚轮向下滚动）"
+        :title="$t('title4')"
         href="javascript:;"
         @click="transform(zoom - 0.1)"
       >
-        <a-icon type="zoom-out" style="color: #555;" />
+        <a-icon type="zoom-out" />
       </a>
     </div>
     <a-divider class="divider" type="vertical" />
     <div class="col line3">
       <a
-        class="toolbar-box"
-        title="撤销（按住ctrl+z）"
+        :class="{ 'toolbar-box': true, active: !canUndo }"
+        :title="$t('title5')"
         href="javascript:;"
-        @click="transform(zoom + 0.1)"
+        @click="undoHandle()"
       >
-        <my-icon type="icon-editor-undo" style="color: #555;" />
+        <my-icon type="icon-editor-undo" />
       </a>
       <a
-        class="toolbar-box"
-        title="重做（按住Shift+ctrl+z）"
+        :class="{ 'toolbar-box': true, active: !canRedo }"
+        :title="$t('title6')"
         href="javascript:;"
-        @click="transform(zoom - 0.1)"
+        @click="redoHandle()"
       >
-        <my-icon type="icon-editor-redo" style="color: #555;" />
+        <my-icon type="icon-editor-redo" />
       </a>
+    </div>
+    <a-divider class="divider" type="vertical" />
+    <div style="margin-left: 20px;">
+      <a-tag v-if="isChange" style="cursor:pointer;" color="red" @click="handlerSend">
+        {{$t("save")}}
+      </a-tag>
+      <a-tag v-else color="blue">
+        {{$t("saved")}}
+      </a-tag>
     </div>
   </div>
 </template>
@@ -186,6 +198,7 @@
 <script>
 export default {
   name: "MyToolbar",
+  i18n: require("./i18n"),
   props: {
     isPortsShow: {
       type: Boolean,
@@ -198,9 +211,28 @@ export default {
     visiableGrid: {
       type: Boolean,
       default: true
+    },
+    canRedo: {
+      type: Boolean,
+      default: false
+    },
+    canUndo: {
+      type: Boolean,
+      default: false
+    },
+    isChange: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: ["changePortsShow", "changeZoom", "changeContent", "changeGrid"],
+  emits: [
+    "changePortsShow",
+    "changeZoom",
+    "changeContent",
+    "changeGrid",
+    "undoHandle",
+    "redoHandle"
+  ],
   data() {
     return {
       visible: false
@@ -211,8 +243,17 @@ export default {
     changePortsShow() {
       this.$emit("changePortsShow", !this.isPortsShow);
     },
+    undoHandle() {
+      this.$emit("undoHandle");
+    },
+    redoHandle() {
+      this.$emit("redoHandle");
+    },
     changeGrid() {
       this.$emit("changeGrid", !this.visiableGrid);
+    },
+    handlerSend() {
+      this.$emit("handlerSend");
     },
     transform(val) {
       //限制缩放比例在0.2-2
@@ -247,9 +288,16 @@ export default {
       text-align: center;
       height: 38px;
       line-height: 38px;
+      color: #555;
     }
     .toolbar-box:hover {
       background: #eee;
+    }
+    .toolbar-box.active {
+      color: #aaaaaa;
+    }
+    .toolbar-box.active:hover {
+      cursor: not-allowed;
     }
   }
   .line3 {

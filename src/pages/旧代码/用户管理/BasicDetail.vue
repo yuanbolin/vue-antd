@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import PageLayout from "../../layouts/PageLayout";
+import PageLayout from "../../../layouts/PageLayout";
 
 export default {
   name: "UserDetail",
