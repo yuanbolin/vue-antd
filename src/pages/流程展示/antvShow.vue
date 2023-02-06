@@ -9,10 +9,10 @@
     >
       <a-tooltip placement="right">
         <template slot="title">
-          {{ collapsed ? "展开" : "收起" }}
+          {{ collapsed ? $t("menu.collapsed") : $t("menu.noCollapsed") }}
         </template>
         <div class="left-menu">
-          <span :hidden="collapsed">流程目录选择</span>
+          <span :hidden="collapsed">{{$t("menu.title")}}</span>
           <a-icon
             class="trigger"
             :type="collapsed ? 'menu-unfold' : 'menu-fold'"
@@ -30,49 +30,49 @@
       <div class="antv-wrapper">
         <!--      展示节点信息-->
         <a-modal
-          title="节点信息"
+          :title="$t('chat.title')"
           :visible="visible"
           :width="820"
           @ok="handleOk"
           @cancel="handleCancel"
         >
           <a-tabs default-active-key="1">
-            <a-tab-pane key="1" tab="基本信息">
+            <a-tab-pane key="1" :tab="$t('chat.tab1')">
               <a-descriptions title="" bordered>
-                <a-descriptions-item label="节点描述" :span="3">
+                <a-descriptions-item :label="$t('chat.tab1_describe')" :span="3">
                   {{ nodeData.describe }}
                 </a-descriptions-item>
               </a-descriptions>
             </a-tab-pane>
-            <a-tab-pane key="2" tab="输入" force-render>
-              此功能仍在开发中...
+            <a-tab-pane key="2" :tab="$t('chat.tab2')" force-render>
+              {{$t("chat.dev")}}
             </a-tab-pane>
-            <a-tab-pane key="3" tab="输出">
-              此功能仍在开发中...
+            <a-tab-pane key="3" :tab="$t('chat.tab3')">
+              {{$t("chat.dev")}}
             </a-tab-pane>
-            <a-tab-pane key="4" tab="操作规范">
-              此功能仍在开发中...
+            <a-tab-pane key="4" :tab="$t('chat.tab4')">
+              {{$t("chat.dev")}}
             </a-tab-pane>
-            <a-tab-pane key="5" tab="指标">
-              此功能仍在开发中...
+            <a-tab-pane key="5" :tab="$t('chat.tab5')">
+              {{$t("chat.dev")}}
             </a-tab-pane>
-            <a-tab-pane key="6" tab="风险控制点">
-              此功能仍在开发中...
+            <a-tab-pane key="6" :tab="$t('chat.tab6')">
+              {{$t("chat.dev")}}
             </a-tab-pane>
-            <a-tab-pane key="7" tab="信息化">
-              此功能仍在开发中...
+            <a-tab-pane key="7" :tab="$t('chat.tab7')">
+              {{$t("chat.dev")}}
             </a-tab-pane>
-            <a-tab-pane key="8" tab="关联标准">
-              此功能仍在开发中...
+            <a-tab-pane key="8" :tab="$t('chat.tab8')">
+              {{$t("chat.dev")}}
             </a-tab-pane>
-            <a-tab-pane key="9" tab="办理时限">
-              此功能仍在开发中...
+            <a-tab-pane key="9" :tab="$t('chat.tab9')">
+              {{$t("chat.dev")}}
             </a-tab-pane>
           </a-tabs>
         </a-modal>
         <div class="wrapper-tips">
           <div class="wrapper-tips-item">
-            <a-button type="primary" @click="toPNG">保存为PNG图片</a-button>
+            <a-button type="primary" @click="toPNG">{{$t("primary")}}</a-button>
           </div>
         </div>
         <div id="wrapper" class="wrapper-canvas"></div>
@@ -98,6 +98,7 @@ export default {
       visible: false
     };
   },
+  i18n:require('./i18n'),
   components: { "search-tree": SearchTree },
   created() {},
   mounted() {

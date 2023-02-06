@@ -7,7 +7,9 @@
       <h1>{{ config[type].title }}</h1>
       <div class="desc">{{ config[type].desc }}</div>
       <div class="action">
-        <a-button type="primary" @click="backHome">返回首页</a-button>
+        <a-button type="primary" @click="backHome">{{
+          $t("backHome")
+        }}</a-button>
       </div>
     </div>
   </div>
@@ -24,6 +26,7 @@ export default {
       config: Config
     };
   },
+  i18n: require("./i18n"),
   methods: {
     backHome() {
       if (this.homeRoute) {

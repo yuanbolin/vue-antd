@@ -2,7 +2,7 @@
   <div>
     <a-input-search
       style="margin-bottom: 8px"
-      placeholder="名称搜索"
+      :placeholder="$t('searchTree.placeholder')"
       @change="onChange"
     />
     <a-tree
@@ -16,7 +16,7 @@
       @expand="onExpand"
       @select="onSelect"
     >
-      搜索时对应标题搜索值颜色标红
+      {{$t('searchTree.tip')}}
       <template v-slot:title="{ name }">
         <a-tooltip placement="right">
           <template slot="title">
@@ -59,6 +59,7 @@ export default {
       }
     }
   },
+  i18n:require('./i18n'),
   data() {
     return {
       expandedKeys: [],

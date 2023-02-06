@@ -73,7 +73,7 @@ const routerMap = {
     page: {
       cacheAble: false
     },
-    component: () => import("@/pages/antvx6/antvShow")
+    component: () => import("@/pages/流程展示/antvShow")
   },
   exp403: {
     authority: "*",

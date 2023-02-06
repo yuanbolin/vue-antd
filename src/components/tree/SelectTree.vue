@@ -3,11 +3,11 @@
     v-model="treeVlue"
     show-search
     @change="v => $emit('change', v + '')"
-    searchPlaceholder="名称搜索"
+    :searchPlaceholder="$t('select.searchplaceholder')"
     style="width: 100%"
     :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
     :tree-data="treeData"
-    placeholder="请选择"
+    :placeholder="$t('select.placeholder')"
     :replaceFields="replaceFields"
     tree-default-expand-all
     tree-node-filter-prop="title"
@@ -22,6 +22,7 @@ export default {
     prop: "value",
     event: "change"
   },
+  i18n: require("./i18n"),
   props: {
     treeData: {
       type: Array,
