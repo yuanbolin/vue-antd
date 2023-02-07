@@ -6,7 +6,7 @@ const {
   VUE_APP_SYSTEM_TOKEN
 } = process.env;
 axios.defaults.timeout = 240000;
-axios.defaults.baseURL = VUE_APP_API_BASE_URL + "/api";
+axios.defaults.baseURL = VUE_APP_API_BASE_URL;
 axios.defaults.xsrfHeaderName = VUE_APP_USER_TOKEN;
 axios.defaults.xsrfTokenName = VUE_APP_USER_TOKEN;
 

@@ -1,3 +1,6 @@
+/**
+ * 第一版与许光经理定下功能后的编写的旧代码用于组织管理。目前无用
+ */
 import {
   ORGANIZATION,
   ORGANIZATIONADD,

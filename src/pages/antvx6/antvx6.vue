@@ -1,19 +1,21 @@
 <template>
   <div class="all">
-    <div class="antv-content">
+    <div class="antv-content" :style="{ height: height }">
       <!--      左侧图形列表-->
       <my-graph
         :is-change="isChange"
         @menuDrag="menuDrag"
         @handlerSend="handlerSend"
       ></my-graph>
-      <div :style="{ height: height }" class="antv-wrapper">
+      <div class="antv-wrapper">
         <!--      流程图工具栏-->
         <my-toolbar
           :is-change="isChange"
+          :is-first-change="isFirstChange"
           @handlerSend="handlerSend"
           :zoom="zoom"
           :visiable-grid="visiableGrid"
+          @clearCellsHandle="clearCellsHandle"
           @changeZoom="changeZoom"
           @changeGrid="changeGrid"
           @changeContent="changeContent"
@@ -25,224 +27,91 @@
           :can-undo="canUndo"
         ></my-toolbar>
         <!--      流程图绘制区域-->
-        <div
-          id="wrapper"
-          class="wrapper-canvas"
-          :style="{ flex: 1 }"
-          @drop="drop($event)"
-          @dragover.prevent
-        />
-        <contextmenu
-          :itemList="menuItemList"
-          :visible.sync="menuVisible"
-          @select="onMenuSelect"
-        />
+        <div class="ChatBox">
+          <div id="wrapper" @drop="drop($event)" @dragover.prevent />
+        </div>
       </div>
-      <!--      编辑节点和连线样式-->
-      <a-drawer
-        :title="editTitle"
-        :width="350"
-        :visible="editDrawer"
-        :body-style="{ paddingBottom: '30px' }"
-        @close="closeEditForm"
-      >
-        <div
-          v-if="editTitle === '编辑节点'"
-          :style="drawerMainHeight"
-          class="form-main beauty-scroll"
-        >
-          <a-form ref="nodeForm" :model="form" label-width="80px">
-            <a-form-item class="minInterval" label="节点文本">
-              <a-input
-                v-model="form.labelText"
-                size="small"
-                @input="changeNode('labelText', form.labelText)"
-              />
-            </a-form-item>
-            <a-form-item class="minInterval" label="字体大小">
-              <a-input-number
-                v-model="form.fontSize"
-                size="small"
-                :min="10"
-                :max="30"
-                @change="changeNode('fontSize', form.fontSize)"
-              />
-            </a-form-item>
-            <a-form-item class="minInterval" label="字体颜色">
-              <twitter-picker
-                :defaultColors="defaultColors"
-                :value="form.fontFill"
-                @input="value => updateNodeValue('fontFill', value)"
-              />
-            </a-form-item>
-            <a-form-item class="minInterval" label="节点背景">
-              <twitter-picker
-                :defaultColors="defaultColors"
-                :value="form.fill"
-                @input="value => updateNodeValue('fill', value)"
-              />
-            </a-form-item>
-            <a-form-item class="minInterval" label="边框颜色">
-              <twitter-picker
-                :defaultColors="defaultColors"
-                :value="form.stroke"
-                @input="value => updateNodeValue('stroke', value)"
-              />
-            </a-form-item>
-            <!--            <div class="see-box">-->
-            <!--              <h5>预览</h5>-->
-            <!--              <div class="see-item" :style="{ 'background': form.fill, 'color': form.fontFill, 'border-color': form.stroke, 'font-size': form.fontSize + 'px' }">{{ form.labelText }}</div>-->
-            <!--            </div>-->
-          </a-form>
-        </div>
-        <div
-          v-if="editTitle === '编辑连线'"
-          :style="drawerMainHeight"
-          class="form-main  beauty-scroll"
-        >
-          <a-form ref="edgeForm" :model="form" label-width="80px">
-            <a-form-item class="minInterval" label="标签内容">
-              <a-input
-                v-model="form.label"
-                size="small"
-                placeholder="标签文字，空则没有"
-                @input="
-                  changeEdgeLabel(
-                    form.label,
-                    labelForm.fontColor,
-                    labelForm.fill,
-                    labelForm.stroke
-                  )
-                "
-              />
-              <div v-if="form.label" class="label-style">
-                <a-form-item class="minInterval" label="字体颜色">
-                  <twitter-picker
-                    :defaultColors="defaultColors"
-                    :value="labelForm.fontColor"
-                    @input="value => updateEdgeValue('fontColor', value)"
-                  />
-                </a-form-item>
-                <a-form-item class="minInterval" label="背景颜色">
-                  <twitter-picker
-                    :defaultColors="defaultColors"
-                    :value="labelForm.fill"
-                    @input="value => updateEdgeValue('fill', value)"
-                  />
-                </a-form-item>
-                <a-form-item class="minInterval" label="描边颜色">
-                  <twitter-picker
-                    :defaultColors="defaultColors"
-                    :value="labelForm.stroke"
-                    @input="value => updateEdgeValue('stroke', value)"
-                  />
-                </a-form-item>
-              </div>
-            </a-form-item>
-            <a-form-item class="minInterval" label="线条颜色">
-              <twitter-picker
-                :defaultColors="defaultColors"
-                :value="form.stroke"
-                @input="value => updateEdgeValue('stroke', value, 'edgeStroke')"
-              />
-            </a-form-item>
-            <a-form-item class="minInterval" label="线条样式">
-              <a-select
-                v-model="form.connector"
-                size="small"
-                placeholder="请选择"
-                @change="changeEdgeConnector"
-              >
-                <a-select-option value="normal">直角</a-select-option>
-                <a-select-option value="rounded">圆角</a-select-option>
-                <a-select-option value="smooth">平滑</a-select-option>
-                <a-select-option value="jumpover"
-                  >跳线(两线交叉)</a-select-option
-                >
-              </a-select>
-            </a-form-item>
-            <a-form-item class="minInterval" label="线条宽度">
-              <a-input-number
-                v-model="form.strokeWidth"
-                size="small"
-                :min="2"
-                :step="2"
-                :max="6"
-                label="线条宽度"
-                @change="changeEdgeStrokeWidth"
-              />
-            </a-form-item>
-            <a-form-item class="minInterval" label="双向箭头">
-              <a-switch v-model="form.isArrows" @change="changeEdgeArrows" />
-            </a-form-item>
-            <a-form-item class="minInterval" label="流动线条">
-              <a-switch v-model="form.isAnit" @change="changeEdgeAnit" />
-            </a-form-item>
-            <a-form-item class="minInterval" label="调整线条">
-              <a-switch v-model="form.isTools" @change="changeEdgeTools" />
-            </a-form-item>
-          </a-form>
-        </div>
-      </a-drawer>
-      <!--      编辑节点信息-->
-      <a-modal
-        title="编辑节点信息"
-        :visible="visible"
-        :width="820"
-        :confirm-loading="confirmLoading"
-        @ok="handleOk"
-        @cancel="handleCancel"
-      >
-        <a-tabs default-active-key="1" @change="callback">
-          <a-tab-pane key="1" tab="基本信息">
-            <a-form-model
-              layout="vertical"
-              ref="ruleForm"
-              :rules="rules"
-              :model="infoForm"
-            >
-              <a-form-model-item label="节点描述" prop="describe">
-                <a-textarea auto-size v-model="infoForm.describe" />
-              </a-form-model-item>
-            </a-form-model>
-          </a-tab-pane>
-          <a-tab-pane key="2" tab="输入" force-render>
-            此功能仍在开发中...
-          </a-tab-pane>
-          <a-tab-pane key="3" tab="输出">
-            此功能仍在开发中...
-          </a-tab-pane>
-          <a-tab-pane key="4" tab="操作规范">
-            此功能仍在开发中...
-          </a-tab-pane>
-          <a-tab-pane key="5" tab="指标">
-            此功能仍在开发中...
-          </a-tab-pane>
-          <a-tab-pane key="6" tab="风险控制点">
-            此功能仍在开发中...
-          </a-tab-pane>
-          <a-tab-pane key="7" tab="信息化">
-            此功能仍在开发中...
-          </a-tab-pane>
-          <a-tab-pane key="8" tab="关联标准">
-            此功能仍在开发中...
-          </a-tab-pane>
-          <a-tab-pane key="9" tab="办理时限">
-            此功能仍在开发中...
-          </a-tab-pane>
-        </a-tabs>
-      </a-modal>
     </div>
+    <contextmenu
+      :itemList="menuItemList"
+      :visible.sync="menuVisible"
+      @select="onMenuSelect"
+    />
+    <!--      编辑节点和连线样式-->
+    <cell-style
+    :form="form"
+    :label-form="labelForm"
+    :edit-title="editTitle"
+    :edit-drawer="editDrawer"
+    @changeEdgeAnit="changeEdgeAnit"
+    @changeEdgeArrows="changeEdgeArrows"
+    @changeEdgeStrokeWidth="changeEdgeStrokeWidth"
+    @changeEdgeConnector="changeEdgeConnector"
+    @updateEdgeValue="updateEdgeValue"
+    @changeEdgeLabel="changeEdgeLabel"
+    @updateNodeValue="updateNodeValue"
+    @changeNode="changeNode"
+    @closeEditForm="closeEditForm"
+    ></cell-style>
+    <!--      编辑节点信息-->
+    <a-modal
+      title="编辑节点信息"
+      :visible="visible"
+      :width="820"
+      :confirm-loading="confirmLoading"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <a-tabs default-active-key="1" @change="callback">
+        <a-tab-pane key="1" tab="基本信息">
+          <a-form-model
+            layout="vertical"
+            ref="ruleForm"
+            :rules="rules"
+            :model="infoForm"
+          >
+            <a-form-model-item label="节点描述" prop="describe">
+              <a-textarea auto-size v-model="infoForm.describe" />
+            </a-form-model-item>
+          </a-form-model>
+        </a-tab-pane>
+        <a-tab-pane key="2" tab="输入" force-render>
+          此功能仍在开发中...
+        </a-tab-pane>
+        <a-tab-pane key="3" tab="输出">
+          此功能仍在开发中...
+        </a-tab-pane>
+        <a-tab-pane key="4" tab="操作规范">
+          此功能仍在开发中...
+        </a-tab-pane>
+        <a-tab-pane key="5" tab="指标">
+          此功能仍在开发中...
+        </a-tab-pane>
+        <a-tab-pane key="6" tab="风险控制点">
+          此功能仍在开发中...
+        </a-tab-pane>
+        <a-tab-pane key="7" tab="信息化">
+          此功能仍在开发中...
+        </a-tab-pane>
+        <a-tab-pane key="8" tab="关联标准">
+          此功能仍在开发中...
+        </a-tab-pane>
+        <a-tab-pane key="9" tab="办理时限">
+          此功能仍在开发中...
+        </a-tab-pane>
+      </a-tabs>
+    </a-modal>
   </div>
 </template>
 <script>
-import { Twitter } from "vue-color";
+
 import "@antv/x6-vue-shape";
 import { Graph, Shape, DataUri } from "@antv/x6";
-import Count from "./count.vue";
+import Count from "./components/Count.vue";
 import Contextmenu from "@/components/menu/Contextmenu";
-import MyGraph from "./graph";
-import MyToolbar from "./toolbar";
+import MyGraph from "./components/Graph";
+import MyToolbar from "./components/Toolbar";
+import CellStyle from "./components/CellStyle";
 import {
   configSetting,
   configNodeShape,
@@ -250,10 +119,11 @@ import {
   configEdgeLabel,
   graphBindKey
 } from "@/utils/antvSetting";
+import { mapState } from "vuex";
 export default {
   name: "AntV6X",
   components: {
-    "twitter-picker": Twitter,
+    CellStyle,
     MyGraph,
     MyToolbar,
     Contextmenu
@@ -283,6 +153,7 @@ export default {
       zoom: 1, //画布缩放大小
       visiableGrid: true,
       isChange: false, //是否绘制，修改过
+      isFirstChange: false, //是否绘制，修改过
       isPortsShow: false, //锚点是否长显
       menuItem: "", //拖拽生成的节点
       selectCell: "", //选中的基类
@@ -307,19 +178,6 @@ export default {
           }
         ]
       },
-      defaultColors: [
-        //颜色选择器的颜色组
-        "#000000",
-        "#FCB900",
-        "#7BDCB5",
-        "#f7f7f7",
-        "#8ED1FC",
-        "#0693E3",
-        "#ABB8C3",
-        "#EB144C",
-        "#F78DA7",
-        "#9900EF"
-      ],
       menuVisible: false, //右击导航是否显示
       contextmenuType: "", //右击的节点类型
       visible: false, //弹窗是否显示
@@ -329,6 +187,7 @@ export default {
     };
   },
   computed: {
+    ...mapState("setting", ["collapsed", "fixedTabs"]),
     // 右击导航列表
     menuItemList() {
       let arr = [];
@@ -349,12 +208,27 @@ export default {
       }
       return arr;
     },
-    drawerMainHeight() {
-      // 抽屉内容高度
-      return { height: `calc(100vh - 120px)` };
-    }
+
   },
   watch: {
+    collapsed() {
+      setTimeout(() => {
+        this.graph &&
+          this.graph.resize(
+            document.getElementById("main-content").offsetWidth - 180 - 48,
+            document.getElementById("main-content").offsetHeight
+          );
+      }, 500);
+    },
+    fixedTabs() {
+      setTimeout(() => {
+        this.graph &&
+          this.graph.resize(
+            document.getElementById("main-content").offsetWidth - 180 - 48,
+            document.getElementById("main-content").offsetHeight
+          );
+      }, 500);
+    },
     value: {
       handler: function() {
         if (this.graph) {
@@ -439,6 +313,12 @@ export default {
         cell.removeTools();
       });
 
+      window.addEventListener("resize", () => {
+        graph.resize(
+          document.getElementById("main-content").offsetWidth - 180 - 48,
+          document.getElementById("main-content").offsetHeight
+        );
+      });
       //自适应窗口大小
       this.parentResize(graph);
 
@@ -469,6 +349,26 @@ export default {
         this.handlerDel();
       });
 
+      //监听node变化
+      graph.on("node:added", ({ cell, index, options }) => {
+        console.log("add===>");
+        console.log(cell);
+        console.log(index);
+        console.log(options);
+      });
+      graph.on("node:removed", ({ cell, index, options }) => {
+        console.log("removed===>");
+        console.log(cell);
+        console.log(index);
+        console.log(options);
+      });
+      graph.on("node:changed", ({ cell, index, options }) => {
+        console.log("changed===>");
+        console.log(cell);
+        console.log(index);
+        console.log(options);
+      });
+
       // 赋值
       this.graph = graph;
       if (this.value && JSON.parse(this.value).length) {
@@ -484,7 +384,7 @@ export default {
         }
       }
 
-      // 画布有变化
+      // 画布内容是否有变化
       graph.on("cell:changed", () => {
         this.isChangeValue();
       });
@@ -678,11 +578,16 @@ export default {
     redoHandle() {
       this.graph.history.redo();
     },
+    //清空整个画布
+    clearCellsHandle() {
+      this.graph.clearCells();
+    },
     // 画布是否有变动
     isChangeValue() {
       if (!this.isChange) {
         this.isChange = true;
       }
+      if (!this.isFirstChange) this.isFirstChange = true;
     },
     menuDrag(type) {
       console.log("type", type);
@@ -725,6 +630,7 @@ export default {
     //编辑节点样式
     editNodeStyle() {
       const cell = this.selectCell;
+      if (!cell.isNode()) return;
       this.editTitle = "编辑节点";
       const body =
         cell.attrs.body ||
@@ -743,6 +649,7 @@ export default {
     //编辑边样式
     editEdgeStyle() {
       const cell = this.selectCell;
+      if (!cell.isEdge()) return;
       this.editTitle = "编辑连线";
       this.form = {
         label:
@@ -750,7 +657,7 @@ export default {
             ? cell.labels[0].attrs.labelText.text
             : "",
         stroke: cell.attrs.line.stroke || "",
-        connector: "rounded",
+        connector: cell.getConnector()?.name || "rounded",
         strokeWidth: cell.attrs.line.strokeWidth || "",
         isArrows: !!cell.attrs.line.sourceMarker,
         isAnit: !!cell.attrs.line.strokeDasharray,
@@ -776,7 +683,6 @@ export default {
     },
     // 修改一般节点
     changeNode(type, value) {
-      console.log("changeNode", type, value);
       switch (type) {
         case "labelText":
           this.selectCell.attr("label/text", value);
@@ -904,11 +810,6 @@ export default {
           }
         });
       }
-    },
-    // 给线添加调节工具
-    changeEdgeTools(val) {
-      if (val) this.selectCell.addTools(["vertices", "segments"]);
-      else this.selectCell.removeTools();
     },
     // 删除
     handlerDel() {

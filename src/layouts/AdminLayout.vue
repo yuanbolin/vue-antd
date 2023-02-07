@@ -56,6 +56,7 @@
         v-show="fixedHeader"
       ></a-layout-header>
       <a-layout-content
+        id="main-content"
         class="admin-layout-content"
         :style="`min-height: ${minHeight}px;`"
       >
@@ -86,7 +87,6 @@ export default {
   data() {
     return {
       minHeight: window.innerHeight - 64 - 122,
-      collapsed: false,
       showSetting: false,
       drawerOpen: false
     };
@@ -97,6 +97,13 @@ export default {
     };
   },
   watch: {
+    fixedTabs(val) {
+      if (val) {
+        this.minHeight = window.innerHeight - 122;
+      } else {
+        this.minHeight = window.innerHeight - 64 - 122;
+      }
+    },
     $route(val) {
       this.setActivated(val);
     },
@@ -120,7 +127,8 @@ export default {
       "fixedSideBar",
       "fixedTabs",
       "hideSetting",
-      "multiPage"
+      "multiPage",
+      "collapsed"
     ]),
     ...mapGetters("setting", ["firstMenu", "subMenu", "menuData"]),
     sideMenuWidth() {
@@ -144,9 +152,13 @@ export default {
     }
   },
   methods: {
-    ...mapMutations("setting", ["correctPageMinHeight", "setActivatedFirst"]),
+    ...mapMutations("setting", [
+      "correctPageMinHeight",
+      "setActivatedFirst",
+      "setCollapsed"
+    ]),
     toggleCollapse() {
-      this.collapsed = !this.collapsed;
+      this.setCollapsed(!this.collapsed);
     },
     onMenuSelect() {
       this.toggleCollapse();

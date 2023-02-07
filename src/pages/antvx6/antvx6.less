@@ -7,14 +7,19 @@
   display: flex;
   overflow: hidden;
   position: relative;
+  .antv-menu {
+    flex-shrink: 0;
+  }
   .antv-wrapper {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
     position: relative;
-    .wrapper-canvas {
-      flex: 1;
+    .ChatBox {
+      width: 100%;
+      height: calc(100% - 38px);
+      display: flex;
+      #wrapper {
+        flex: 1;
+      }
     }
   }
 }

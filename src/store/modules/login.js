@@ -46,11 +46,6 @@ export default {
             }
           })
           .catch(error => {
-            console.log("systemToken==>", error);
-            notification.error({
-              message: "错误",
-              description: error || "获取二维码失败"
-            });
             reject(error);
           });
       });
@@ -79,6 +74,7 @@ export default {
               }
             })
             .catch(error => {
+              if(error?.message.indexOf("Network Error")!=-1)error="服务器链接超时，请稍后再试。"
               notification.error({
                 message: "错误",
                 description: error || "人员信息未获取"

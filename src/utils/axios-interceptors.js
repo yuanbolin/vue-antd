@@ -53,11 +53,25 @@ const resp403 = {
     return response;
   },
   onRejected(error, options) {
-    console.log(error);
     const { message } = options;
     const { response } = error;
     if (response?.status === 403) {
       message.error("请求被拒绝");
+    }
+    return Promise.reject(error);
+  }
+};
+
+const resError = {
+  onFulfilled(response) {
+    console.log("response==>", response);
+    return response;
+  },
+  onRejected(error, options) {
+    const { message } = options;
+    const { response } = error;
+    if (!response) {
+      message.error("服务器链接超时，请稍后再试。");
     }
     return Promise.reject(error);
   }
@@ -97,5 +111,5 @@ const reqCommon = {
 
 export default {
   request: [reqCommon], // 请求拦截
-  response: [resp401, resp403] // 响应拦截
+  response: [resp401, resp403, resError] // 响应拦截
 };

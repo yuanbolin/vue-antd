@@ -8,7 +8,7 @@
       >
         <a
           class="toolbar-box"
-          :title="$t('title1')"
+          :title="$t('toolbar.title1')"
           @click="e => e.preventDefault()"
         >
           <a-icon type="control" style="color: #555;margin-right: 3px;" />
@@ -17,9 +17,7 @@
         <a-menu slot="overlay" class="menu">
           <a-menu-item style="border-bottom: 1px dashed #ccc;">
             <div class="option" @click="changePortsShow">
-              <a class="title" href="javascript:;">{{
-                $t("portShow")
-              }}</a>
+              <a class="title" href="javascript:;">{{ $t("toolbar.portShow") }}</a>
               <div class="state">
                 <a-icon v-if="isPortsShow" type="check" />
               </div>
@@ -27,9 +25,7 @@
           </a-menu-item>
           <a-menu-item>
             <div class="option" @click="changeGrid">
-              <a class="title" href="javascript:;">{{
-                $t("visibleGrid")
-              }}</a>
+              <a class="title" href="javascript:;">{{ $t("toolbar.visibleGrid") }}</a>
               <div class="state">
                 <a-icon v-if="visiableGrid" type="check" />
               </div>
@@ -43,7 +39,7 @@
       <a-dropdown placement="bottomCenter" :trigger="['click']">
         <a
           class="toolbar-box"
-          :title="$t('title2')"
+          :title="$t('toolbar.title2')"
           @click="e => e.preventDefault()"
         >
           <span style="color: #555;">{{ parseInt(zoom * 100) }}%</span>
@@ -56,7 +52,7 @@
                 class="title"
                 href="javascript:;"
                 @click="transform('center')"
-                >{{ $t("contentCenter") }}</a
+                >{{ $t("toolbar.contentCenter") }}</a
               >
               <div class="state"></div>
             </div>
@@ -137,7 +133,7 @@
                 class="title"
                 href="javascript:;"
                 @click="transform('zoomToFit')"
-                >{{ $t("contentFull") }}</a
+                >{{ $t("toolbar.contentFull") }}</a
               >
               <div class="state"></div>
             </div>
@@ -149,7 +145,7 @@
     <div class="col line3">
       <a
         class="toolbar-box"
-        :title="$t('title3')"
+        :title="$t('toolbar.title3')"
         href="javascript:;"
         @click="transform(zoom + 0.1)"
       >
@@ -157,7 +153,7 @@
       </a>
       <a
         class="toolbar-box"
-        :title="$t('title4')"
+        :title="$t('toolbar.title4')"
         href="javascript:;"
         @click="transform(zoom - 0.1)"
       >
@@ -168,7 +164,7 @@
     <div class="col line3">
       <a
         :class="{ 'toolbar-box': true, active: !canUndo }"
-        :title="$t('title5')"
+        :title="$t('toolbar.title5')"
         href="javascript:;"
         @click="undoHandle()"
       >
@@ -176,7 +172,7 @@
       </a>
       <a
         :class="{ 'toolbar-box': true, active: !canRedo }"
-        :title="$t('title6')"
+        :title="$t('toolbar.title6')"
         href="javascript:;"
         @click="redoHandle()"
       >
@@ -184,12 +180,28 @@
       </a>
     </div>
     <a-divider class="divider" type="vertical" />
-    <div style="margin-left: 20px;">
-      <a-tag v-if="isChange" style="cursor:pointer;" color="red" @click="handlerSend">
-        {{$t("save")}}
+    <div class="col small">
+      <a
+        :class="{ 'toolbar-box': true }"
+        :title="$t('toolbar.title7')"
+        href="javascript:;"
+        @click="clearCellsHandle"
+      >
+        <a-icon type="delete" />
+      </a>
+    </div>
+    <a-divider class="divider" type="vertical" />
+    <div style="margin-left: 20px;" v-if="isFirstChange">
+      <a-tag
+        v-if="isChange"
+        style="cursor:pointer;"
+        color="red"
+        @click="handlerSend"
+      >
+        {{ $t("toolbar.save") }}
       </a-tag>
       <a-tag v-else color="blue">
-        {{$t("saved")}}
+        {{ $t("toolbar.saved") }}
       </a-tag>
     </div>
   </div>
@@ -223,6 +235,10 @@ export default {
     isChange: {
       type: Boolean,
       default: false
+    },
+    isFirstChange: {
+      type: Boolean,
+      default: false
     }
   },
   emits: [
@@ -231,7 +247,8 @@ export default {
     "changeContent",
     "changeGrid",
     "undoHandle",
-    "redoHandle"
+    "redoHandle",
+    "clearCellsHandle"
   ],
   data() {
     return {
@@ -254,6 +271,9 @@ export default {
     },
     handlerSend() {
       this.$emit("handlerSend");
+    },
+    clearCellsHandle() {
+      this.$emit("clearCellsHandle");
     },
     transform(val) {
       //限制缩放比例在0.2-2
@@ -299,6 +319,9 @@ export default {
     .toolbar-box.active:hover {
       cursor: not-allowed;
     }
+  }
+  .small.col{
+    width: 50px;
   }
   .line3 {
     display: flex;

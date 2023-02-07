@@ -1,3 +1,4 @@
+<!--自定义vue子组件demo。仅供参考，目前无用-->
 <template>
   <div class="red-box">
     <a-button @click="add()">内部Add: {{ num }} </a-button>

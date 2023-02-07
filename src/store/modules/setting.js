@@ -16,6 +16,7 @@ export default {
     palettes: ADMIN.palettes,
     pageMinHeight: 0,
     menuData: [],
+    collapsed: false,
     activatedFirst: undefined,
     customTitles,
     ...config,
@@ -107,6 +108,9 @@ export default {
           JSON.stringify(state.customTitles)
         );
       }
+    },
+    setCollapsed(state, value) {
+      state.collapsed = value;
     }
   }
 };

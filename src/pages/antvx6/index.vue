@@ -3,10 +3,16 @@
 </template>
 <script>
 import AntVXSix from "@/pages/antvx6/antvx6.vue";
+import { mapState} from "vuex";
 export default {
-  name: "LiuCheng",
+  name: "Flow",
   components: {
     "antv-six": AntVXSix
+  },
+  computed: {
+    ...mapState("setting", [
+      "fixedTabs"
+    ])
   },
   data() {
     return {
@@ -15,6 +21,13 @@ export default {
     };
   },
   watch: {
+    fixedTabs(val) {
+      if (val) {
+        this.height = "calc(100vh - 121px)";
+      } else {
+        this.height = "calc(100vh - 185px)";
+      }
+    },
     tempGroupJson: {
       handler: function() {
         console.log(this.tempGroupJson);

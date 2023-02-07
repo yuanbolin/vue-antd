@@ -2,7 +2,7 @@
 export const configSetting = Shape => {
   return {
     grid: true, // 网格
-    autoResize: false, // 自适应容器大小
+    autoResize: false, // 自带的自适应容器大小属性，实测不是很好用。
     translating: { restrict: true }, // 平移节点
     mousewheel: {
       // 鼠标滚轮缩放画布
@@ -69,14 +69,13 @@ export const configSetting = Shape => {
       }
     },
     resizing: {
-      // 节点缩放 最小限制为20px，最大限制为200px
+      // 节点缩放 最小限制为40px，最大限制为400px
       enabled: true,
       preserveAspectRatio: true, //等比例缩放
-      minWidth: 20,
-      minHeight: 20,
-      maxWidth: 200,
-      maxHeight: 200,
-      restricted: true //限制画布边缘缩放
+      minWidth: 40,
+      minHeight: 40,
+      maxWidth: 400,
+      maxHeight: 400,
     },
     rotating: true, // 节点选转
     selecting: {
@@ -92,24 +91,9 @@ export const configSetting = Shape => {
     clipboard: false, // 剪切板 开启后可复制黏贴
     scroller: {
       enabled: true,
-      pannable: true
+      pannable: true,
+      autoResize: true
     },
-    embedding: {
-      // 父子节点交互嵌套
-      enabled: true,
-      findParent({ node }) {
-        const bbox = node.getBBox();
-        return this.getNodes().filter(node => {
-          // 只有 data.parent 为 true 的节点才是父节点
-          const data = node.getData();
-          if (data && data.parent) {
-            const targetBBox = node.getBBox();
-            return bbox.isIntersectWithRect(targetBBox);
-          }
-          return false;
-        });
-      }
-    }
   };
 };
 
