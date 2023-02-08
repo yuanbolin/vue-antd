@@ -73,6 +73,12 @@ const resError = {
     if (!response) {
       message.error("服务器链接超时，请稍后再试。");
     }
+    if (response.status.toString().indexOf("50") != -1) {
+      message.error("服务器处理异常，请稍后再试。");
+    }
+    if (response.status.toString().indexOf("40") != -1) {
+      message.error("服务器请求错误，请稍后再试。");
+    }
     return Promise.reject(error);
   }
 };

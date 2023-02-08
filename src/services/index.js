@@ -1,4 +1,6 @@
-//组织机构管理
+// import organization from "./organization";
 import user from "./user";
+import process from "./process";
 
-export { user };
+
+export { user,process };

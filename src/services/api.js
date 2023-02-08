@@ -1,13 +1,21 @@
 //跨域代理前缀
-const API_PROXY_PREFIX = "/api";
+const API_PROXY_PREFIX = "/api/public/";
 
 const api = {
   //钉钉二维码登录
-  SYSTEMTOKEN: `/public/token/system`,
-  USERTOKEN: `/public/token/user`,
-  LOGIN: `/public/login/login`,
-  LOGINOUT: `/public/login/logout`,
-  VISION: `/public/business_philosophy/vision`
+  SYSTEMTOKEN: `token/system`,
+  USERTOKEN: `token/user`,
+  LOGIN: `login/login`,
+  LOGINOUT: `login/logout`,
+  VISION: `business_philosophy/vision`,
+  //流程管理
+  PROCESS: "process/get_tree",
+  PROCESSADD: "process/add",
+  PROCESSUPDATE: "process/update",
+  PROCESSDELETE: "process/delete",
+  PROCESSPUBLIC: "process/publish",
+  PROCESSSAVE: "process/save_process",
+  PROCESSDIR: "process/get_dir_list",
   //组织机构管理
   // ORGANIZATION: `/organization/org_tree`,
   // ORGANIZATIONADD: `/organization/add`,

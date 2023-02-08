@@ -4,6 +4,7 @@
 <script>
 import AntVXSix from "@/pages/antvx6/antvx6.vue";
 import { mapState} from "vuex";
+
 export default {
   name: "Flow",
   components: {
