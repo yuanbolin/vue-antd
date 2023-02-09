@@ -59,7 +59,7 @@ export default {
     return {
       clearCaches: [],
       pageList: [],
-      activePage: "",
+
       menuVisible: false,
       refreshing: false,
       excludeKeys: []
@@ -71,7 +71,8 @@ export default {
       "cachePage",
       "animate",
       "layout",
-      "pageWidth"
+      "pageWidth",
+      "activePage",
     ]),
     menuItemList() {
       return [
@@ -92,7 +93,7 @@ export default {
     if (this.pageList.findIndex(item => item.path === route.path) === -1) {
       this.pageList.push(this.createPage(route));
     }
-    this.activePage = route.path;
+    this.setActivePage(route.path)
     if (this.multiPage) {
       this.$nextTick(() => {
         this.setCachedKey(route);
@@ -113,7 +114,7 @@ export default {
       this.loadCacheConfig(val);
     },
     $route: function(newRoute) {
-      this.activePage = newRoute.path;
+      this.setActivePage(newRoute.path)
       const page = this.pageList.find(item => item.path === newRoute.path);
       if (!this.multiPage) {
         this.pageList = [this.createPage(newRoute)];
@@ -142,7 +143,7 @@ export default {
   },
   methods: {
     changePage(key) {
-      this.activePage = key;
+      this.setActivePage(key)
       const page = this.pageList.find(item => item.path === key);
       this.$router.push(page.fullPath);
     },
@@ -160,7 +161,7 @@ export default {
       } else if (key === this.activePage) {
         index =
           index >= this.pageList.length ? this.pageList.length - 1 : index;
-        this.activePage = this.pageList[index].path;
+        this.setActivePage(this.pageList[index].path)
         this.$router.push(this.activePage);
       }
     },
@@ -209,7 +210,7 @@ export default {
       this.pageList = this.pageList.filter(item => !clearPages.includes(item));
       // 判断跳转
       if (this.activePage != pageKey) {
-        this.activePage = pageKey;
+        this.setActivePage(pageKey)
         this.$router.push(this.activePage);
       }
     },
@@ -223,7 +224,7 @@ export default {
       this.pageList = this.pageList.filter(item => !clearPages.includes(item));
       // 判断跳转
       if (!this.pageList.find(item => item.path === this.activePage)) {
-        this.activePage = pageKey;
+        this.setActivePage(pageKey)
         this.$router.push(this.activePage);
       }
     },
@@ -237,7 +238,7 @@ export default {
       this.pageList = this.pageList.filter(item => !clearPages.includes(item));
       // 判断跳转
       if (!this.pageList.find(item => item.path === this.activePage)) {
-        this.activePage = pageKey;
+        this.setActivePage(pageKey)
         this.$router.push(this.activePage);
       }
     },
@@ -363,7 +364,7 @@ export default {
       });
       console.log(this.excludeKeys);
     },
-    ...mapMutations("setting", ["correctPageMinHeight"])
+    ...mapMutations("setting", ["correctPageMinHeight","setActivePage"])
   }
 };
 </script>

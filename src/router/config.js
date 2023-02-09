@@ -111,7 +111,7 @@ const options = {
           meta: {
             invisible: true,
             page: {
-              cacheAble: false
+              cacheAble: true
             }
           },
           component: () => import("@/pages/antvx6/index")

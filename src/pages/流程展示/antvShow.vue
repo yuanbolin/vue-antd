@@ -12,7 +12,7 @@
           {{ collapsed ? $t("menu.collapsed") : $t("menu.noCollapsed") }}
         </template>
         <div class="left-menu">
-          <span :hidden="collapsed">{{$t("menu.title")}}</span>
+          <span :hidden="collapsed">{{ $t("menu.title") }}</span>
           <a-icon
             class="trigger"
             :type="collapsed ? 'menu-unfold' : 'menu-fold'"
@@ -39,40 +39,45 @@
           <a-tabs default-active-key="1">
             <a-tab-pane key="1" :tab="$t('chat.tab1')">
               <a-descriptions title="" bordered>
-                <a-descriptions-item :label="$t('chat.tab1_describe')" :span="3">
+                <a-descriptions-item
+                  :label="$t('chat.tab1_describe')"
+                  :span="3"
+                >
                   {{ nodeData.describe }}
                 </a-descriptions-item>
               </a-descriptions>
             </a-tab-pane>
             <a-tab-pane key="2" :tab="$t('chat.tab2')" force-render>
-              {{$t("chat.dev")}}
+              {{ $t("chat.dev") }}
             </a-tab-pane>
             <a-tab-pane key="3" :tab="$t('chat.tab3')">
-              {{$t("chat.dev")}}
+              {{ $t("chat.dev") }}
             </a-tab-pane>
             <a-tab-pane key="4" :tab="$t('chat.tab4')">
-              {{$t("chat.dev")}}
+              {{ $t("chat.dev") }}
             </a-tab-pane>
             <a-tab-pane key="5" :tab="$t('chat.tab5')">
-              {{$t("chat.dev")}}
+              {{ $t("chat.dev") }}
             </a-tab-pane>
             <a-tab-pane key="6" :tab="$t('chat.tab6')">
-              {{$t("chat.dev")}}
+              {{ $t("chat.dev") }}
             </a-tab-pane>
             <a-tab-pane key="7" :tab="$t('chat.tab7')">
-              {{$t("chat.dev")}}
+              {{ $t("chat.dev") }}
             </a-tab-pane>
             <a-tab-pane key="8" :tab="$t('chat.tab8')">
-              {{$t("chat.dev")}}
+              {{ $t("chat.dev") }}
             </a-tab-pane>
             <a-tab-pane key="9" :tab="$t('chat.tab9')">
-              {{$t("chat.dev")}}
+              {{ $t("chat.dev") }}
             </a-tab-pane>
           </a-tabs>
         </a-modal>
         <div class="wrapper-tips">
           <div class="wrapper-tips-item">
-            <a-button type="primary" @click="toPNG">{{$t("primary")}}</a-button>
+            <a-button type="primary" @click="toPNG">{{
+              $t("primary")
+            }}</a-button>
           </div>
         </div>
         <div id="wrapper" class="wrapper-canvas"></div>
@@ -84,7 +89,7 @@
 import { DataUri, Graph } from "@antv/x6";
 import { configNodePorts } from "@/utils/antvSetting";
 import SearchTree from "@/components/tree/SearchTree";
-
+import { mapState } from "vuex";
 // 反显数据
 import resData from "./resData";
 
@@ -98,9 +103,43 @@ export default {
       visible: false
     };
   },
-  i18n:require('./i18n'),
+  i18n: require("./i18n"),
   components: { "search-tree": SearchTree },
-  created() {},
+  computed: {
+    ...mapState("setting", ["collapsed", "fixedTabs", "activePage"])
+  },
+  watch: {
+    /**
+     * 因antvx6自适应窗口变化存在问题,改为自定义监听事件
+     */
+    collapsed() {
+      setTimeout(() => {
+        this.graph &&
+          this.graph.resize(
+            document.getElementById("main-content").offsetWidth - 180 - 48,
+            document.getElementById("main-content").offsetHeight
+          );
+      }, 500);
+    },
+    fixedTabs() {
+      setTimeout(() => {
+        this.graph &&
+          this.graph.resize(
+            document.getElementById("main-content").offsetWidth - 180 - 48,
+            document.getElementById("main-content").offsetHeight
+          );
+      }, 500);
+    },
+    /**
+     * 因antvx6的Scroller在切换Tab页后中心位置偏移回左上角影响使用体验,此处加入切回页面后居中显示内容
+     * @param val 切换路由的path值
+     */
+    activePage(val) {
+      if (val.indexOf("/antvShow") !== -1 && this.graph) {
+        this.graph.centerContent();
+      }
+    }
+  },
   mounted() {
     setTimeout(() => {
       this.initGraph();
@@ -250,6 +289,16 @@ export default {
       graph.on("node:mouseleave", ({ node }) => {
         console.log(node);
       });
+
+      //自适应窗口大小
+      window.addEventListener("resize", () => {
+        graph.resize(
+          document.getElementById("main-content").offsetWidth - 180 - 48,
+          document.getElementById("main-content").offsetHeight
+        );
+      });
+      this.parentResize(graph);
+
       this.graph = graph;
     },
     //左侧树形选择器的选中的key
@@ -284,6 +333,94 @@ export default {
           }
         }
       );
+    },
+    /**
+     * 流程窗口大小变化时,节点位置和大小自适应
+     * @param graph
+     */
+    parentResize(graph) {
+      graph.on("node:change:size", ({ node, options }) => {
+        if (options.skipParentHandler) {
+          return;
+        }
+
+        const children = node.getChildren();
+        if (children && children.length) {
+          node.prop("originSize", node.getSize());
+        }
+      });
+
+      graph.on("node:change:position", ({ node, options }) => {
+        if (options.skipParentHandler) {
+          return;
+        }
+
+        const children = node.getChildren();
+        if (children && children.length) {
+          node.prop("originPosition", node.getPosition());
+        }
+
+        const parent = node.getParent();
+        if (parent && parent.isNode()) {
+          let originSize = parent.prop("originSize");
+          if (originSize == null) {
+            parent.prop("originSize", parent.getSize());
+          }
+          originSize = parent.prop("originSize");
+
+          let originPosition = parent.prop("originPosition");
+          if (originPosition == null) {
+            parent.prop("originPosition", parent.getPosition());
+          }
+          originPosition = parent.prop("originPosition");
+
+          let x = originPosition.x;
+          let y = originPosition.y;
+          let cornerX = originPosition.x + originSize.width;
+          let cornerY = originPosition.y + originSize.height;
+          let hasChange = false;
+
+          const children = parent.getChildren();
+          if (children) {
+            children.forEach(child => {
+              const bbox = child.getBBox();
+              const corner = bbox.getCorner();
+
+              if (bbox.x < x) {
+                x = bbox.x;
+                hasChange = true;
+              }
+
+              if (bbox.y < y) {
+                y = bbox.y;
+                hasChange = true;
+              }
+
+              if (corner.x > cornerX) {
+                cornerX = corner.x;
+                hasChange = true;
+              }
+
+              if (corner.y > cornerY) {
+                cornerY = corner.y;
+                hasChange = true;
+              }
+            });
+          }
+
+          if (hasChange) {
+            parent.prop(
+              {
+                position: { x, y },
+                size: { width: cornerX - x, height: cornerY - y }
+              },
+              // Note that we also pass a flag so that we know we shouldn't
+              // adjust the `originPosition` and `originSize` in our handlers.
+              { skipParentHandler: true }
+            );
+          }
+        }
+      });
     }
   }
 };

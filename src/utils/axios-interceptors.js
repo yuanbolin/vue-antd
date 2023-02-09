@@ -63,10 +63,6 @@ const resp403 = {
 };
 
 const resError = {
-  onFulfilled(response) {
-    console.log("response==>", response);
-    return response;
-  },
   onRejected(error, options) {
     const { message } = options;
     const { response } = error;

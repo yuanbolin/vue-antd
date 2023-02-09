@@ -18,6 +18,7 @@ export default {
     menuData: [],
     collapsed: false,
     activatedFirst: undefined,
+    activePage:"",
     customTitles,
     ...config,
     ...localSetting
@@ -94,6 +95,9 @@ export default {
     },
     setFixedTabs(state, fixedTabs) {
       state.fixedTabs = fixedTabs;
+    },
+    setActivePage(state, activePage) {
+      state.activePage = activePage;
     },
     setCustomTitle(state, { path, title }) {
       if (title) {

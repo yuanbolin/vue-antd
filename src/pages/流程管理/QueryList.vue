@@ -47,25 +47,17 @@
         :data-source="dataSource"
         :expanded-row-keys.sync="expandedRowKeys"
       >
+        <!--        目录名称  当流程已发布时,目录名称颜色变亮-->
         <template slot="name" slot-scope="text, record">
           <a-tag
             v-if="record.type === CatalogueType.DIRECTORY"
-            :style="
-              record.published
-                ? {
-                    background: '#fff',
-                    borderStyle: 'dashed',
-                    borderColor: '#f35a19'
-                  }
-                : { background: '#fff', borderStyle: 'dashed' }
-            "
+            :style="{
+              background: '#fff',
+              borderStyle: 'dashed',
+              borderColor: '#f35a19'
+            }"
           >
-            <a-icon
-              :style="
-                record.published ? { color: '#f35a19' } : { color: '#aaa' }
-              "
-              type="folder-open"
-            />
+            <a-icon :style="{ color: '#f35a19' }" type="folder-open" />
             {{ text }}
           </a-tag>
           <a-tag
@@ -89,6 +81,7 @@
             {{ text }}
           </a-tag>
         </template>
+        <!--        目录级别样式-->
         <template slot="level" slot-scope="text, record">
           <a-tag v-if="record.type === CatalogueType.DIRECTORY" color="#f35a19">
             {{ text }} {{ $t("table_row.level1") }}
@@ -97,6 +90,7 @@
             {{ parseInt(text) - 1 }} {{ $t("table_row.level2") }}
           </a-tag>
         </template>
+        <!--        操作-->
         <template slot="action" slot-scope="text, record">
           <a-dropdown v-if="record.type === CatalogueType.DIRECTORY">
             <a style="margin-right: 8px">
@@ -136,7 +130,7 @@
           <router-link
             v-if="record.type === CatalogueType.PROCESS"
             style="margin-right: 8px"
-            :to="`/antvx6/${record.key}`"
+            :to="`/antvx6/${record.id}`"
             ><a-icon style="margin-right: 5px" type="highlight" />{{
               $t("table_row.draw")
             }}
@@ -149,14 +143,23 @@
           <a-popconfirm
             v-if="record.type === CatalogueType.PROCESS && !record.published"
             :title="$t('table_action.publish')"
-            @confirm="() => push(record.key)"
+            @confirm="() => push(record.id)"
           >
-            <a style="margin-right: 8px" @click="() => showEditDrawer(record)">
+            <a style="margin-right: 8px">
               <a-icon style="margin-right: 5px" type="cloud-upload" />{{
                 $t("table_row.publish")
               }}
             </a>
           </a-popconfirm>
+          <a
+            v-if="record.type === CatalogueType.PROCESS"
+            @click="() => detailRecord(record)"
+            style="margin-right: 8px"
+          >
+            <a-icon style="margin-right: 5px" type="file-text" />{{
+              $t("table_row.detail")
+            }}
+          </a>
           <a-popconfirm
             v-if="record.type === CatalogueType.DIRECTORY || !record.published"
             :title="$t('table_action.delete')"
@@ -361,6 +364,25 @@
         </a-button>
       </div>
     </a-drawer>
+    <a-modal v-model="visible" @ok="handleOk">
+      <a-descriptions title="流程信息" bordered>
+        <a-descriptions-item label="流程输入" :span="3">
+          {{ detailProcess.input }}
+        </a-descriptions-item>
+        <a-descriptions-item label="流程输出" :span="3">
+          {{ detailProcess.output }}
+        </a-descriptions-item>
+        <a-descriptions-item label="流程驱动类型" :span="3">
+          {{ driveType_computed }}
+        </a-descriptions-item>
+        <a-descriptions-item label="流程驱动规则" :span="3">
+          {{ detailProcess.driveRule }}
+        </a-descriptions-item>
+        <a-descriptions-item label="流程适用范围" :span="3">
+          {{ detailProcess.scope }}
+        </a-descriptions-item>
+      </a-descriptions>
+    </a-modal>
   </a-card>
 </template>
 
@@ -421,7 +443,9 @@ export default {
       infoForm: {},
       treeData: [],
       chooseType: "",
+      detailProcess: {},
       drawerVisible: false,
+      visible: false,
       CatalogueType,
       loading: false
     };
@@ -439,20 +463,7 @@ export default {
           title: this.$t("table_cloumns.name"),
           dataIndex: "name",
           key: "name",
-          scopedSlots: { customRender: "name" },
-          filters: [
-            {
-              text: this.$t("table_cloumns.published"),
-              value: true
-            },
-            {
-              text: this.$t("table_cloumns.nopublished"),
-              value: false
-            }
-          ],
-          // specify the condition of filtering result
-          // here is that finding the name started with `value`
-          onFilter: (value, record) => record.published === value
+          scopedSlots: { customRender: "name" }
         },
         {
           title: this.$t("table_cloumns.level"),
@@ -558,6 +569,21 @@ export default {
         driveRule: [],
         scope: []
       };
+    },
+    driveType_computed() {
+      let str = "";
+      switch (this.detailProcess.driveType) {
+        case "EVENT":
+          str = "事件驱动";
+          break;
+        case "TIME":
+          str = "时间驱动";
+          break;
+        case "EVENT_OR_TIME":
+          str = "时间驱动/事件驱动";
+          break;
+      }
+      return str;
     }
   },
   mounted() {
@@ -591,7 +617,6 @@ export default {
       this.chooseType = type;
       this.$nextTick(() => {
         this.drawerVisible = true;
-        console.log(this.chooseType);
       });
     },
     showEditDrawer(obj) {
@@ -606,7 +631,6 @@ export default {
         };
       } else if (obj.type.indexOf(CatalogueType.PROCESS) !== -1) {
         this.chooseType = obj.type;
-        console.log({ ...obj });
         this.infoForm = {
           ...obj,
           directory: parentKey + "",
@@ -620,7 +644,22 @@ export default {
     },
     //发布流程
     push(id) {
-      console.log(id);
+      if (id) {
+        this.loading = true;
+        process
+          .publish({ id: id })
+          .then(({ data }) => {
+            if (data.code === "1000") {
+              this.$message.success("发布成功!");
+              this.fetch();
+            } else {
+              this.$message.error(data.msg);
+            }
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+      }
     },
     submitForm() {
       if (this.chooseType.indexOf(CatalogueType.DIRECTORY) !== -1) {
@@ -634,7 +673,6 @@ export default {
                   type: CatalogueType.DIRECTORY
                 })
                 .then(({ data }) => {
-                  this.loading = false;
                   if (data.code === "1000") {
                     this.$message.success("新增成功!");
                     this.fetch();
@@ -643,6 +681,9 @@ export default {
                   } else {
                     this.$message.error(data.msg);
                   }
+                })
+                .finally(() => {
+                  this.loading = false;
                 });
             } else {
               this.loading = true;
@@ -652,7 +693,6 @@ export default {
                   type: CatalogueType.DIRECTORY
                 })
                 .then(({ data }) => {
-                  this.loading = false;
                   if (data.code === "1000") {
                     this.$message.success("修改成功!");
                     this.fetch();
@@ -661,6 +701,9 @@ export default {
                   } else {
                     this.$message.error(data.msg);
                   }
+                })
+                .finally(() => {
+                  this.loading = false;
                 });
             }
             this.onClose();
@@ -673,7 +716,6 @@ export default {
         this.$refs.infoForm.validate(valid => {
           if (valid) {
             if (this.chooseType.indexOf("Add") !== -1) {
-              console.log(this.infoForm);
               this.loading = true;
               process
                 .addTree({
@@ -681,7 +723,6 @@ export default {
                   type: CatalogueType.PROCESS
                 })
                 .then(({ data }) => {
-                  this.loading = false;
                   if (data.code === "1000") {
                     this.$message.success("新增成功!");
                     this.fetch();
@@ -690,9 +731,11 @@ export default {
                   } else {
                     this.$message.error(data.msg);
                   }
+                })
+                .finally(() => {
+                  this.loading = false;
                 });
             } else {
-              console.log(this.infoForm);
               this.loading = true;
               process
                 .editTree({
@@ -700,7 +743,6 @@ export default {
                   type: CatalogueType.PROCESS
                 })
                 .then(({ data }) => {
-                  this.loading = false;
                   if (data.code === "1000") {
                     this.$message.success("修改成功!");
                     this.fetch();
@@ -709,6 +751,9 @@ export default {
                   } else {
                     this.$message.error(data.msg);
                   }
+                })
+                .finally(() => {
+                  this.loading = false;
                 });
             }
             this.onClose();
@@ -733,17 +778,15 @@ export default {
     search() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          console.log(this.form.name);
           this.fetch();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     resetSearchForm() {
       this.$refs.form.resetFields();
-      console.log(this.form.name);
+      this.form = {};
       this.fetch();
     },
     onClose() {
@@ -764,8 +807,17 @@ export default {
         }
       });
     },
+    detailRecord(obj) {
+      console.log(obj);
+      this.detailProcess = obj;
+      this.visible = true;
+    },
+    //
+    handleOk() {
+      this.detailProcess = {};
+      this.visible = false;
+    },
     deleteRecord(key) {
-      console.log(key);
       if (key) {
         this.loading = true;
         process
@@ -774,6 +826,7 @@ export default {
             this.loading = false;
             if (data.code === "1000") {
               this.$message.success("删除成功");
+              this.fetch();
             } else {
               this.$message.error(data.msg);
             }
@@ -827,7 +880,6 @@ export default {
     },
     //表格分页事件
     tableChange(pagination) {
-      console.log("表格分页事件", pagination);
       const pager = { ...this.pagination };
       pager.current = pagination.current;
       this.pagination = pager;
@@ -856,10 +908,14 @@ export default {
         .then(({ data }) => {
           this.loading = false;
           if (data.code === "1000") {
-            pagination.total = data.extension;
-            this.pagination = pagination;
-            const dataSource = this.childrenHandle(data.data);
-            this.dataSource = dataSource;
+            if (data?.data) {
+              const dataSource = this.childrenHandle(data.data);
+              pagination.total = data.extension;
+              this.pagination = pagination;
+              this.dataSource = dataSource;
+            } else {
+              this.dataSource = [];
+            }
           } else {
             this.$message.error(data.msg);
           }

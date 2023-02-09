@@ -61,18 +61,12 @@ const routerMap = {
     path: "/antvx6/:id",
     name: "流程图绘制",
     invisible: true,
-    page: {
-      cacheAble: false
-    },
     component: () => import("@/pages/antvx6/index")
   },
   antvShow: {
     name: "流程图展示",
     path: "/antvShow",
     icon: "profile",
-    page: {
-      cacheAble: false
-    },
     component: () => import("@/pages/流程展示/antvShow")
   },
   exp403: {

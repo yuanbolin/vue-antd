@@ -6,7 +6,7 @@ module.exports = {
         nameph:"请输入名称",
         search:"查询",
         reset:"重置",
-        add:"新建",
+        add:"新建目录",
         rowOpen:"全部展开",
         rowClose:"全部闭合"
       },
@@ -32,6 +32,7 @@ module.exports = {
         draw:"绘制",
         edit:"编辑",
         publish:"发布",
+        detail:"流程信息",
         delete:"删除",
       },
       drawer_form:{
@@ -75,7 +76,7 @@ module.exports = {
         nameph:"請輸入名稱",
         search:"查詢",
         reset:"重置",
-        add:"新建",
+        add:"新建目錄",
         rowOpen:"全部展開",
         rowClose:"全部閉合"
       },
@@ -99,6 +100,7 @@ module.exports = {
         draw:"繪制",
         edit:"編輯",
         publish:"發布",
+        detail:"流程信息",
         delete:"刪除",
       },
       drawer_form:{
@@ -133,7 +135,7 @@ module.exports = {
         nameph:"Please enter name",
         search:"Search",
         reset:"Reset",
-        add:"New",
+        add:"New directory",
         rowOpen:"Full expansion",
         rowClose:"Full closure"
       },
@@ -156,8 +158,9 @@ module.exports = {
         add3:"Add Directory",
         draw:"Draw",
         edit:"Edit",
-        publish:"publish",
-        delete:"delete",
+        publish:"Publish",
+        detail:"Process information",
+        delete:"Delete",
       },
       drawer_form:{
         title1:"Process information",
@@ -169,7 +172,7 @@ module.exports = {
         messageph:"Please enter a description",
         input:"input",
         inputph:"Please enter process input",
-        output:"output",
+        output:"Output",
         outputph:"Please enter process output",
         driveType:"Driver type",
         driveTypeph:"Please enter Driver type",
@@ -178,11 +181,11 @@ module.exports = {
         drive3:"Time driven/Event driven",
         driveRule:"Driving rule",
         driveRuleph:"Please enter Driving rule",
-        scope:"scope",
+        scope:"Scope",
         scopeph:"Please enter scope",
         dirname:"Directory name",
-        submit:"submit",
-        cancel:"cancel"
+        submit:"Submit",
+        cancel:"Cancel"
       }
     }
   }

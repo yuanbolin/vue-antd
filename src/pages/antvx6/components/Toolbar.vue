@@ -17,7 +17,9 @@
         <a-menu slot="overlay" class="menu">
           <a-menu-item style="border-bottom: 1px dashed #ccc;">
             <div class="option" @click="changePortsShow">
-              <a class="title" href="javascript:;">{{ $t("toolbar.portShow") }}</a>
+              <a class="title" href="javascript:;">{{
+                $t("toolbar.portShow")
+              }}</a>
               <div class="state">
                 <a-icon v-if="isPortsShow" type="check" />
               </div>
@@ -25,7 +27,9 @@
           </a-menu-item>
           <a-menu-item>
             <div class="option" @click="changeGrid">
-              <a class="title" href="javascript:;">{{ $t("toolbar.visibleGrid") }}</a>
+              <a class="title" href="javascript:;">{{
+                $t("toolbar.visibleGrid")
+              }}</a>
               <div class="state">
                 <a-icon v-if="visiableGrid" type="check" />
               </div>
@@ -160,8 +164,8 @@
         <a-icon type="zoom-out" />
       </a>
     </div>
-    <a-divider class="divider" type="vertical" />
-    <div class="col line3">
+    <a-divider  v-if="visibleHistory" class="divider" type="vertical" />
+    <div v-if="visibleHistory" class="col line3">
       <a
         :class="{ 'toolbar-box': true, active: !canUndo }"
         :title="$t('toolbar.title5')"
@@ -181,14 +185,21 @@
     </div>
     <a-divider class="divider" type="vertical" />
     <div class="col small">
-      <a
-        :class="{ 'toolbar-box': true }"
+      <a-popconfirm
+        placement="bottom"
         :title="$t('toolbar.title7')"
-        href="javascript:;"
-        @click="clearCellsHandle"
+        ok-text="Yes"
+        cancel-text="No"
+        @confirm="clearCellsHandle"
       >
-        <a-icon type="delete" />
-      </a>
+        <a
+          :class="{ 'toolbar-box': true }"
+          :title="$t('toolbar.title7')"
+          href="javascript:;"
+        >
+          <a-icon type="delete" />
+        </a>
+      </a-popconfirm>
     </div>
     <a-divider class="divider" type="vertical" />
     <div style="margin-left: 20px;" v-if="isFirstChange">
@@ -252,7 +263,8 @@ export default {
   ],
   data() {
     return {
-      visible: false
+      visible: false,
+      visibleHistory: false
     };
   },
   mounted() {},
@@ -276,14 +288,15 @@ export default {
       this.$emit("clearCellsHandle");
     },
     transform(val) {
-      //限制缩放比例在0.2-2
-      if (val < 0.2 || parseFloat(val.toFixed(2)) > 2) {
-        return;
-      }
       if (typeof val === "string") {
         this.$emit("changeContent", val);
+        return;
       }
-      if (typeof val === "number") {
+      //限制缩放比例在0.2-2
+      if (
+        typeof val === "number" &&
+        (val > 0.2 || parseFloat(val.toFixed(2)) < 2)
+      ) {
         this.$emit("changeZoom", val);
       }
     }
@@ -320,7 +333,7 @@ export default {
       cursor: not-allowed;
     }
   }
-  .small.col{
+  .small.col {
     width: 50px;
   }
   .line3 {

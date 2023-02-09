@@ -39,72 +39,34 @@
     />
     <!--      编辑节点和连线样式-->
     <cell-style
-    :form="form"
-    :label-form="labelForm"
-    :edit-title="editTitle"
-    :edit-drawer="editDrawer"
-    @changeEdgeAnit="changeEdgeAnit"
-    @changeEdgeArrows="changeEdgeArrows"
-    @changeEdgeStrokeWidth="changeEdgeStrokeWidth"
-    @changeEdgeConnector="changeEdgeConnector"
-    @updateEdgeValue="updateEdgeValue"
-    @changeEdgeLabel="changeEdgeLabel"
-    @updateNodeValue="updateNodeValue"
-    @changeNode="changeNode"
-    @closeEditForm="closeEditForm"
+      :form="form"
+      :label-form="labelForm"
+      :edit-title="editTitle"
+      :edit-drawer="editDrawer"
+      @changeEdgeAnit="changeEdgeAnit"
+      @changeEdgeArrows="changeEdgeArrows"
+      @changeEdgeStrokeWidth="changeEdgeStrokeWidth"
+      @changeEdgeConnector="changeEdgeConnector"
+      @updateEdgeValue="updateEdgeValue"
+      @changeEdgeLabel="changeEdgeLabel"
+      @updateNodeValue="updateNodeValue"
+      @changeNode="changeNode"
+      @closeEditForm="closeEditForm"
     ></cell-style>
     <!--      编辑节点信息-->
-    <a-modal
-      title="编辑节点信息"
-      :visible="visible"
-      :width="820"
-      :confirm-loading="confirmLoading"
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
-      <a-tabs default-active-key="1" @change="callback">
-        <a-tab-pane key="1" tab="基本信息">
-          <a-form-model
-            layout="vertical"
-            ref="ruleForm"
-            :rules="rules"
-            :model="infoForm"
-          >
-            <a-form-model-item label="节点描述" prop="describe">
-              <a-textarea auto-size v-model="infoForm.describe" />
-            </a-form-model-item>
-          </a-form-model>
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="输入" force-render>
-          此功能仍在开发中...
-        </a-tab-pane>
-        <a-tab-pane key="3" tab="输出">
-          此功能仍在开发中...
-        </a-tab-pane>
-        <a-tab-pane key="4" tab="操作规范">
-          此功能仍在开发中...
-        </a-tab-pane>
-        <a-tab-pane key="5" tab="指标">
-          此功能仍在开发中...
-        </a-tab-pane>
-        <a-tab-pane key="6" tab="风险控制点">
-          此功能仍在开发中...
-        </a-tab-pane>
-        <a-tab-pane key="7" tab="信息化">
-          此功能仍在开发中...
-        </a-tab-pane>
-        <a-tab-pane key="8" tab="关联标准">
-          此功能仍在开发中...
-        </a-tab-pane>
-        <a-tab-pane key="9" tab="办理时限">
-          此功能仍在开发中...
-        </a-tab-pane>
-      </a-tabs>
-    </a-modal>
+    <node-modal
+        ref="NodeModal"
+        :rules="rules"
+        :visible="visible"
+        :confirm-loading="confirmLoading"
+        :info-form="infoForm"
+        @handleOk="handleOk"
+        @handleCancel="handleCancel"
+        @callback="callback"
+    />
   </div>
 </template>
 <script>
-
 import "@antv/x6-vue-shape";
 import { Graph, Shape, DataUri } from "@antv/x6";
 import Count from "./components/Count.vue";
@@ -112,6 +74,7 @@ import Contextmenu from "@/components/menu/Contextmenu";
 import MyGraph from "./components/Graph";
 import MyToolbar from "./components/Toolbar";
 import CellStyle from "./components/CellStyle";
+import NodeModal from "./components/NodeModal";
 import {
   configSetting,
   configNodeShape,
@@ -120,12 +83,14 @@ import {
   graphBindKey
 } from "@/utils/antvSetting";
 import { mapState } from "vuex";
+
 export default {
   name: "AntV6X",
   components: {
     CellStyle,
     MyGraph,
     MyToolbar,
+    NodeModal,
     Contextmenu
   },
   /**
@@ -147,6 +112,7 @@ export default {
       default: ""
     }
   },
+  i18n:require("./i18n"),
   data() {
     return {
       graph: null, //画布
@@ -187,30 +153,32 @@ export default {
     };
   },
   computed: {
-    ...mapState("setting", ["collapsed", "fixedTabs"]),
+    ...mapState("setting", ["collapsed", "fixedTabs", "activePage"]),
     // 右击导航列表
     menuItemList() {
       let arr = [];
       switch (this.contextmenuType) {
         case "node":
           arr = [
-            { key: "1", icon: "highlight", text: "样式编辑" },
-            { key: "2", icon: "edit", text: "信息编辑" },
-            { key: "3", icon: "delete", text: "删除此节点" }
+            { key: "1", icon: "highlight", text: this.$t("menu.nodeStyleEdit") },
+            { key: "2", icon: "edit", text: this.$t("menu.nodeInfoEdit") },
+            { key: "3", icon: "delete", text: this.$t("menu.nodeDelete") }
           ];
           break;
         case "edge":
           arr = [
-            { key: "4", icon: "highlight", text: "样式编辑" },
-            { key: "3", icon: "delete", text: "删除此连线" }
+            { key: "4", icon: "highlight", text: this.$t("menu.edgeStyleEdit") },
+            { key: "3", icon: "delete", text: this.$t("menu.edgeDelete") }
           ];
           break;
       }
       return arr;
-    },
-
+    }
   },
   watch: {
+    /**
+     * 因antvx6自适应窗口变化存在问题,改为自定义监听事件
+     */
     collapsed() {
       setTimeout(() => {
         this.graph &&
@@ -229,8 +197,18 @@ export default {
           );
       }, 500);
     },
+    /**
+     * 因antvx6的Scroller在切换Tab页后中心位置偏移回左上角影响使用体验,此处加入切回页面后居中显示内容
+     * @param val 切换路由的path值
+     */
+    activePage(val) {
+      if (val.indexOf("/antvx6/") !== -1 && this.graph) {
+        this.graph.centerContent();
+      }
+    },
     value: {
       handler: function() {
+        console.log("value", this.value);
         if (this.graph) {
           this.isChange = false;
           this.isPortsShow = false;
@@ -247,13 +225,10 @@ export default {
       immediate: true
     }
   },
-  created() {},
   mounted() {
-    console.log("流程id==》", this.$route.params.id);
-    //因直接初始化偶尔存在找不到节点的bug，推迟半秒初始化
+    //因插件存在直接初始化偶现找不到节点的bug，推迟半秒初始化保证能找到节点
     setTimeout(() => {
       this.initGraph();
-      console.log(document.getElementsByTagName("main"));
     }, 500);
   },
   beforeDestroy() {
@@ -265,7 +240,6 @@ export default {
   methods: {
     // 链接桩的显示与隐藏，主要是照顾菱形
     changePortsShow(val) {
-      console.log("changePortsShow", val);
       const container = document.getElementById("wrapper");
       const ports = container.querySelectorAll(".x6-port-body");
       for (let i = 0, len = ports.length; i < len; i = i + 1) {
@@ -280,22 +254,21 @@ export default {
         ...configSetting(Shape)
       });
       console.log(graph);
-      //画布缩放
 
-      //历史记录（撤销/重做）
-      graph.history.on("undo", args => {
-        // code here
-        console.log("undo", args);
-      });
-      graph.history.on("redo", args => {
-        // code here
-        console.log("redo", args);
-      });
-      graph.history.on("change", args => {
-        console.log("history change", args);
-        this.canRedo = graph.history.canRedo();
-        this.canUndo = graph.history.canUndo();
-      });
+      //历史记录（撤销/重做） 因目前为自动保存模式,顾注释掉历史记录功能
+      // graph.history.on("undo", args => {
+      //   // code here
+      //   console.log("undo", args);
+      // });
+      // graph.history.on("redo", args => {
+      //   // code here
+      //   console.log("redo", args);
+      // });
+      // graph.history.on("change", args => {
+      //   console.log("history change", args);
+      //   this.canRedo = graph.history.canRedo();
+      //   this.canUndo = graph.history.canUndo();
+      // });
 
       //添加点/边自带工具
       graph.on("cell:mouseenter", ({ cell }) => {
@@ -313,16 +286,16 @@ export default {
         cell.removeTools();
       });
 
+      //自适应窗口大小
       window.addEventListener("resize", () => {
         graph.resize(
           document.getElementById("main-content").offsetWidth - 180 - 48,
           document.getElementById("main-content").offsetHeight
         );
       });
-      //自适应窗口大小
       this.parentResize(graph);
 
-      // 画布事件
+      // 节点鼠标事件
       graph.on("node:mouseenter", () => {
         this.changePortsShow(true);
       });
@@ -331,7 +304,7 @@ export default {
         this.changePortsShow(false);
       });
 
-      // 右击编辑
+      // 基类右击编辑
       graph.on("cell:contextmenu", ({ cell }) => {
         console.log(cell);
         this.editForm(cell);
@@ -339,14 +312,14 @@ export default {
 
       // 画布键盘事件
       graphBindKey(graph);
-      //选择事件
-      graph.on("cell:selected", ({ cell }) => {
-        console.log("节点/边被选中", cell);
-      });
-
-      // 删除
+      // 监听键盘删除事件
       graph.bindKey(["delete", "backspace"], () => {
         this.handlerDel();
+      });
+
+      //基类选中事件
+      graph.on("cell:selected", ({ cell }) => {
+        console.log("节点/边被选中", cell);
       });
 
       //监听node变化
@@ -371,6 +344,8 @@ export default {
 
       // 赋值
       this.graph = graph;
+
+      //JSON内容解析渲染流程图内容
       if (this.value && JSON.parse(this.value).length) {
         const resArr = JSON.parse(this.value);
         // 导出的时候删除了链接桩设置加回来
@@ -384,17 +359,20 @@ export default {
         }
       }
 
-      // 画布内容是否有变化
+      // 基类内容是否有变化
       graph.on("cell:changed", () => {
         this.isChangeValue();
       });
 
-      //获取新增的节点/边
+      //获取新增的基类
       graph.on("cell:added", ({ cell }) => {
         console.log("新增==》", cell);
       });
     },
-    //画布内容居中
+    /**
+     * 画布内容居中
+     * @param val String "center"=内容居中显示 "zoomToFit"=内容居中并且缩放自适应内容大小
+     */
     changeContent(val) {
       switch (val) {
         case "center":
@@ -406,12 +384,18 @@ export default {
           break;
       }
     },
-    //改变画布缩放大小
+    /**
+     * 改变画布缩放大小
+     * @param val Number 改变画布缩放大小
+     */
     changeZoom(val) {
       this.zoom = val;
       this.graph.zoomTo(val);
     },
-    //是否显示网格
+    /**
+     * 是否显示网格
+     * @param val Booleaan
+     */
     changeGrid(val) {
       this.visiableGrid = val;
       if (val) {
@@ -420,7 +404,10 @@ export default {
         this.graph.hideGrid();
       }
     },
-    //自定义HTML节点和VUE组件示例
+    /**
+     * 自定义HTML节点和VUE组件示例
+     * 后续如有开发自定义节点需求可参考
+     */
     vueExample() {
       // 方式1：注册 vue component
       Graph.registerVueComponent(
@@ -485,7 +472,10 @@ export default {
         });
       }, 1000);
     },
-    // 自动扩展父节点
+    /**
+     * 流程窗口大小变化时,节点位置和大小自适应
+     * @param graph
+     */
     parentResize(graph) {
       graph.on("node:change:size", ({ node, options }) => {
         if (options.skipParentHandler) {
@@ -570,11 +560,11 @@ export default {
         }
       });
     },
-    //撤回
+    //历史记录操作-撤回
     undoHandle() {
       this.graph.history.undo();
     },
-    //重做
+    //历史记录操作-重做
     redoHandle() {
       this.graph.history.redo();
     },
@@ -589,11 +579,18 @@ export default {
       }
       if (!this.isFirstChange) this.isFirstChange = true;
     },
+    /**
+     * 节点拖拽事件
+     * @param type 拖拽的节点类型
+     */
     menuDrag(type) {
-      console.log("type", type);
       // 根据type获取到不同节点的预设参数
       this.menuItem = configNodeShape(type);
     },
+    /**
+     * 拖拽的节点放入流程图事件,根据鼠标位置渲染拖拽类型的节点,并放入自定义的连接桩
+     * @param event
+     */
     drop(event) {
       console.log(event);
       console.log(this.menuItem);
@@ -677,6 +674,7 @@ export default {
       }
       return (this.editDrawer = true);
     },
+    //关闭form抽屉
     closeEditForm() {
       this.editDrawer = false;
       if (this.selectCell) this.selectCell.removeTools();
@@ -703,8 +701,6 @@ export default {
     },
     // 修改边label属性
     changeEdgeLabel(label, fontColor, fill, stroke) {
-      console.log(label, fontColor, fill, stroke);
-      console.log(this.selectCell);
       this.selectCell.setLabels([
         configEdgeLabel(label, fontColor, fill, stroke)
       ]);
@@ -840,7 +836,6 @@ export default {
     handlerSend() {
       // 我在这里删除了链接桩的设置，和工具（为了减少数据），反显的时候要把删除的链接桩加回来
       const { cells: jsonArr } = this.graph.toJSON();
-      console.log(jsonArr);
       if (!jsonArr) {
         this.$message.error("保存失败!", 3);
         return;
@@ -854,7 +849,7 @@ export default {
         this.selectCell.removeTools();
         this.selectCell = "";
       }
-      this.$emit("finish", JSON.stringify(tempGroupJson));
+      // this.$emit("finish", JSON.stringify(tempGroupJson));
       sessionStorage.setItem("tempGroupJson", JSON.stringify(tempGroupJson));
       this.$message.success("保存成功!", 3);
     },
@@ -921,9 +916,9 @@ export default {
           break;
       }
     },
-    //编辑节点信息确认事件
+    //编辑节点信息确认事件,提取表单值保存
     handleOk() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.NodeModal.$refs.ruleForm.validate(valid => {
         if (valid) {
           console.log(valid);
           // this.selectCell.
@@ -940,13 +935,13 @@ export default {
         }
       });
     },
-    //编辑节点信息取消事件
+    //弹窗关闭事件,情空表单
     handleCancel() {
-      console.log("Clicked cancel button");
-      this.$refs.ruleForm.resetFields();
+      this.$refs.NodeModal.$refs.ruleForm.resetFields();
+      this.ruleForm = {};
       this.visible = false;
     },
-    //data表单标签页切换事件
+    //节点信息弹窗中的标签页切换事件,后续开发如需监听切换事件时用得到
     callback(key) {
       console.log(key);
     }

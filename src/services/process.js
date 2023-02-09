@@ -8,7 +8,8 @@ import {
   PROCESSDELETE,
   PROCESSPUBLIC,
   PROCESSSAVE,
-  PROCESSDIR
+  PROCESSDIR,
+  PROCESSCONTENT
 } from "./api";
 import { METHOD, request } from "@/utils/request";
 import qs from 'qs'
@@ -40,18 +41,19 @@ export async function publish(params) {
     headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}
   });
 }
-//发布
+//获取流程目录树
+export async function getAll(params) {
+  return request(PROCESSDIR, METHOD.GET, params);
+}
+//获取流程图
+export async function getContent(params) {
+  return request(PROCESSCONTENT, METHOD.GET, params);
+}
+//保存流程图
 export async function save(params) {
   return request(PROCESSSAVE, METHOD.POST, qs.stringify(params), {
     headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}
   });
 }
 
-//发布
-export async function getAll(params) {
-  return request(PROCESSDIR, METHOD.GET, params, {
-    headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"}
-  });
-}
-
-export default { getTrees, addTree, editTree, deleteTree, publish, save,getAll };
+export default { getTrees, addTree, editTree, deleteTree, publish, save,getAll ,getContent};

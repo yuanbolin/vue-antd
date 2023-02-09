@@ -16,6 +16,7 @@ const api = {
   PROCESSPUBLIC: "process/publish",
   PROCESSSAVE: "process/save_process",
   PROCESSDIR: "process/get_dir_list",
+  PROCESSCONTENT: "process/get_process_content",
   //组织机构管理
   // ORGANIZATION: `/organization/org_tree`,
   // ORGANIZATIONADD: `/organization/add`,

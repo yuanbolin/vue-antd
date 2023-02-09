@@ -3,17 +3,15 @@
 </template>
 <script>
 import AntVXSix from "@/pages/antvx6/antvx6.vue";
-import { mapState} from "vuex";
-
+import { mapState } from "vuex";
+import { process } from "@/services";
 export default {
   name: "Flow",
   components: {
     "antv-six": AntVXSix
   },
   computed: {
-    ...mapState("setting", [
-      "fixedTabs"
-    ])
+    ...mapState("setting", ["fixedTabs"])
   },
   data() {
     return {
@@ -37,17 +35,29 @@ export default {
   },
   created() {
     // 返现方法
-    try {
-      if (
-        sessionStorage.getItem("tempGroupJson") &&
-        JSON.parse(sessionStorage.getItem("tempGroupJson")).length
-      )
-        this.tempGroupJson = sessionStorage.getItem("tempGroupJson");
-    } catch (e) {
-      console.error("JSON数据解析失败", e);
+    console.log("流程id==》", this.$route.params.id);
+    if (this.$route.params.id) {
+      this.getContent(this.$route.params.id);
     }
   },
-  methods: {}
+  methods: {
+    //获取流程图
+    getContent(id) {
+      this.loading = true;
+      process
+        .getContent({ id })
+        .then(({ data }) => {
+          if (data.code === "1000") {
+            console.log("data", data);
+          } else {
+            this.$message.error(data.msg);
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    }
+  }
 };
 </script>
 <style lang="less"></style>

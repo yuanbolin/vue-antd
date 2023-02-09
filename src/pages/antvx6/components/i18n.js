@@ -42,7 +42,21 @@ module.exports = {
         edgeStrokeWidth:"线条宽度",
         edgeIsArrows:"双向箭头",
         edgeIsAnit:"流动线条",
-      }
+      },
+      chat: {
+        title: "编辑节点信息",
+        tab1: "基本信息",
+        tab2: "输入",
+        tab3: "输出",
+        tab4: "操作规范",
+        tab5: "指标",
+        tab6: "风险控制点",
+        tab7: "信息化",
+        tab8: "关联标准",
+        tab9: "办理时限",
+        tab1_describe: "节点描述",
+        dev: "此功能仍在开发中..."
+      },
     },
     HK: {
       toolbar: {
@@ -82,7 +96,21 @@ module.exports = {
         edgeStrokeWidth:"線條寬度",
         edgeIsArrows:"雙向箭頭",
         edgeIsAnit:"流動線條",
-      }
+      },
+      chat: {
+        title: "編輯節點信息",
+        tab1: "基本信息",
+        tab2: "輸入",
+        tab3: "輸出",
+        tab4: "操作規範",
+        tab5: "指標",
+        tab6: "風險控制點",
+        tab7: "信息化",
+        tab8: "關聯標准",
+        tab9: "辦理時限",
+        tab1_describe: "節點描述",
+        dev: "此功能仍在開發中..."
+      },
     },
     US: {
       toolbar: {
@@ -122,7 +150,21 @@ module.exports = {
         edgeStrokeWidth:"Line width",
         edgeIsArrows:"Double sided arrow",
         edgeIsAnit:"Flow line",
-      }
+      },
+      chat: {
+        title: "Edit node information",
+        tab1: "Basic information",
+        tab2: "Input",
+        tab3: "Ouput",
+        tab4: "Work standards",
+        tab5: "Target",
+        tab6: "Risk control point",
+        tab7: "Informatization",
+        tab8: "CHK",
+        tab9: "Processing time limit",
+        tab1_describe: "Node description",
+        dev: "This feature is still under development..."
+      },
     }
   }
 };

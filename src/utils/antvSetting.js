@@ -75,7 +75,7 @@ export const configSetting = Shape => {
       minWidth: 40,
       minHeight: 40,
       maxWidth: 400,
-      maxHeight: 400,
+      maxHeight: 400
     },
     rotating: true, // 节点选转
     selecting: {
@@ -87,13 +87,13 @@ export const configSetting = Shape => {
     },
     snapline: true, // 辅助对齐线
     keyboard: true, // 键盘快捷键 开启后监听键盘事件
-    history: true, // 历史操作记录
+    history: false, // 因目前为自动保存模式,顾关闭历史操作记录功能
     clipboard: false, // 剪切板 开启后可复制黏贴
     scroller: {
       enabled: true,
       pannable: true,
       autoResize: true
-    },
+    }
   };
 };
 
@@ -186,7 +186,7 @@ export const configNodeShape = type => {
           stroke: "#333"
         },
         label: {
-          text: "椭圆形",
+          text: "",
           fontSize: 16,
           fill: "#333"
         }
@@ -201,7 +201,7 @@ export const configNodeShape = type => {
       height: 50,
       attrs: {
         label: {
-          text: "方形",
+          text: "",
           fontSize: 16,
           fill: "#333"
         },
@@ -226,7 +226,7 @@ export const configNodeShape = type => {
           stroke: "#333"
         },
         label: {
-          text: "圆角矩形",
+          text: "",
           fontSize: 16,
           fill: "#333"
         }
@@ -246,7 +246,7 @@ export const configNodeShape = type => {
           stroke: "#333"
         },
         label: {
-          text: "菱形",
+          text: "",
           fontSize: 16,
           fill: "#333"
         }
@@ -266,7 +266,7 @@ export const configNodeShape = type => {
           stroke: "#333"
         },
         label: {
-          text: "平行四边形",
+          text: "",
           fontSize: 16,
           fill: "#333"
         }
@@ -281,7 +281,7 @@ export const configNodeShape = type => {
       height: 80,
       attrs: {
         label: {
-          text: "圆形",
+          text: "",
           fontSize: 16,
           fill: "#333"
         },
@@ -313,7 +313,7 @@ export const configNodeShape = type => {
       // https://www.svgrepo.com/svg/13653/like
       attrs: {
         label: {
-          text: "成功",
+          text: "",
           fontSize: 16,
           fill: "#333",
           style: {
@@ -353,7 +353,7 @@ export const configNodeShape = type => {
       // https://www.svgrepo.com/svg/13653/like
       attrs: {
         label: {
-          text: "失败",
+          text: "",
           fontSize: 16,
           fill: "#333",
           style: {
@@ -393,7 +393,7 @@ export const configNodeShape = type => {
       // https://www.svgrepo.com/svg/13653/like
       attrs: {
         label: {
-          text: "文档",
+          text: "",
           fontSize: 16,
           fill: "#333",
           style: {
@@ -438,7 +438,7 @@ export const configNodeShape = type => {
       // https://www.svgrepo.com/svg/13653/like
       attrs: {
         label: {
-          text: "财务",
+          text: "",
           fontSize: 16,
           fill: "#333",
           style: {
@@ -485,7 +485,7 @@ export const configNodeShape = type => {
       // https://www.svgrepo.com/svg/13653/like
       attrs: {
         label: {
-          text: "物流",
+          text: "",
           fontSize: 16,
           fill: "#333"
         },
