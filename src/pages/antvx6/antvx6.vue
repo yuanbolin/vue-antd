@@ -618,7 +618,7 @@ export default {
     editNodeStyle() {
       const cell = this.selectCell;
       if (!cell.isNode()) return;
-      this.editTitle = "编辑节点";
+      this.editTitle = this.$t("editNode.title");
       const body =
         cell.attrs.body ||
         cell.attrs.rect ||
@@ -637,7 +637,7 @@ export default {
     editEdgeStyle() {
       const cell = this.selectCell;
       if (!cell.isEdge()) return;
-      this.editTitle = "编辑连线";
+      this.editTitle = this.$t("editEdge.title");
       this.form = {
         label:
           cell.labels && cell.labels[0]
@@ -800,10 +800,10 @@ export default {
     // 删除
     handlerDel() {
       this.$confirm({
-        title: "是否继续",
-        content: `此操作将永久删除, 是否继续?`,
-        okText: "确定",
-        cancelText: "取消",
+        title: this.$t("handlerDel.title"),
+        content: this.$t("handlerDel.content"),
+        okText: this.$t("handlerDel.okText"),
+        cancelText: this.$t("handlerDel.cancelText"),
         onOk: () => {
           const cells = this.graph.getSelectedCells();
           const promiseArr = [];
@@ -838,11 +838,11 @@ export default {
               if (res.length > 0 && res.includes(true)) {
                 this.form = {};
                 this.editDrawer = false;
-                this.$message.success("删除成功!", 3);
+                this.$message.success(this.$t("handlerDel.success"), 3);
               } else {
                 this.form = {};
                 this.editDrawer = false;
-                this.$message.error("删除失败!请稍后再试", 3);
+                this.$message.error(this.$t("handlerDel.error"), 3);
               }
             });
           } else if (this.selectCell) {
@@ -854,7 +854,7 @@ export default {
                   this.graph.removeCells([this.selectCell]);
                   this.form = {};
                   this.editDrawer = false;
-                  this.$message.success("删除成功!", 3);
+                  this.$message.success(this.$t("handlerDel.success"), 3);
                 } else {
                   this.$message.error(data.msg);
                 }
@@ -863,7 +863,7 @@ export default {
               this.graph.removeCells([this.selectCell]);
               this.form = {};
               this.editDrawer = false;
-              this.$message.success("删除成功!", 3);
+              this.$message.success(this.$t("handlerDel.success"), 3);
             }
           }
         },
@@ -878,7 +878,7 @@ export default {
       // 我在这里删除了链接桩的设置，和工具（为了减少数据），反显的时候要把删除的链接桩加回来
       const { cells: jsonArr } = this.graph.toJSON();
       if (!jsonArr && !this.$route.params.id) {
-        this.$message.error("流程保存失败!,请退出重试", 3);
+        this.$message.error(this.$t("handlerSend.error"), 3);
         return;
       }
       const tempGroupJson = jsonArr.map(item => {
@@ -907,7 +907,7 @@ export default {
         dataUri => {
           console.log("toPNG===>", dataUri);
           // 下载
-          DataUri.downloadDataUri(dataUri, "流程图.png");
+          DataUri.downloadDataUri(dataUri, `${this.$t("toPNG.title")}.png`);
         },
         {
           padding: {
@@ -959,7 +959,7 @@ export default {
           })
           .catch(() => {
             this.visible = true;
-            this.$message.error("获取节点信息失败,请稍后再试!");
+            this.$message.error(this.$t("showModal.error"));
           });
       } else {
         this.visible = true;

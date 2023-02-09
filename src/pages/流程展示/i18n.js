@@ -68,6 +68,9 @@ module.exports = {
         tab1_describe: "Node description",
         dev: "This feature is still under development..."
       },
+      toPNG:{
+        title:"流程图"
+      },
       primary: "Save as a PNG image"
     }
   }

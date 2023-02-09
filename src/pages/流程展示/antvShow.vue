@@ -322,7 +322,7 @@ export default {
         dataUri => {
           console.log("toPNG===>", dataUri);
           // 下载
-          DataUri.downloadDataUri(dataUri, "流程图.png");
+          DataUri.downloadDataUri(dataUri, `${this.$t("toPNG.title")}.png`);
         },
         {
           padding: {
