@@ -16,25 +16,60 @@
       @expand="onExpand"
       @select="onSelect"
     >
-      {{$t('searchTree.tip')}}
-      <template v-slot:title="{ name }">
+      {{ $t("searchTree.tip") }}
+      <template v-slot:title="record">
         <a-tooltip placement="right">
           <template slot="title">
-            <span>{{ name }}</span>
+            <span>{{ record.name }}</span>
           </template>
-          <span class="tree-title" v-if="name.indexOf(searchValue) > -1">
-            {{ name.substr(0, name.indexOf(searchValue)) }}
-            <span style="color: #f50">{{ searchValue }}</span>
-            {{ name.substr(name.indexOf(searchValue) + searchValue.length) }}
+          <span
+            :style="{
+              color: '#00b2ff'
+            }"
+            class="tree-title"
+            v-if="record.name.indexOf(searchValue) > -1"
+          >
+            {{ record.name.substr(0, record.name.indexOf(searchValue)) }}
+            <span
+              :style="{
+                color: theme.color || '#f50'
+              }"
+              >{{ searchValue }}</span
+            >
+            {{
+              record.name.substr(
+                record.name.indexOf(searchValue) + searchValue.length
+              )
+            }}
           </span>
-          <span class="tree-title" v-else>{{ name }}</span>
+          <span
+            :style="{
+              color: '#00b2ff'
+            }"
+            class="tree-title"
+            v-else
+            >{{ record.name }}</span
+          >
         </a-tooltip>
       </template>
+      <a-icon slot="icon" type="carry-out" />
     </a-tree>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
+/**
+ * 目录类型枚举
+ * @type {{CATALOGUE: string, INFO: string}}
+ * CATALOGUE 普通目录
+ * INFO 流程目录
+ */
+const CatalogueType = {
+  DIRECTORY: "DIRECTORY",
+  PROCESS: "PROCESS"
+};
 const getParentKey = (key, tree) => {
   let parentKey;
   for (let i = 0; i < tree.length; i++) {
@@ -59,7 +94,7 @@ export default {
       }
     }
   },
-  i18n:require('./i18n'),
+  i18n: require("./i18n"),
   data() {
     return {
       expandedKeys: [],
@@ -71,7 +106,8 @@ export default {
         title: "name",
         key: "id",
         value: "id"
-      }
+      },
+      CatalogueType
     };
   },
   watch: {
@@ -82,11 +118,12 @@ export default {
     }
   },
   computed: {
+    ...mapState("setting", ["theme"]),
     treeData() {
       function f(data) {
         for (let i = 0; i < data.length; i++) {
           const node = data[i];
-          node.isLeaf = node.type === "info";
+          node.isLeaf = node.type === CatalogueType.PROCESS;
           if (node.children) {
             f(node.children);
           }
@@ -129,7 +166,7 @@ export default {
         this.dataList.push({
           key,
           title: node.name,
-          isLeaf: node.type === "info"
+          isLeaf: node.type === CatalogueType.PROCESS
         });
         if (node.children) {
           this.generateList(node.children);

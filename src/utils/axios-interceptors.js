@@ -62,7 +62,7 @@ const resp403 = {
   }
 };
 
-const resError = {
+const respError = {
   onRejected(error, options) {
     const { message } = options;
     const { response } = error;
@@ -113,5 +113,5 @@ const reqCommon = {
 
 export default {
   request: [reqCommon], // 请求拦截
-  response: [resp401, resp403, resError] // 响应拦截
+  response: [resp401, resp403, respError] // 响应拦截
 };

@@ -905,7 +905,6 @@ export default {
     toPNG() {
       this.graph.toPNG(
         dataUri => {
-          console.log("toPNG===>", dataUri);
           // 下载
           DataUri.downloadDataUri(dataUri, `${this.$t("toPNG.title")}.png`);
         },

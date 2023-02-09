@@ -3,25 +3,25 @@
     <a-layout-sider
       theme="light"
       class="left-content"
-      v-model="collapsed"
+      v-model="myCollapsed"
       :trigger="null"
       collapsible
     >
       <a-tooltip placement="right">
         <template slot="title">
-          {{ collapsed ? $t("menu.collapsed") : $t("menu.noCollapsed") }}
+          {{ myCollapsed ? $t("menu.collapsed") : $t("menu.noCollapsed") }}
         </template>
         <div class="left-menu">
-          <span :hidden="collapsed">{{ $t("menu.title") }}</span>
+          <span :hidden="myCollapsed">{{ $t("menu.title") }}</span>
           <a-icon
             class="trigger"
-            :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-            @click="() => (collapsed = !collapsed)"
+            :type="myCollapsed ? 'menu-unfold' : 'menu-fold'"
+            @click="() => (myCollapsed = !myCollapsed)"
           />
         </div>
       </a-tooltip>
       <search-tree
-        :hidden="collapsed"
+        :hidden="myCollapsed"
         @treeSelect="onSelect"
         :gData="treeData"
       ></search-tree>
@@ -87,6 +87,7 @@
 </template>
 <script>
 import { DataUri, Graph } from "@antv/x6";
+import { process } from "@/services";
 import { configNodePorts } from "@/utils/antvSetting";
 import SearchTree from "@/components/tree/SearchTree";
 import { mapState } from "vuex";
@@ -98,7 +99,7 @@ export default {
   data() {
     return {
       treeData: [],
-      collapsed: false,
+      myCollapsed: false,
       nodeData: {},
       visible: false
     };
@@ -140,95 +141,43 @@ export default {
       }
     }
   },
-  mounted() {
-    setTimeout(() => {
-      this.initGraph();
-      this.treeData = [
-        {
-          id: 1, //主键id
-          name: "营销", //名称
-          message: "这是一个营销描述", //描述
-          type: "catalogue", //类型 枚举值：目录，流程
-          level: 1, // 树形结构等级
-          public: 1, //是否公开
-          children: [
-            //子级
-            {
-              id: 11,
-              name: "客户管理流程",
-              public: 0,
-              type: "info",
-              message: "这是一个客户管理流程描述",
-              level: 2
-            },
-            {
-              id: 12,
-              name: "产品",
-              type: "catalogue",
-              message: "产品",
-              public: 1,
-              level: 2,
-              children: [
-                {
-                  id: 121,
-                  type: "info",
-                  name: "产品价格管理流程",
-                  message: "产品价格管理流程",
-                  public: 1,
-                  level: 3
-                }
-              ]
-            },
-            {
-              id: 13,
-              name: "产品研发",
-              type: "catalogue",
-              message: "产品研发",
-              public: 1,
-              level: 2,
-              children: [
-                {
-                  id: 131,
-                  name: "产品研发成本",
-                  type: "catalogue",
-                  message: "产品研发成本",
-                  public: 1,
-                  level: 3,
-                  children: [
-                    {
-                      id: 1311,
-                      name: "产品研发成本控制流程",
-                      type: "info",
-                      message: "产品研发成本控制流程",
-                      public: 0,
-                      level: 4
-                    },
-                    {
-                      id: 1312,
-                      name: "产品研发成本汇报流程",
-                      type: "info",
-                      message: "产品研发成本汇报流程",
-                      public: 1,
-                      level: 4
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: "战略与经营",
-          type: "catalogue",
-          message: "这是一个战略与经营描述",
-          public: 1,
-          level: 1
-        }
-      ];
-    }, 500);
+  created() {
+    this.getTree();
+    // setTimeout(() => {
+    //   this.initGraph();
+    // }, 500);
   },
   methods: {
+    getTree() {
+      process
+        .getAll({
+          dirOnly: 0
+        })
+        .then(({ data }) => {
+          if (data.code === "1000") {
+            if (data.data) {
+              const dataSource = this.childrenHandle(data.data);
+              this.treeData = dataSource;
+              console.log(this.treeData);
+            } else {
+              this.treeData = [];
+            }
+          } else {
+            this.$message.error(data.msg);
+          }
+        });
+    },
+    //将树形结构中children字段长度为0的数据的children字段删除
+    childrenHandle(trees) {
+      return trees.map(item => {
+        if (item?.children && item.children.length === 0) {
+          delete item.children;
+        } else if (item?.children && item.children.length > 0) {
+          this.childrenHandle(item.children);
+        }
+        return item;
+      });
+    },
     // 初始化渲染画布
     initGraph() {
       const graph = new Graph({
@@ -320,7 +269,6 @@ export default {
     toPNG() {
       this.graph.toPNG(
         dataUri => {
-          console.log("toPNG===>", dataUri);
           // 下载
           DataUri.downloadDataUri(dataUri, `${this.$t("toPNG.title")}.png`);
         },

@@ -453,8 +453,13 @@ export default {
   components: {
     SelectTree
   },
+  //根据路由中permission对功能权限进行校验
   authorize: {
-    deleteRecord: "delete"
+    deleteRecord: "delete",
+    showAddDrawer:"insert",
+    showEditDrawer:"update",
+    push:"update",
+    detailRecord:"query"
   },
   computed: {
     columns() {
@@ -800,8 +805,12 @@ export default {
     getTreeData() {
       process.getAll({ dirOnly: 1 }).then(({ data }) => {
         if (data.code === "1000") {
-          const dataSource = this.childrenHandle(data.data);
-          this.treeData = dataSource;
+          if (data.data) {
+            const dataSource = this.childrenHandle(data.data);
+            this.treeData = dataSource;
+          } else {
+            this.treeData = [];
+          }
         } else {
           this.$message.error(data.msg);
         }
