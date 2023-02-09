@@ -34,10 +34,10 @@ export default {
     }
   },
   created() {
-    // 返现方法
-    console.log("流程id==》", this.$route.params.id);
     if (this.$route.params.id) {
       this.getContent(this.$route.params.id);
+    } else {
+      this.$message.warn("未能获取到流程信息");
     }
   },
   methods: {
@@ -48,7 +48,9 @@ export default {
         .getContent({ id })
         .then(({ data }) => {
           if (data.code === "1000") {
-            console.log("data", data);
+            if (data.data) {
+              this.tempGroupJson = data.data;
+            }
           } else {
             this.$message.error(data.msg);
           }

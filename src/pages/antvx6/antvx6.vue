@@ -12,9 +12,12 @@
         <my-toolbar
           :is-change="isChange"
           :is-first-change="isFirstChange"
-          @handlerSend="handlerSend"
+          :is-ports-show="isPortsShow"
+          :can-redo="canRedo"
+          :can-undo="canUndo"
           :zoom="zoom"
           :visiable-grid="visiableGrid"
+          @handlerSend="handlerSend"
           @clearCellsHandle="clearCellsHandle"
           @changeZoom="changeZoom"
           @changeGrid="changeGrid"
@@ -22,9 +25,7 @@
           @changePortsShow="changePortsShow"
           @undoHandle="undoHandle"
           @redoHandle="redoHandle"
-          :is-ports-show="isPortsShow"
-          :can-redo="canRedo"
-          :can-undo="canUndo"
+          @toPNG="toPNG"
         ></my-toolbar>
         <!--      流程图绘制区域-->
         <div class="ChatBox">
@@ -55,20 +56,22 @@
     ></cell-style>
     <!--      编辑节点信息-->
     <node-modal
-        ref="NodeModal"
-        :rules="rules"
-        :visible="visible"
-        :confirm-loading="confirmLoading"
-        :info-form="infoForm"
-        @handleOk="handleOk"
-        @handleCancel="handleCancel"
-        @callback="callback"
+      ref="NodeModal"
+      :rules="rules"
+      :visible="visible"
+      :confirm-loading="confirmLoading"
+      :info-form="infoForm"
+      @handleOk="handleOk"
+      @handleCancel="handleCancel"
+      @callback="callback"
     />
   </div>
 </template>
 <script>
 import "@antv/x6-vue-shape";
 import { Graph, Shape, DataUri } from "@antv/x6";
+import _ from "lodash";
+import { process } from "@/services";
 import Count from "./components/Count.vue";
 import Contextmenu from "@/components/menu/Contextmenu";
 import MyGraph from "./components/Graph";
@@ -112,7 +115,7 @@ export default {
       default: ""
     }
   },
-  i18n:require("./i18n"),
+  i18n: require("./i18n"),
   data() {
     return {
       graph: null, //画布
@@ -134,7 +137,7 @@ export default {
       },
       infoForm: {}, //基本信息表单
       rules: {
-        describe: [
+        description: [
           { required: true, message: "请输入节点描述", trigger: "blur" },
           {
             min: 2,
@@ -160,14 +163,22 @@ export default {
       switch (this.contextmenuType) {
         case "node":
           arr = [
-            { key: "1", icon: "highlight", text: this.$t("menu.nodeStyleEdit") },
+            {
+              key: "1",
+              icon: "highlight",
+              text: this.$t("menu.nodeStyleEdit")
+            },
             { key: "2", icon: "edit", text: this.$t("menu.nodeInfoEdit") },
             { key: "3", icon: "delete", text: this.$t("menu.nodeDelete") }
           ];
           break;
         case "edge":
           arr = [
-            { key: "4", icon: "highlight", text: this.$t("menu.edgeStyleEdit") },
+            {
+              key: "4",
+              icon: "highlight",
+              text: this.$t("menu.edgeStyleEdit")
+            },
             { key: "3", icon: "delete", text: this.$t("menu.edgeDelete") }
           ];
           break;
@@ -208,9 +219,9 @@ export default {
     },
     value: {
       handler: function() {
-        console.log("value", this.value);
         if (this.graph) {
           this.isChange = false;
+          this.isFirstChange = false;
           this.isPortsShow = false;
           this.menuItem = "";
           this.selectCell = "";
@@ -225,6 +236,9 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.debounce = _.debounce(this.dataSave, 500);
+  },
   mounted() {
     //因插件存在直接初始化偶现找不到节点的bug，推迟半秒初始化保证能找到节点
     setTimeout(() => {
@@ -233,7 +247,10 @@ export default {
   },
   beforeDestroy() {
     //卸载前清理注册内容
-    this.graph.dispose();
+    this.graph && this.graph.dispose();
+    //清楚防抖函数
+    this.debounce && this.debounce.cancel();
+
     // Graph.unregisterHTMLComponent("my-html2");
     // Graph.unregisterVueComponent("count");
   },
@@ -253,7 +270,6 @@ export default {
         container: document.getElementById("wrapper"),
         ...configSetting(Shape)
       });
-      console.log(graph);
 
       //历史记录（撤销/重做） 因目前为自动保存模式,顾注释掉历史记录功能
       // graph.history.on("undo", args => {
@@ -273,7 +289,6 @@ export default {
       //添加点/边自带工具
       graph.on("cell:mouseenter", ({ cell }) => {
         if (cell.isNode()) {
-          console.log(cell);
           //如果是点，则不添加自带工具（目前点自带工具实用性不高、不美观，故不采用）
         } else {
           //如果是边，添加线段和路径点工具
@@ -306,7 +321,6 @@ export default {
 
       // 基类右击编辑
       graph.on("cell:contextmenu", ({ cell }) => {
-        console.log(cell);
         this.editForm(cell);
       });
 
@@ -322,24 +336,15 @@ export default {
         console.log("节点/边被选中", cell);
       });
 
-      //监听node变化
-      graph.on("node:added", ({ cell, index, options }) => {
-        console.log("add===>");
-        console.log(cell);
-        console.log(index);
-        console.log(options);
+      //监听基类变化
+      graph.on("cell:change:*", ({ cell, index, options }) => {
+        this.debounce({ cell, index, options });
       });
-      graph.on("node:removed", ({ cell, index, options }) => {
-        console.log("removed===>");
-        console.log(cell);
-        console.log(index);
-        console.log(options);
+      graph.on("cell:added", ({ cell, index, options }) => {
+        this.debounce({ cell, index, options });
       });
-      graph.on("node:changed", ({ cell, index, options }) => {
-        console.log("changed===>");
-        console.log(cell);
-        console.log(index);
-        console.log(options);
+      graph.on("cell:removed", ({ cell, index, options }) => {
+        this.debounce({ cell, index, options });
       });
 
       // 赋值
@@ -358,16 +363,6 @@ export default {
           graph.fromJSON(jsonTemp);
         }
       }
-
-      // 基类内容是否有变化
-      graph.on("cell:changed", () => {
-        this.isChangeValue();
-      });
-
-      //获取新增的基类
-      graph.on("cell:added", ({ cell }) => {
-        console.log("新增==》", cell);
-      });
     },
     /**
      * 画布内容居中
@@ -573,10 +568,8 @@ export default {
       this.graph.clearCells();
     },
     // 画布是否有变动
-    isChangeValue() {
-      if (!this.isChange) {
-        this.isChange = true;
-      }
+    isChangeValue(val) {
+      this.isChange = val;
       if (!this.isFirstChange) this.isFirstChange = true;
     },
     /**
@@ -592,8 +585,6 @@ export default {
      * @param event
      */
     drop(event) {
-      console.log(event);
-      console.log(this.menuItem);
       // 节点预设 ，添加位置信息和链接桩信息组合成完整的节点
       const nodeItem = {
         ...this.menuItem,
@@ -603,7 +594,6 @@ export default {
       };
       // 创建节点
       this.graph.addNode(nodeItem);
-      this.isChangeValue();
     },
     // 点击编辑更具不同的内容获取编辑数据
     editForm(cell) {
@@ -679,7 +669,7 @@ export default {
       this.editDrawer = false;
       if (this.selectCell) this.selectCell.removeTools();
     },
-    // 修改一般节点
+    // 修改普通节点
     changeNode(type, value) {
       switch (type) {
         case "labelText":
@@ -816,28 +806,79 @@ export default {
         cancelText: "取消",
         onOk: () => {
           const cells = this.graph.getSelectedCells();
-          console.log(cells);
+          const promiseArr = [];
           if (cells.length) {
-            this.graph.removeCells(cells);
-            this.form = {};
-            this.editDrawer = false;
-            this.$message.success("删除成功!", 3);
+            for (let i = 0; i < cells.length; i++) {
+              let cell = cells[i];
+              const { id } = cell.getData();
+
+              if (id) {
+                const p = new Promise(resolve => {
+                  process
+                    .deleteNodeInfo({ nodeId: id })
+                    .then(({ data }) => {
+                      resolve(true);
+                      if (data.code === "1000") {
+                        // process.deleteNodeInfo
+                        this.graph.removeCells([cell]);
+                      } else {
+                        this.$message.error(data.msg);
+                      }
+                    })
+                    .catch(() => {
+                      resolve(false);
+                    });
+                });
+                promiseArr.push(p);
+              } else {
+                this.graph.removeCells([cell]);
+              }
+            }
+            Promise.all(promiseArr).then(res => {
+              if (res.length > 0 && res.includes(true)) {
+                this.form = {};
+                this.editDrawer = false;
+                this.$message.success("删除成功!", 3);
+              } else {
+                this.form = {};
+                this.editDrawer = false;
+                this.$message.error("删除失败!请稍后再试", 3);
+              }
+            });
           } else if (this.selectCell) {
-            this.graph.removeCells([this.selectCell]);
-            this.form = {};
-            this.editDrawer = false;
-            this.$message.success("删除成功!", 3);
+            const { id } = this.selectCell.getData();
+            if (id) {
+              process.deleteNodeInfo({ nodeId: id }).then(({ data }) => {
+                if (data.code === "1000") {
+                  // process.deleteNodeInfo
+                  this.graph.removeCells([this.selectCell]);
+                  this.form = {};
+                  this.editDrawer = false;
+                  this.$message.success("删除成功!", 3);
+                } else {
+                  this.$message.error(data.msg);
+                }
+              });
+            } else {
+              this.graph.removeCells([this.selectCell]);
+              this.form = {};
+              this.editDrawer = false;
+              this.$message.success("删除成功!", 3);
+            }
           }
         },
         onCancel: () => {}
       });
     },
+    dataSave() {
+      this.handlerSend();
+    },
     // 导出JSON
     handlerSend() {
       // 我在这里删除了链接桩的设置，和工具（为了减少数据），反显的时候要把删除的链接桩加回来
       const { cells: jsonArr } = this.graph.toJSON();
-      if (!jsonArr) {
-        this.$message.error("保存失败!", 3);
+      if (!jsonArr && !this.$route.params.id) {
+        this.$message.error("流程保存失败!,请退出重试", 3);
         return;
       }
       const tempGroupJson = jsonArr.map(item => {
@@ -845,13 +886,20 @@ export default {
         if (item.tools) delete item.tools;
         return item;
       });
-      if (this.selectCell) {
-        this.selectCell.removeTools();
-        this.selectCell = "";
-      }
-      // this.$emit("finish", JSON.stringify(tempGroupJson));
-      sessionStorage.setItem("tempGroupJson", JSON.stringify(tempGroupJson));
-      this.$message.success("保存成功!", 3);
+      this.isChangeValue(true);
+      process
+        .save({
+          id: this.$route.params.id,
+          content: JSON.stringify(tempGroupJson)
+        })
+        .then(({ data }) => {
+          if (data.code === "1000") {
+            console.log("data", data);
+            this.isChangeValue(false);
+          } else {
+            this.$message.error(data.msg);
+          }
+        });
     },
     //导出成png图片并下载
     toPNG() {
@@ -894,8 +942,28 @@ export default {
     },
     //编辑节点展示
     showModal() {
-      this.visible = true;
-      this.infoForm = { ...this.selectCell.data };
+      const { id } = this.selectCell.data;
+      if (id) {
+        process
+          .getNodeInfo({ nodeId: id })
+          .then(({ data }) => {
+            if (data.code === "1000") {
+              console.log("data", data);
+              if (data.data) {
+                this.infoForm = { ...data.data };
+                this.visible = true;
+              }
+            } else {
+              this.$message.error(data.msg);
+            }
+          })
+          .catch(() => {
+            this.visible = true;
+            this.$message.error("获取节点信息失败,请稍后再试!");
+          });
+      } else {
+        this.visible = true;
+      }
     },
     //右击列表选择事件
     onMenuSelect(key) {
@@ -919,16 +987,27 @@ export default {
     //编辑节点信息确认事件,提取表单值保存
     handleOk() {
       this.$refs.NodeModal.$refs.ruleForm.validate(valid => {
-        if (valid) {
-          console.log(valid);
-          // this.selectCell.
-          this.selectCell.setData(this.infoForm);
-          console.log(this.selectCell.data);
+        if (valid && this.$route.params.id) {
           this.confirmLoading = true;
-          setTimeout(() => {
-            this.visible = false;
-            this.confirmLoading = false;
-          }, 2000);
+          process
+            .changeNode({
+              processId: this.$route.params.id,
+              ...this.infoForm
+            })
+            .then(({ data }) => {
+              if (data.code === "1000") {
+                console.log("data", data);
+                if (data.data) {
+                  this.selectCell.setData({ id: data.data });
+                }
+                this.visible = false;
+              } else {
+                this.$message.error(data.msg);
+              }
+            })
+            .finally(() => {
+              this.confirmLoading = false;
+            });
         } else {
           console.log("error submit!!");
           return false;

@@ -16,7 +16,7 @@
           :model="infoForm"
         >
           <a-form-model-item :label="$t('chat.tab1_describe')" prop="describe">
-            <a-textarea auto-size v-model="infoForm.describe" />
+            <a-textarea auto-size v-model="infoForm.description" />
           </a-form-model-item>
         </a-form-model>
       </a-tab-pane>

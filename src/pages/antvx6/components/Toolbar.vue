@@ -164,7 +164,7 @@
         <a-icon type="zoom-out" />
       </a>
     </div>
-    <a-divider  v-if="visibleHistory" class="divider" type="vertical" />
+    <a-divider v-if="visibleHistory" class="divider" type="vertical" />
     <div v-if="visibleHistory" class="col line3">
       <a
         :class="{ 'toolbar-box': true, active: !canUndo }"
@@ -200,6 +200,17 @@
           <a-icon type="delete" />
         </a>
       </a-popconfirm>
+    </div>
+    <a-divider class="divider" type="vertical" />
+    <div class="col small">
+      <a
+        @click="toPNG"
+        :class="{ 'toolbar-box': true }"
+        :title="$t('toolbar.title8')"
+        href="javascript:;"
+      >
+        <a-icon type="file-image" />
+      </a>
     </div>
     <a-divider class="divider" type="vertical" />
     <div style="margin-left: 20px;" v-if="isFirstChange">
@@ -259,12 +270,13 @@ export default {
     "changeGrid",
     "undoHandle",
     "redoHandle",
+    "toPNG",
     "clearCellsHandle"
   ],
   data() {
     return {
       visible: false,
-      visibleHistory: false
+      visibleHistory: false,
     };
   },
   mounted() {},
@@ -286,6 +298,9 @@ export default {
     },
     clearCellsHandle() {
       this.$emit("clearCellsHandle");
+    },
+    toPNG() {
+      this.$emit("toPNG");
     },
     transform(val) {
       if (typeof val === "string") {
