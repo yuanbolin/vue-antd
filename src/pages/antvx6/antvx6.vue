@@ -219,18 +219,7 @@ export default {
     },
     value: {
       handler: function() {
-        if (this.graph) {
-          this.isChange = false;
-          this.isFirstChange = false;
-          this.isPortsShow = false;
-          this.menuItem = "";
-          this.selectCell = "";
-          this.editDrawer = false;
-          // Graph.unregisterHTMLComponent("my-html2");
-          // Graph.unregisterVueComponent("count");
-          this.graph.dispose();
-          this.initGraph();
-        }
+        if (this.value && this.graph) this.formJSON(this.graph);
       },
       deep: true,
       immediate: true
@@ -240,10 +229,9 @@ export default {
     this.debounce = _.debounce(this.dataSave, 500);
   },
   mounted() {
-    //因插件存在直接初始化偶现找不到节点的bug，推迟半秒初始化保证能找到节点
     setTimeout(() => {
       this.initGraph();
-    }, 500);
+    }, 1000);
   },
   beforeDestroy() {
     //卸载前清理注册内容
@@ -266,6 +254,17 @@ export default {
     },
     // 初始化渲染画布并添加监听事件
     initGraph() {
+      if (this.graph) {
+        this.isChange = false;
+        this.isFirstChange = false;
+        this.isPortsShow = false;
+        this.menuItem = "";
+        this.selectCell = "";
+        this.editDrawer = false;
+        // Graph.unregisterHTMLComponent("my-html2");
+        // Graph.unregisterVueComponent("count");
+        this.graph.dispose();
+      }
       const graph = new Graph({
         container: document.getElementById("wrapper"),
         ...configSetting(Shape)
@@ -305,7 +304,7 @@ export default {
       window.addEventListener("resize", () => {
         graph.resize(
           document.getElementById("main-content").offsetWidth - 180 - 48,
-          document.getElementById("main-content").offsetHeight
+          document.getElementById("main-content").offsetHeight - 40
         );
       });
       this.parentResize(graph);
@@ -346,10 +345,11 @@ export default {
       graph.on("cell:removed", ({ cell, index, options }) => {
         this.debounce({ cell, index, options });
       });
-
+      this.formJSON(graph);
       // 赋值
       this.graph = graph;
-
+    },
+    formJSON(graph) {
       //JSON内容解析渲染流程图内容
       if (this.value && JSON.parse(this.value).length) {
         const resArr = JSON.parse(this.value);
@@ -360,6 +360,7 @@ export default {
             if (item.ports) item.ports.groups = portsGroups;
             return item;
           });
+          console.log("value", jsonTemp);
           graph.fromJSON(jsonTemp);
         }
       }

@@ -110,9 +110,6 @@ const options = {
           path: "/antvx6/:id",
           meta: {
             invisible: true,
-            page: {
-              cacheAble: true
-            }
           },
           component: () => import("@/pages/antvx6/index")
         },
@@ -191,11 +188,8 @@ const options = {
           path: "antvShow",
           meta: {
             icon: "profile",
-            page: {
-              cacheAble: false
-            }
           },
-          component: () => import("@/pages/流程展示/antvShow")
+          component: () => import("@/pages/流程展示/index")
         }
       ]
     }

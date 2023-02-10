@@ -26,11 +26,6 @@ export default {
       } else {
         this.height = "calc(100vh - 185px)";
       }
-    },
-    tempGroupJson: {
-      handler: function() {
-        console.log(this.tempGroupJson);
-      }
     }
   },
   created() {

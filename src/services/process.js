@@ -76,7 +76,7 @@ export async function changeNode(params) {
     }
   });
 }
-//保存节点信息
+//获取节点信息
 export async function getNodeInfo(params) {
   return request(PROCESSGETNODEINFO, METHOD.Get, params);
 }

@@ -53,7 +53,7 @@ const routerMap = {
   },
   flow: {
     name: "流程管理",
-    page: "flow",
+    path: "flow",
     icon: "project",
     component: () => import("@/pages/流程管理/QueryList")
   },
@@ -67,7 +67,7 @@ const routerMap = {
     name: "流程图展示",
     path: "/antvShow",
     icon: "profile",
-    component: () => import("@/pages/流程展示/antvShow")
+    component: () => import("@/pages/流程展示/index")
   },
   exp403: {
     authority: "*",

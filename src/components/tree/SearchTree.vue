@@ -7,7 +7,6 @@
     />
     <a-tree
       :show-line="true"
-      :showIcon="true"
       :blockNode="true"
       :expanded-keys="expandedKeys"
       :auto-expand-parent="autoExpandParent"
@@ -24,7 +23,7 @@
           </template>
           <span
             :style="{
-              color: '#00b2ff'
+              color: theme.color || '#f50'
             }"
             class="tree-title"
             v-if="record.name.indexOf(searchValue) > -1"
@@ -32,7 +31,8 @@
             {{ record.name.substr(0, record.name.indexOf(searchValue)) }}
             <span
               :style="{
-                color: theme.color || '#f50'
+                color: '#fff',
+                background: theme.color || '#f50'
               }"
               >{{ searchValue }}</span
             >
@@ -44,7 +44,7 @@
           </span>
           <span
             :style="{
-              color: '#00b2ff'
+              color: theme.color || '#f50'
             }"
             class="tree-title"
             v-else
@@ -52,7 +52,6 @@
           >
         </a-tooltip>
       </template>
-      <a-icon slot="icon" type="carry-out" />
     </a-tree>
   </div>
 </template>
@@ -113,8 +112,6 @@ export default {
   watch: {
     gData() {
       this.generateList(this.gData);
-      console.log(this.gData);
-      console.log(this.dataList);
     }
   },
   computed: {
@@ -123,7 +120,7 @@ export default {
       function f(data) {
         for (let i = 0; i < data.length; i++) {
           const node = data[i];
-          node.isLeaf = node.type === CatalogueType.PROCESS;
+          node.isLeaf = node?.type === CatalogueType.PROCESS;
           if (node.children) {
             f(node.children);
           }
@@ -143,21 +140,33 @@ export default {
       const expandedKeys = this.dataList
         .map(item => {
           if (item.title.indexOf(value) > -1) {
-            console.log("findkey==>", item.key, this.gData);
             return getParentKey(item.key, this.gData);
           }
           return null;
         })
         .filter((item, i, self) => item && self.indexOf(item) === i);
-      console.log("expandedKeys", expandedKeys);
       Object.assign(this, {
         expandedKeys,
         searchValue: value,
         autoExpandParent: true
       });
     },
-    onSelect(selectedKeys, info) {
-      this.$emit("treeSelect", selectedKeys, info);
+    onSelect(selectedKeys) {
+      const arr = [];
+      function treeToList(tree) {
+        for (let i = 0; i < tree.length; i++) {
+          let item = tree[i];
+          arr.push(item);
+          if (item?.children instanceof Array) {
+            treeToList(item.children);
+          }
+        }
+      }
+      treeToList(this.treeData);
+      this.$emit("treeSelect", this.findById(selectedKeys[0], arr)[0]);
+    },
+    findById(id, arr) {
+      return arr.filter(item => id === item.id);
     },
     generateList(data) {
       for (let i = 0; i < data.length; i++) {
@@ -166,7 +175,7 @@ export default {
         this.dataList.push({
           key,
           title: node.name,
-          isLeaf: node.type === CatalogueType.PROCESS
+          isLeaf: node?.type === CatalogueType.PROCESS
         });
         if (node.children) {
           this.generateList(node.children);

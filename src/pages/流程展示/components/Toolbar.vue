@@ -1,44 +1,5 @@
 <template>
   <div class="toolbar-container">
-    <div class="col line1">
-      <a-dropdown
-        placement="bottomCenter"
-        v-model="visible"
-        :trigger="['click']"
-      >
-        <a
-          class="toolbar-box"
-          :title="$t('toolbar.title1')"
-          @click="e => e.preventDefault()"
-        >
-          <a-icon type="control" style="color: #555;margin-right: 3px;" />
-          <a-icon type="down" />
-        </a>
-        <a-menu slot="overlay" class="menu">
-          <a-menu-item style="border-bottom: 1px dashed #ccc;">
-            <div class="option" @click="changePortsShow">
-              <a class="title" href="javascript:;">{{
-                $t("toolbar.portShow")
-              }}</a>
-              <div class="state">
-                <a-icon v-if="isPortsShow" type="check" />
-              </div>
-            </div>
-          </a-menu-item>
-          <a-menu-item>
-            <div class="option" @click="changeGrid">
-              <a class="title" href="javascript:;">{{
-                $t("toolbar.visibleGrid")
-              }}</a>
-              <div class="state">
-                <a-icon v-if="visiableGrid" type="check" />
-              </div>
-            </div>
-          </a-menu-item>
-        </a-menu>
-      </a-dropdown>
-    </div>
-    <a-divider class="divider" type="vertical" />
     <div class="col line2">
       <a-dropdown placement="bottomCenter" :trigger="['click']">
         <a
@@ -164,43 +125,6 @@
         <a-icon type="zoom-out" />
       </a>
     </div>
-    <a-divider v-if="visibleHistory" class="divider" type="vertical" />
-    <div v-if="visibleHistory" class="col line3">
-      <a
-        :class="{ 'toolbar-box': true, active: !canUndo }"
-        :title="$t('toolbar.title5')"
-        href="javascript:;"
-        @click="undoHandle()"
-      >
-        <my-icon type="icon-editor-undo" />
-      </a>
-      <a
-        :class="{ 'toolbar-box': true, active: !canRedo }"
-        :title="$t('toolbar.title6')"
-        href="javascript:;"
-        @click="redoHandle()"
-      >
-        <my-icon type="icon-editor-redo" />
-      </a>
-    </div>
-    <a-divider class="divider" type="vertical" />
-    <div class="col small">
-      <a-popconfirm
-        placement="bottom"
-        :title="$t('toolbar.title7')"
-        ok-text="Yes"
-        cancel-text="No"
-        @confirm="clearCellsHandle"
-      >
-        <a
-          :class="{ 'toolbar-box': true }"
-          :title="$t('toolbar.title7')"
-          href="javascript:;"
-        >
-          <a-icon type="delete" />
-        </a>
-      </a-popconfirm>
-    </div>
     <a-divider class="divider" type="vertical" />
     <div class="col small">
       <a
@@ -211,20 +135,6 @@
       >
         <a-icon type="file-image" />
       </a>
-    </div>
-    <a-divider class="divider" type="vertical" />
-    <div style="margin-left: 20px;" v-if="isFirstChange">
-      <a-tag
-        v-if="isChange"
-        style="cursor:pointer;"
-        color="red"
-        @click="handlerSend"
-      >
-        {{ $t("toolbar.save") }}
-      </a-tag>
-      <a-tag v-else color="blue">
-        {{ $t("toolbar.saved") }}
-      </a-tag>
     </div>
   </div>
 </template>
@@ -281,24 +191,6 @@ export default {
   },
   mounted() {},
   methods: {
-    changePortsShow() {
-      this.$emit("changePortsShow", !this.isPortsShow);
-    },
-    undoHandle() {
-      this.$emit("undoHandle");
-    },
-    redoHandle() {
-      this.$emit("redoHandle");
-    },
-    changeGrid() {
-      this.$emit("changeGrid", !this.visiableGrid);
-    },
-    handlerSend() {
-      this.$emit("handlerSend");
-    },
-    clearCellsHandle() {
-      this.$emit("clearCellsHandle");
-    },
     toPNG() {
       this.$emit("toPNG");
     },
@@ -309,9 +201,9 @@ export default {
       }
       //限制缩放比例在0.2-2
       if (
-          typeof val === "number" &&
-          val > 0.2 &&
-          parseFloat(val.toFixed(2)) < 2.1
+        typeof val === "number" &&
+        val > 0.2 &&
+        parseFloat(val.toFixed(2)) < 2.1
       ) {
         this.$emit("changeZoom", val);
       }
