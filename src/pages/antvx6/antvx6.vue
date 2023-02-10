@@ -836,14 +836,19 @@ export default {
               }
             }
             Promise.all(promiseArr).then(res => {
+              console.log(res)
               if (res.length > 0 && res.includes(true)) {
                 this.form = {};
                 this.editDrawer = false;
                 this.$message.success(this.$t("handlerDel.success"), 3);
-              } else {
+              } else if (res.length > 0 && res.includes(false)) {
                 this.form = {};
                 this.editDrawer = false;
                 this.$message.error(this.$t("handlerDel.error"), 3);
+              } else if (res.length === 0) {
+                this.form = {};
+                this.editDrawer = false;
+                this.$message.success(this.$t("handlerDel.success"), 3);
               }
             });
           } else if (this.selectCell) {
