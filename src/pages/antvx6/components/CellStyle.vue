@@ -77,7 +77,10 @@
             "
           />
           <div v-if="form.label" class="label-style">
-            <a-form-item class="minInterval" :label="$t('cellStyle.edgeFontColor')">
+            <a-form-item
+              class="minInterval"
+              :label="$t('cellStyle.edgeFontColor')"
+            >
               <twitter-picker
                 :defaultColors="defaultColors"
                 :value="labelForm.fontColor"
@@ -91,7 +94,10 @@
                 @input="value => updateEdgeValue('fill', value)"
               />
             </a-form-item>
-            <a-form-item class="minInterval" :label="$t('cellStyle.edgeBoxStroke')">
+            <a-form-item
+              class="minInterval"
+              :label="$t('cellStyle.edgeBoxStroke')"
+            >
               <twitter-picker
                 :defaultColors="defaultColors"
                 :value="labelForm.stroke"
@@ -113,13 +119,24 @@
             size="small"
             @change="changeEdgeConnector"
           >
-            <a-select-option value="normal">{{$t('cellStyle.edgeConnectorOptions1')}}</a-select-option>
-            <a-select-option value="rounded">{{$t('cellStyle.edgeConnectorOptions2')}}</a-select-option>
-            <a-select-option value="smooth">{{$t('cellStyle.edgeConnectorOptions3')}}</a-select-option>
-            <a-select-option value="jumpover">{{$t('cellStyle.edgeConnectorOptions4')}}</a-select-option>
+            <a-select-option value="normal">{{
+              $t("cellStyle.edgeConnectorOptions1")
+            }}</a-select-option>
+            <a-select-option value="rounded">{{
+              $t("cellStyle.edgeConnectorOptions2")
+            }}</a-select-option>
+            <a-select-option value="smooth">{{
+              $t("cellStyle.edgeConnectorOptions3")
+            }}</a-select-option>
+            <a-select-option value="jumpover">{{
+              $t("cellStyle.edgeConnectorOptions4")
+            }}</a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item class="minInterval" :label="$t('cellStyle.edgeStrokeWidth')">
+        <a-form-item
+          class="minInterval"
+          :label="$t('cellStyle.edgeStrokeWidth')"
+        >
           <a-input-number
             v-model="form.strokeWidth"
             size="small"

@@ -5,13 +5,13 @@
 module.exports = {
   messages: {
     CN: {
-      backHome:"返回首页"
+      backHome: "返回首页"
     },
     HK: {
-      backHome:"返回首頁"
+      backHome: "返回首頁"
     },
-    US:{
-      backHome:"Back Home"
+    US: {
+      backHome: "Back Home"
     }
   }
 };

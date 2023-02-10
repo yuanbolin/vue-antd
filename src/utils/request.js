@@ -3,7 +3,8 @@ import storage from "store";
 const {
   VUE_APP_USER_TOKEN,
   VUE_APP_API_BASE_URL,
-  VUE_APP_SYSTEM_TOKEN
+  VUE_APP_SYSTEM_TOKEN,
+  VUE_APP_USER_ROUTES_KEY
 } = process.env;
 axios.defaults.timeout = 240000;
 axios.defaults.baseURL = VUE_APP_API_BASE_URL;
@@ -54,6 +55,7 @@ function setAuthorization(auth, time) {
  */
 function removeAuthorization() {
   storage.remove(VUE_APP_SYSTEM_TOKEN);
+  storage.remove(VUE_APP_USER_ROUTES_KEY);
   storage.remove(VUE_APP_USER_TOKEN);
 }
 
@@ -129,32 +131,10 @@ function parseUrlParams(url) {
   return params;
 }
 
-//清空cookie
-function clearCookie() {
-  var keys = document.cookie.match(/[^ =;]+(?==)/g);
-  if (keys) {
-    for (var i = keys.length; i--; ) {
-      document.cookie =
-        keys[i] + "=0;path=/;expires=" + new Date(0).toUTCString(); //清除当前域名下的,例如：m.kevis.com
-      document.cookie =
-        keys[i] +
-        "=0;path=/;domain=" +
-        document.domain +
-        ";expires=" +
-        new Date(0).toUTCString(); //清除当前域名下的，例如 .m.kevis.com
-      document.cookie =
-        keys[i] +
-        "=0;path=/;domain=kevis.com;expires=" +
-        new Date(0).toUTCString(); //清除一级域名下的或指定的，例如 .kevis.com
-    }
-  }
-  console.log("已清除");
-}
 
 export {
   METHOD,
   request,
-  clearCookie,
   setAuthorization,
   removeAuthorization,
   checkAuthorization,

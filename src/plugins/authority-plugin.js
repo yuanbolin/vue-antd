@@ -11,6 +11,7 @@ const checkInject = function(el, binding, vnode) {
   const instance = vnode.context;
   const $auth = instance.$auth;
   const { authority } = vnode.context.$route.meta;
+  console.log("authority", authority);
   if (!$auth || !$auth(check, authority)) {
     addDisabled(el);
   } else {
@@ -61,6 +62,7 @@ const AuthorityPlugin = {
                     : [];
                 this.$options.methods[key] = function() {
                   //--auth-inject
+                  console.log("authority", authority);
                   if (this.$auth(check, authority)) {
                     return method.apply(this, arguments);
                   } else {

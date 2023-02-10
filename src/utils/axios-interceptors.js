@@ -1,5 +1,6 @@
 import storage from "store";
-
+import store from "../store";
+import { messages } from "./i18n";
 //不需要token拦截的接口配置
 const tokenIgnore = {
   paths: ["/token", "/login"], //根据路由fullPath匹配
@@ -24,7 +25,7 @@ const resp401 = {
   onFulfilled(response, options) {
     const { message } = options;
     if (response?.code === 401) {
-      message.error("无此权限");
+      message.error(messages[store.state.setting.lang]["401"]);
     }
     return response;
   },
@@ -38,7 +39,7 @@ const resp401 = {
     const { message } = options;
     const { response } = error;
     if (response?.status === 401) {
-      message.error("无此权限");
+      message.error(messages[store.state.setting.lang]["401"]);
     }
     return Promise.reject(error);
   }
@@ -48,7 +49,7 @@ const resp403 = {
   onFulfilled(response, options) {
     const { message } = options;
     if (response.code === 403) {
-      message.error("请求被拒绝");
+      message.error(messages[store.state.setting.lang]["403"]);
     }
     return response;
   },
@@ -56,7 +57,7 @@ const resp403 = {
     const { message } = options;
     const { response } = error;
     if (response?.status === 403) {
-      message.error("请求被拒绝");
+      message.error(messages[store.state.setting.lang]["403"]);
     }
     return Promise.reject(error);
   }
@@ -67,13 +68,13 @@ const respError = {
     const { message } = options;
     const { response } = error;
     if (!response) {
-      message.error("服务器链接超时，请稍后再试。");
+      message.error(messages[store.state.setting.lang]["timeOut"]);
     }
     if (response.status.toString().indexOf("50") != -1) {
-      message.error("服务器处理异常，请稍后再试。");
+      message.error(messages[store.state.setting.lang]["timeOut"]);
     }
     if (response.status.toString().indexOf("40") != -1) {
-      message.error("服务器请求错误，请稍后再试。");
+      message.error(messages[store.state.setting.lang]["timeOut"]);
     }
     return Promise.reject(error);
   }
@@ -94,7 +95,7 @@ const reqCommon = {
       xsrfCookieName &&
       !storage.get(xsrfCookieName)
     ) {
-      message.warning("认证 token 已过期，请重新登录");
+      message.warning(messages[store.state.setting.lang]["tokenAuth"]);
     }
     return config;
   },

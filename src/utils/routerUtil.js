@@ -1,5 +1,5 @@
 import routerMap from "@/router/async/router.map";
-import { mergeI18nFromRoutes } from "@/utils/i18n";
+import { mergeI18nFromRoutes } from "@/utils/i18nUtil";
 import Router from "vue-router";
 import deepMerge from "deepmerge";
 import basicOptions from "@/router/async/config.async";
@@ -220,7 +220,7 @@ function formatAuthority(routes, pAuthorities = []) {
     const meta = route.meta;
     const defaultAuthority = pAuthorities[pAuthorities.length - 1] || [];
     if (meta) {
-      let authority = {};
+      let authority = [];
       if (!meta.authority) {
         authority = defaultAuthority;
       } else if (typeof meta.authority === "string") {
@@ -228,7 +228,10 @@ function formatAuthority(routes, pAuthorities = []) {
       } else if (meta.authority instanceof Array) {
         authority = meta.authority;
       }
-      meta.authority = authority;
+      //去除数组每一项的首尾空格,预防因空格问题导致验证失败
+      meta.authority = authority.map(item => {
+        return item.trim();
+      });
     } else {
       const authority = defaultAuthority;
       route.meta = { authority };
@@ -299,6 +302,11 @@ function generator(routerMap) {
  */
 function listToTree(list, parentId) {
   let tree = [];
+  //先按照index字段进行排序
+  list.sort(function(a, b) {
+    return a.index - b.index;
+  });
+  //后将list格式成tree
   list.forEach(item => {
     item.children = list.filter(r => {
       return r.parent_id === item.Id;

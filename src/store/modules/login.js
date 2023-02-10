@@ -1,6 +1,7 @@
 import storage from "store";
 import { SystemToken, UserToken, Login, Logout, vision } from "@/services/user";
 import { getTimestamp } from "@/utils/util";
+import { removeAuthorization } from "@/utils/request";
 import notification from "ant-design-vue/lib/notification";
 const {
   VUE_APP_SYSTEM_TOKEN,
@@ -74,7 +75,8 @@ export default {
               }
             })
             .catch(error => {
-              if(error?.message.indexOf("Network Error")!=-1)error="服务器链接超时，请稍后再试。"
+              if (error?.message.indexOf("Network Error") != -1)
+                error = "服务器链接超时，请稍后再试。";
               notification.error({
                 message: "错误",
                 description: error || "人员信息未获取"
@@ -133,6 +135,7 @@ export default {
           })
           .finally(() => {
             commit("SET_TOKEN", "");
+            removeAuthorization();
           });
       });
     },

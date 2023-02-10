@@ -50,8 +50,7 @@
 <script>
 export default {
   name: "MyGraph",
-  props: {
-  },
+  props: {},
   emits: ["menuDrag"],
   data() {
     return {};

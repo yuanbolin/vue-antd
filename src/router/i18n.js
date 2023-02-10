@@ -16,7 +16,7 @@ module.exports = {
       }
     },
     US: {
-      home: { name: "home" },
+      home: { name: "home" }
     },
     HK: {
       home: { name: "首頁" },

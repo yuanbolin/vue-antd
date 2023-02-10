@@ -59,7 +59,7 @@ import { getI18nKey } from "@/utils/routerUtil";
 
 export default {
   name: "TabsHead",
-  i18n: require('./i18n'),
+  i18n: require("./i18n"),
   props: {
     pageList: Array,
     active: String,

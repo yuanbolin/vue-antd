@@ -453,13 +453,17 @@ export default {
   components: {
     SelectTree
   },
-  //根据路由中permission对功能权限进行校验
+  /**
+   * 根据路由中permission对功能权限进行校验,权限值匹配允许调用
+   * key:要验证的方法名
+   * value:验证的权限值
+   */
   authorize: {
     deleteRecord: "delete",
-    showAddDrawer:"insert",
-    showEditDrawer:"update",
-    push:"update",
-    detailRecord:"query"
+    showAddDrawer: "insert",
+    showEditDrawer: "update",
+    push: "update",
+    detailRecord: "query"
   },
   computed: {
     columns() {

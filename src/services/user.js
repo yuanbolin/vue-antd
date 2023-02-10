@@ -5,20 +5,7 @@ import {
   LOGINOUT,
   VISION
 } from "@/services/api";
-import { request, METHOD, removeAuthorization } from "@/utils/request";
-import storage from "store";
-
-export async function login(name, password) {
-  return request(LOGIN, METHOD.GET, {
-    name: name,
-    password: password
-  });
-}
-
-export function logout() {
-  storage.remove(process.env.VUE_APP_USER_ROUTES_KEY);
-  removeAuthorization();
-}
+import { request, METHOD } from "@/utils/request";
 
 export function SystemToken(parameter) {
   return request(SYSTEMTOKEN, METHOD.GET, null, {
@@ -61,3 +48,11 @@ export function Login(parameter) {
 export function Logout() {
   return request(LOGINOUT, METHOD.GET);
 }
+
+export default {
+  SystemToken,
+  vision,
+  UserToken,
+  Login,
+  Logout
+};

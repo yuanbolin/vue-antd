@@ -19,7 +19,7 @@ const api = {
   PROCESSCONTENT: "process/get_process_content",
   PROCESSEDITNODE: "process/edit_process_node",
   PROCESSGETNODEINFO: "process/get_process_node",
-  PROCESSDELETENODE: "process/delete_process_node",
+  PROCESSDELETENODE: "process/delete_process_node"
   //组织机构管理
   // ORGANIZATION: `/organization/org_tree`,
   // ORGANIZATIONADD: `/organization/add`,

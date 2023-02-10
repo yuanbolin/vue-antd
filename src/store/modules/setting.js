@@ -1,7 +1,7 @@
 import storage from "store";
 import config from "@/config";
 import { ADMIN } from "@/config/default";
-import { formatFullPath } from "@/utils/i18n";
+import { formatFullPath } from "@/utils/i18nUtil";
 import { getLocalSetting } from "@/utils/themeUtil";
 
 const localSetting = getLocalSetting(true);
@@ -18,7 +18,7 @@ export default {
     menuData: [],
     collapsed: false,
     activatedFirst: undefined,
-    activePage:"",
+    activePage: "",
     customTitles,
     ...config,
     ...localSetting

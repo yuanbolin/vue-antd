@@ -147,8 +147,8 @@ const options = {
 页面如下：
 ![newPage2](../assets/new-page-2.png)
 ## i18n国际化配置
-如果你想为页面增加i18n国际化配置，只需在页面同级文件夹下创建 i18n.js 文件，然后在页面文件中引入并使用即可。  
-创建 i18n.js 文件：
+如果你想为页面增加i18n国际化配置，只需在页面同级文件夹下创建 i18nUtil.js 文件，然后在页面文件中引入并使用即可。  
+创建 i18nUtil.js 文件：
 ```diff {9}                    
   ├── public
   ├── src
@@ -158,7 +158,7 @@ const options = {
   │   │   └── newPage        # 为新页面创建一个文件夹
   │   │       ├── NewPage.vue  # 新页面文件
   │   │       ├── index.less   # 页面样式文件
-+ │   │       ├── i18n.js      # i18n 国际化配置文件
++ │   │       ├── i18nUtil.js      # i18n 国际化配置文件
   │   │       └── index.js     # import 引导文件
   :   :
   │   └── main.js              # 应用入口js
@@ -166,7 +166,7 @@ const options = {
   ├── README.md                # README.md
   └── vue.config.js            # vue 配置文件
 ```
-i18n.js 文件内容：
+i18nUtil.js 文件内容：
 ```js
 module.exports = {
   messages: {
@@ -185,7 +185,7 @@ module.exports = {
   }
 }
 ```
-在 NewPage.vue 文件中引入 i18n.js，并添加需要国际化的内容。如下修改：
+在 NewPage.vue 文件中引入 i18nUtil.js，并添加需要国际化的内容。如下修改：
 ```vue {3,10,13-15}
 <template>
   <div class="new-page" :style="`min-height: ${pageMinHeight}px`">

@@ -22,7 +22,7 @@ export default {
     prop: "value",
     event: "change"
   },
-  i18n:require('./i18n'),
+  i18n: require("./i18n"),
   props: {
     treeData: {
       type: Array,

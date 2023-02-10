@@ -276,7 +276,7 @@ export default {
   data() {
     return {
       visible: false,
-      visibleHistory: false,
+      visibleHistory: false
     };
   },
   mounted() {},
