@@ -1001,7 +1001,8 @@ export default {
             })
             .then(({ data }) => {
               if (data.code === "1000") {
-                console.log("data", data);
+                this.$refs.NodeModal.$refs.ruleForm.resetFields();
+                this.ruleForm = {};
                 if (data.data) {
                   this.selectCell.setData({ id: data.data });
                 }
