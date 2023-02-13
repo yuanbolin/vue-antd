@@ -65,7 +65,7 @@ export default {
                 },
                 {
                   redirect_uri: encodeURIComponent(
-                    "http://localhost:8000/auth"
+                      res.redirect_uri
                   ),
                   client_id: res.client_id,
                   scope: res.scope,

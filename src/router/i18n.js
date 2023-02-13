@@ -21,7 +21,7 @@ module.exports = {
     HK: {
       home: { name: "首頁" },
       dashboard: {
-        name: "工作台"
+        name: "工作臺"
       },
       flow: {
         name: "流程管理"

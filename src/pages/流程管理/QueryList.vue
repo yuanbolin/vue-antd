@@ -434,7 +434,7 @@ export default {
       chooseObj: {},
       pagination: {
         current: 1,
-        pageSize: 10,
+        pageSize: 5,
         total: 0,
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         showQuickJumper: true
@@ -500,12 +500,14 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.name"),
+            whitespace:true,
             trigger: "blur"
           },
           {
             min: 2,
             max: 15,
             message: this.$t("form_rules.namelen"),
+            whitespace:true,
             trigger: "blur"
           }
         ],
@@ -513,12 +515,14 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.messages"),
+            whitespace:true,
             trigger: "blur"
           },
           {
             min: 2,
             max: 50,
             message: this.$t("form_rules.messageslen"),
+            whitespace:true,
             trigger: "blur"
           }
         ],
@@ -531,12 +535,14 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.name"),
+            whitespace:true,
             trigger: "blur"
           },
           {
             min: 2,
             max: 15,
             message: this.$t("form_rules.namelen"),
+            whitespace:true,
             trigger: "blur"
           }
         ],
@@ -544,12 +550,14 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.messages"),
+            whitespace:true,
             trigger: "blur"
           },
           {
             min: 2,
             max: 50,
             message: this.$t("form_rules.messageslen"),
+            whitespace:true,
             trigger: "blur"
           }
         ],
@@ -557,6 +565,7 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.directory"),
+            whitespace:true,
             trigger: "change"
           }
         ],
@@ -564,6 +573,7 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.input"),
+            whitespace:true,
             trigger: "blur"
           }
         ],
@@ -571,6 +581,7 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.output"),
+            whitespace:true,
             trigger: "blur"
           }
         ],
@@ -685,6 +696,7 @@ export default {
                   if (data.code === "1000") {
                     this.$message.success("新增成功!");
                     this.fetch();
+                    this.getTreeData();
                     this.$refs.catalogueForm.resetFields();
                     this.catalogueForm = {};
                   } else {
@@ -705,6 +717,7 @@ export default {
                   if (data.code === "1000") {
                     this.$message.success("修改成功!");
                     this.fetch();
+                    this.getTreeData();
                     this.$refs.catalogueForm.resetFields();
                     this.catalogueForm = {};
                   } else {
@@ -735,6 +748,7 @@ export default {
                   if (data.code === "1000") {
                     this.$message.success("新增成功!");
                     this.fetch();
+                    this.getTreeData();
                     this.$refs.infoForm.resetFields();
                     this.infoForm = {};
                   } else {
@@ -755,6 +769,7 @@ export default {
                   if (data.code === "1000") {
                     this.$message.success("修改成功!");
                     this.fetch();
+                    this.getTreeData();
                     this.$refs.infoForm.resetFields();
                     this.infoForm = {};
                   } else {
@@ -840,6 +855,7 @@ export default {
             if (data.code === "1000") {
               this.$message.success("删除成功");
               this.fetch();
+              this.getTreeData();
             } else {
               this.$message.error(data.msg);
             }

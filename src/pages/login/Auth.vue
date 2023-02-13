@@ -19,8 +19,8 @@ export default {
   name: "AuthResult",
   data() {
     return {
-      description: "登录成功，跳转中...",
-      title: "登录成功"
+      description: "扫码成功，正在请求用户信息，请稍后...",
+      title: "扫码成功"
     };
   },
   methods: {
@@ -67,10 +67,12 @@ export default {
           }
         })
         .catch(() => {
-          // this.$router.replace({ path: "/" });
+          storage.remove(VUE_APP_SYSTEM_TOKEN);
+          this.$router.replace({ path: "/login" });
         });
     } else {
-      this.$router.replace({ path: "/" });
+      storage.remove(VUE_APP_SYSTEM_TOKEN);
+      this.$router.replace({ path: "/login" });
     }
   }
 };

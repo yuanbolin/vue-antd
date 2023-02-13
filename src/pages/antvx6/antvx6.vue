@@ -138,10 +138,16 @@ export default {
       infoForm: {}, //基本信息表单
       rules: {
         description: [
-          { required: true, message: "请输入节点描述", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入节点描述",
+            whitespace: true,
+            trigger: "blur"
+          },
           {
             min: 2,
             max: 50,
+            whitespace: true,
             message: "字符长度应在2到50之间",
             trigger: "change"
           }
@@ -337,6 +343,7 @@ export default {
 
       //监听基类变化
       graph.on("cell:change:*", ({ cell, index, options }) => {
+        console.log(cell, index, options);
         this.debounce({ cell, index, options });
       });
       graph.on("cell:added", ({ cell, index, options }) => {
@@ -836,7 +843,7 @@ export default {
               }
             }
             Promise.all(promiseArr).then(res => {
-              console.log(res)
+              console.log(res);
               if (res.length > 0 && res.includes(true)) {
                 this.form = {};
                 this.editDrawer = false;
@@ -1002,7 +1009,7 @@ export default {
             .then(({ data }) => {
               if (data.code === "1000") {
                 this.$refs.NodeModal.$refs.ruleForm.resetFields();
-                this.ruleForm = {};
+                this.infoForm = {};
                 if (data.data) {
                   this.selectCell.setData({ id: data.data });
                 }
@@ -1023,7 +1030,7 @@ export default {
     //弹窗关闭事件,情空表单
     handleCancel() {
       this.$refs.NodeModal.$refs.ruleForm.resetFields();
-      this.ruleForm = {};
+      this.infoForm = {};
       this.visible = false;
     },
     //节点信息弹窗中的标签页切换事件,后续开发如需监听切换事件时用得到
