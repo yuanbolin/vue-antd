@@ -28,7 +28,7 @@
           @toPNG="toPNG"
         ></my-toolbar>
         <!--      流程图绘制区域-->
-        <div class="ChatBox">
+        <div id="ChatBox">
           <div id="wrapper" @drop="drop($event)" @dragover.prevent />
         </div>
       </div>
@@ -162,7 +162,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("setting", ["collapsed", "fixedTabs", "activePage"]),
+    ...mapState("setting", ["activePage"]),
     // 右击导航列表
     menuItemList() {
       let arr = [];
@@ -194,32 +194,19 @@ export default {
   },
   watch: {
     /**
-     * 因antvx6自适应窗口变化存在问题,改为自定义监听事件
-     */
-    collapsed() {
-      setTimeout(() => {
-        this.graph &&
-          this.graph.resize(
-            document.getElementById("main-content").offsetWidth - 180 - 48,
-            document.getElementById("main-content").offsetHeight
-          );
-      }, 500);
-    },
-    fixedTabs() {
-      setTimeout(() => {
-        this.graph &&
-          this.graph.resize(
-            document.getElementById("main-content").offsetWidth - 180 - 48,
-            document.getElementById("main-content").offsetHeight
-          );
-      }, 500);
-    },
-    /**
-     * 因antvx6的Scroller在切换Tab页后中心位置偏移回左上角影响使用体验,此处加入切回页面后居中显示内容
+     * 因antvx6的autoResize在切换Tab页后宽度会变成0,因此需要收到重新设置大小
      * @param val 切换路由的path值
      */
     activePage(val) {
-      if (val.indexOf("/antvx6/") !== -1 && this.graph) {
+      if (val.indexOf("/antvx6") !== -1 && this.graph) {
+        console.log(
+          document.getElementById("ChatBox").offsetWidth,
+          document.getElementById("ChatBox").offsetHeight
+        );
+        this.graph.resize(
+          document.getElementById("ChatBox").offsetWidth,
+          document.getElementById("ChatBox").offsetHeight
+        );
         this.graph.centerContent();
       }
     },
@@ -253,6 +240,7 @@ export default {
     changePortsShow(val) {
       const container = document.getElementById("wrapper");
       const ports = container.querySelectorAll(".x6-port-body");
+      console.log("ports", ports);
       for (let i = 0, len = ports.length; i < len; i = i + 1) {
         ports[i].style.visibility = val ? "visible" : "hidden";
       }
@@ -297,8 +285,8 @@ export default {
           //如果是点，则不添加自带工具（目前点自带工具实用性不高、不美观，故不采用）
         } else {
           //如果是边，添加线段和路径点工具
-          cell.addTools(["vertices", "segments"],{
-            unset:false
+          cell.addTools(["vertices", "segments"], {
+            unset: false
           });
         }
       });
@@ -318,12 +306,20 @@ export default {
       this.parentResize(graph);
 
       // 节点鼠标事件
-      graph.on("node:mouseenter", () => {
-        this.changePortsShow(true);
+      graph.on("node:mouseenter", ({ cell }) => {
+        console.log(cell);
+        const ports = cell.port.ports;
+        for (const portsKey in ports) {
+          ports[portsKey].attrs.circle.style.visibility="visible"
+          console.log(ports[portsKey])
+        }
       });
-      graph.on("node:mouseleave", () => {
-        if (this.isPortsShow) return;
-        this.changePortsShow(false);
+      graph.on("node:mouseleave", ({ cell }) => {
+        console.log(cell);
+        // const ports = cell.ports;
+        // for (let i = 0, len = ports.length; i < len; i = i + 1) {
+        //   ports[i].style.visibility = val ? "visible" : "hidden";
+        // }
       });
 
       // 基类右击编辑
@@ -345,7 +341,7 @@ export default {
 
       //监听基类变化
       graph.on("cell:change:*", ({ cell, index, options }) => {
-        console.log(cell, index, options);
+        if (Object.prototype.hasOwnProperty.call(options, "unset")) return;
         this.debounce({ cell, index, options });
       });
       graph.on("cell:added", ({ cell, index, options }) => {
@@ -355,6 +351,7 @@ export default {
         this.debounce({ cell, index, options });
       });
       this.formJSON(graph);
+      graph.centerContent();
       // 赋值
       this.graph = graph;
     },
@@ -369,7 +366,7 @@ export default {
             if (item.ports) item.ports.groups = portsGroups;
             return item;
           });
-          console.log("value", jsonTemp);
+          console.log(jsonTemp);
           graph.fromJSON(jsonTemp);
         }
       }
@@ -595,11 +592,11 @@ export default {
      * @param event
      */
     drop(event) {
+      const points = this.graph.clientToLocal(event.clientX, event.clientY);
       // 节点预设 ，添加位置信息和链接桩信息组合成完整的节点
       const nodeItem = {
         ...this.menuItem,
-        x: event.offsetX - this.menuItem.width / 2,
-        y: event.offsetY - this.menuItem.height / 2,
+        ...points,
         ports: configNodePorts()
       };
       // 创建节点

@@ -1,5 +1,6 @@
 <template>
   <a-tree-select
+    :disabled="disabled"
     v-model="treeVlue"
     show-search
     @change="v => $emit('change', v + '')"
@@ -33,6 +34,10 @@ export default {
     value: {
       type: String,
       default: ""
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -51,13 +56,8 @@ export default {
       this.treeVlue = this.value;
     }
   },
-  mounted() {
-    console.log(this.treeData);
-    console.log(this.value);
-  },
   methods: {
-    onChange(value, label, extra) {
-      console.log(value, label, extra);
+    onChange(value) {
       this.$emit("change", value + "");
     }
   }

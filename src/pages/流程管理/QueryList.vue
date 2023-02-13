@@ -16,9 +16,14 @@
           </a-col>
         </a-row>
         <span style="float: right; margin-top: 3px;">
-          <a-button @click="search" :loading="loading" type="primary">{{
-            $t("form.search")
-          }}</a-button>
+          <!--          v-auth使用示例,如无权限则禁用按钮-->
+          <a-button
+            v-auth="`query`"
+            @click="search"
+            :loading="loading"
+            type="primary"
+            >{{ $t("form.search") }}</a-button
+          >
           <a-button
             @click="resetSearchForm"
             :loading="loading"
@@ -100,6 +105,7 @@
             </a>
             <a-menu slot="overlay">
               <a-menu-item
+                v-if="record.level < 3"
                 @click="
                   () =>
                     showAddDrawer(
@@ -143,7 +149,7 @@
           <a-popconfirm
             v-if="record.type === CatalogueType.PROCESS && !record.published"
             :title="$t('table_action.publish')"
-            @confirm="() => push(record.id)"
+            @confirm="() => push(record)"
           >
             <a style="margin-right: 8px">
               <a-icon style="margin-right: 5px" type="cloud-upload" />{{
@@ -314,6 +320,7 @@
           prop="directory"
         >
           <select-tree
+            :disabled="catalogueForm.disabled"
             :treeData="treeData"
             v-model="catalogueForm.directory"
           ></select-tree>
@@ -390,7 +397,7 @@
 import { process } from "@/services";
 import SelectTree from "@/components/tree/SelectTree";
 const getParentKey = (key, tree) => {
-  let parentKey = "";
+  let parentKey = "0";
   for (let i = 0; i < tree.length; i++) {
     const node = tree[i];
     if (node.children) {
@@ -415,6 +422,14 @@ const CatalogueType = {
   PROCESS: "PROCESS"
 };
 
+const defaultPage = {
+  current: 1,
+  pageSize: 5,
+  total: 0,
+  pageSizeOptions: ["10", "20", "30", "40", "50"],
+  showQuickJumper: true
+};
+
 export default {
   name: "FlowQueryList",
   i18n: require("./i18n"),
@@ -432,13 +447,7 @@ export default {
       isOpen: false,
       expandedRowKeys: [],
       chooseObj: {},
-      pagination: {
-        current: 1,
-        pageSize: 5,
-        total: 0,
-        pageSizeOptions: ["10", "20", "30", "40", "50"],
-        showQuickJumper: true
-      },
+      pagination: defaultPage,
       catalogueForm: {},
       infoForm: {},
       treeData: [],
@@ -500,14 +509,14 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.name"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           },
           {
             min: 2,
             max: 15,
             message: this.$t("form_rules.namelen"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           }
         ],
@@ -515,18 +524,24 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.messages"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           },
           {
             min: 2,
             max: 50,
             message: this.$t("form_rules.messageslen"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           }
         ],
-        directory: []
+        directory: [
+          {
+            required: true,
+            message: this.$t("form_rules.directory"),
+            trigger: "change"
+          }
+        ]
       };
     },
     infoRules() {
@@ -535,14 +550,14 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.name"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           },
           {
             min: 2,
             max: 15,
             message: this.$t("form_rules.namelen"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           }
         ],
@@ -550,14 +565,14 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.messages"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           },
           {
             min: 2,
             max: 50,
             message: this.$t("form_rules.messageslen"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           }
         ],
@@ -565,7 +580,6 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.directory"),
-            whitespace:true,
             trigger: "change"
           }
         ],
@@ -573,7 +587,7 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.input"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           }
         ],
@@ -581,7 +595,7 @@ export default {
           {
             required: true,
             message: this.$t("form_rules.output"),
-            whitespace:true,
+            whitespace: true,
             trigger: "blur"
           }
         ],
@@ -631,8 +645,22 @@ export default {
         }
       } else {
         if (type.indexOf(CatalogueType.DIRECTORY) !== -1) {
-          this.catalogueForm.directory = "";
+          this.catalogueForm.directory = "0";
         }
+      }
+      if (
+        type.indexOf(CatalogueType.DIRECTORY) !== -1 &&
+        this.treeData[0].id !== "0"
+      ) {
+        this.treeData.unshift({
+          id: "0",
+          name: "根目录"
+        });
+      } else if (
+        type.indexOf(CatalogueType.PROCESS) !== -1 &&
+        this.treeData[0].id === "0"
+      ) {
+        this.treeData.shift();
       }
       this.chooseType = type;
       this.$nextTick(() => {
@@ -645,6 +673,7 @@ export default {
         this.chooseType = obj.type;
         this.catalogueForm = {
           ...obj,
+          disabled: obj?.children && obj.children.length > 0,
           directory: parentKey + "",
           name: obj.name,
           description: obj.description
@@ -658,27 +687,45 @@ export default {
           description: obj.description
         };
       }
+      if (
+        obj.type.indexOf(CatalogueType.DIRECTORY) !== -1 &&
+        this.treeData[0].id !== "0"
+      ) {
+        this.treeData.unshift({
+          id: "0",
+          name: "根目录"
+        });
+      } else if (
+        obj.type.indexOf(CatalogueType.PROCESS) !== -1 &&
+        this.treeData[0].id === "0"
+      ) {
+        this.treeData.shift();
+      }
       this.$nextTick(() => {
         this.drawerVisible = true;
       });
     },
     //发布流程
-    push(id) {
-      if (id) {
-        this.loading = true;
-        process
-          .publish({ id: id })
-          .then(({ data }) => {
-            if (data.code === "1000") {
-              this.$message.success("发布成功!");
-              this.fetch();
-            } else {
-              this.$message.error(data.msg);
-            }
-          })
-          .finally(() => {
-            this.loading = false;
-          });
+    push(obj) {
+      if (obj?.id && obj.type.indexOf(CatalogueType.PROCESS) !== -1) {
+        if (obj.content) {
+          this.loading = true;
+          process
+            .publish({ id: obj.id })
+            .then(({ data }) => {
+              if (data.code === "1000") {
+                this.$message.success(this.$t("pushHandle.success"));
+                this.fetch();
+              } else {
+                this.$message.error(data.msg);
+              }
+            })
+            .finally(() => {
+              this.loading = false;
+            });
+        } else {
+          this.$message.warn(this.$t("pushHandle.error"));
+        }
       }
     },
     submitForm() {
@@ -690,11 +737,15 @@ export default {
               process
                 .addTree({
                   ...this.catalogueForm,
+                  directory:
+                    this.catalogueForm.directory === "0"
+                      ? null
+                      : this.catalogueForm.directory,
                   type: CatalogueType.DIRECTORY
                 })
                 .then(({ data }) => {
                   if (data.code === "1000") {
-                    this.$message.success("新增成功!");
+                    this.$message.success(this.$t("submitForm.addSuccess"));
                     this.fetch();
                     this.getTreeData();
                     this.$refs.catalogueForm.resetFields();
@@ -711,11 +762,15 @@ export default {
               process
                 .editTree({
                   ...this.catalogueForm,
+                  directory:
+                    this.catalogueForm.directory === "0"
+                      ? null
+                      : this.catalogueForm.directory,
                   type: CatalogueType.DIRECTORY
                 })
                 .then(({ data }) => {
                   if (data.code === "1000") {
-                    this.$message.success("修改成功!");
+                    this.$message.success(this.$t("submitForm.editSuccess"));
                     this.fetch();
                     this.getTreeData();
                     this.$refs.catalogueForm.resetFields();
@@ -746,7 +801,7 @@ export default {
                 })
                 .then(({ data }) => {
                   if (data.code === "1000") {
-                    this.$message.success("新增成功!");
+                    this.$message.success(this.$t("submitForm.addSuccess"));
                     this.fetch();
                     this.getTreeData();
                     this.$refs.infoForm.resetFields();
@@ -767,7 +822,7 @@ export default {
                 })
                 .then(({ data }) => {
                   if (data.code === "1000") {
-                    this.$message.success("修改成功!");
+                    this.$message.success(this.$t("submitForm.editSuccess"));
                     this.fetch();
                     this.getTreeData();
                     this.$refs.infoForm.resetFields();
@@ -802,6 +857,7 @@ export default {
     search() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          this.pagination = defaultPage;
           this.fetch();
         } else {
           return false;
@@ -853,7 +909,7 @@ export default {
           .then(({ data }) => {
             this.loading = false;
             if (data.code === "1000") {
-              this.$message.success("删除成功");
+              this.$message.success(this.$t("deleteRecord.success"));
               this.fetch();
               this.getTreeData();
             } else {

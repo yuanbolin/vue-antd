@@ -155,9 +155,10 @@ export default {
             return item;
           });
           graph.fromJSON(jsonTemp);
+          graph.zoomToFit();
+          this.zoom = graph.zoom();
         }
       }
-      graph.centerContent();
     },
     //编辑节点展示
     showModal(id) {

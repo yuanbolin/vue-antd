@@ -2,8 +2,11 @@
 export const configSetting = Shape => {
   return {
     grid: true, // 网格
-    autoResize: false, // 自带的自适应容器大小属性，实测不是很好用。
+    autoResize: true, // 自带的自适应容器大小属性。
     translating: { restrict: true }, // 平移节点
+    panning: {
+      enabled: true
+    },
     mousewheel: {
       // 鼠标滚轮缩放画布
       enabled: true, // 开启
@@ -89,11 +92,12 @@ export const configSetting = Shape => {
     keyboard: true, // 键盘快捷键 开启后监听键盘事件
     history: false, // 因目前为自动保存模式,顾关闭历史操作记录功能
     clipboard: false, // 剪切板 开启后可复制黏贴
-    scroller: {
-      enabled: true,
-      pannable: true,
-      autoResize: true
-    }
+    // scroller: {
+    //   enabled: true,
+    //   pannable: true,
+    //   pageBreak: true,
+    //   autoResize: true
+    // }
   };
 };
 
@@ -652,28 +656,6 @@ export const configEdgeLabel = (labelText, fontColor, fill, stroke) => {
 
 // 键盘事件
 export const graphBindKey = graph => {
-  graph.bindKey(["meta+c", "ctrl+c"], () => {
-    const cells = graph.getSelectedCells();
-    if (cells.length) {
-      graph.copy(cells);
-    }
-    return false;
-  });
-  graph.bindKey(["meta+x", "ctrl+x"], () => {
-    const cells = graph.getSelectedCells();
-    if (cells.length) {
-      graph.cut(cells);
-    }
-    return false;
-  });
-  graph.bindKey(["meta+v", "ctrl+v"], () => {
-    if (!graph.isClipboardEmpty()) {
-      const cells = graph.paste({ offset: 32 });
-      graph.cleanSelection();
-      graph.select(cells);
-    }
-    return false;
-  });
   // undo redo
   graph.bindKey(["meta+z", "ctrl+z"], () => {
     if (graph.history.canUndo()) {

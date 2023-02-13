@@ -68,6 +68,17 @@ module.exports = {
         directory: "请选择所属目录",
         input: "请输入流程输入",
         output: "请输入流程输出"
+      },
+      pushHandle:{
+        success:"发布成功!",
+        error:"请先完成流程图绘制!"
+      },
+      submitForm:{
+        addSuccess:"新增成功!",
+        editSuccess:"修改成功!",
+      },
+      deleteRecord:{
+        success:"删除成功!",
       }
     },
     HK: {
@@ -127,6 +138,17 @@ module.exports = {
         dirname: "目錄名稱",
         submit: "提交",
         cancel: "取消"
+      },
+      pushHandle:{
+        success:"發布成功!",
+        error:"請先完成流程圖繪製!"
+      },
+      submitForm:{
+        addSuccess:"新增成功!",
+        editSuccess:"修改成功!",
+      },
+      deleteRecord:{
+        success:"刪除成功!",
       }
     },
     US: {
@@ -187,6 +209,17 @@ module.exports = {
         dirname: "Directory name",
         submit: "Submit",
         cancel: "Cancel"
+      },
+      pushHandle:{
+        success:"Successful release!",
+        error:"Please finish drawing the flowchart first!"
+      },
+      submitForm:{
+        addSuccess:"Added success!",
+        editSuccess:"Edited successfully!",
+      },
+      deleteRecord:{
+        success:"successfully delete!",
       }
     }
   }

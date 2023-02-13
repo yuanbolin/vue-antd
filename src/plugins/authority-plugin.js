@@ -11,7 +11,6 @@ const checkInject = function(el, binding, vnode) {
   const instance = vnode.context;
   const $auth = instance.$auth;
   const { authority } = vnode.context.$route.meta;
-  console.log("authority", authority);
   if (!$auth || !$auth(check, authority)) {
     addDisabled(el);
   } else {
