@@ -23,7 +23,7 @@ import {setAuthorization} from '@/utils/request'
 
 login(name, password).then(res => {
   const {token, expireAt} = res.data
-  setAuthorization({token, expireAt: new Date(expireAt)})
+  setAuthorization({token})
 })
 ```
 ## token 校验

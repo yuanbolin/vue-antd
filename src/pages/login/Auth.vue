@@ -56,8 +56,7 @@ export default {
             });
             setAuthorization(
               {
-                token: res.data.token,
-                expireAt: new Date(new Date().getTime() + 30 * 60 * 1000)
+                token: res.data.token
               },
               15 * 60 * 60
             );

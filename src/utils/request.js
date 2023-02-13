@@ -1,11 +1,7 @@
 import axios from "axios";
 import storage from "store";
-const {
-  VUE_APP_USER_TOKEN,
-  VUE_APP_API_BASE_URL,
-  VUE_APP_SYSTEM_TOKEN,
-  VUE_APP_USER_ROUTES_KEY
-} = process.env;
+const { VUE_APP_USER_TOKEN, VUE_APP_API_BASE_URL } = process.env;
+import { getTimestamp } from "./util";
 axios.defaults.timeout = 240000;
 axios.defaults.baseURL = VUE_APP_API_BASE_URL;
 axios.defaults.xsrfHeaderName = VUE_APP_USER_TOKEN;
@@ -24,14 +20,26 @@ const METHOD = {
  * @param params 请求参数
  * @returns {Promise<AxiosResponse<T>>}
  */
-async function request(url, method, params, config) {
+async function request(url, method, params, config = {}) {
+  //默认headers配置
+  const defaultheaders = {
+    Timestamp: getTimestamp(),
+    Authorization: storage.get(VUE_APP_USER_TOKEN)
+  };
+  config.headers = Object.assign(defaultheaders, config.headers || {});
   switch (method) {
     case METHOD.GET:
-      return axios.get(url, { params, ...config });
+      return axios.get(url, {
+        ...config,
+        params
+      });
     case METHOD.POST:
       return axios.post(url, params, config);
     default:
-      return axios.get(url, { params, ...config });
+      return axios.get(url, {
+        ...config,
+        params
+      });
   }
 }
 
@@ -39,14 +47,10 @@ async function request(url, method, params, config) {
  * 设置认证信息
  * @param auth {Object}
  */
-function setAuthorization(auth, time) {
+function setAuthorization(auth) {
   storage.set(
     VUE_APP_USER_TOKEN,
-    "Bearer " + auth.token,
-    {
-      expires: auth.expireAt
-    },
-    time
+    auth.token
   );
 }
 
@@ -54,9 +58,7 @@ function setAuthorization(auth, time) {
  * 移出认证信息
  */
 function removeAuthorization() {
-  storage.remove(VUE_APP_SYSTEM_TOKEN);
-  storage.remove(VUE_APP_USER_ROUTES_KEY);
-  storage.remove(VUE_APP_USER_TOKEN);
+  storage.clearAll();
 }
 
 /**
@@ -130,7 +132,6 @@ function parseUrlParams(url) {
   }
   return params;
 }
-
 
 export {
   METHOD,

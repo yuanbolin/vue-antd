@@ -24,7 +24,7 @@ const resp401 = {
    */
   onFulfilled(response, options) {
     const { message } = options;
-    if (response?.code === 401) {
+    if (response?.status === 401) {
       message.error(messages[store.state.setting.lang]["401"]);
     }
     return response;
@@ -48,7 +48,7 @@ const resp401 = {
 const resp403 = {
   onFulfilled(response, options) {
     const { message } = options;
-    if (response.code === 403) {
+    if (response?.status === 403) {
       message.error(messages[store.state.setting.lang]["403"]);
     }
     return response;

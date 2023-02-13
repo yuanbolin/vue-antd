@@ -297,7 +297,9 @@ export default {
           //如果是点，则不添加自带工具（目前点自带工具实用性不高、不美观，故不采用）
         } else {
           //如果是边，添加线段和路径点工具
-          cell.addTools(["vertices", "segments"]);
+          cell.addTools(["vertices", "segments"],{
+            unset:false
+          });
         }
       });
 
