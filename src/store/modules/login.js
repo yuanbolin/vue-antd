@@ -1,5 +1,5 @@
 import storage from "store";
-import { SystemToken, UserToken, Login, Logout, vision } from "@/services/user";
+import { SystemToken, UserToken, Login, Logout } from "@/services/user";
 import { getTimestamp } from "@/utils/util";
 import { removeAuthorization } from "@/utils/request";
 import notification from "ant-design-vue/lib/notification";
@@ -35,8 +35,6 @@ export default {
             if (response && response.data) {
               const result = response.data.token;
               storage.set(VUE_APP_SYSTEM_TOKEN, result, 48 * 60 * 60);
-              // eslint-disable-next-line no-undef
-              // this.$store.commit('SET_TOKEN', { token: result })
               resolve("OK");
             } else {
               notification.error({
@@ -124,30 +122,11 @@ export default {
       }
     },
     // 登出
-    Logout({ commit }) {
+    Logout() {
       return new Promise(resolve => {
-        Logout()
-          .then(() => {
-            resolve();
-          })
-          .catch(() => {
-            resolve();
-          })
-          .finally(() => {
-            commit("SET_TOKEN", "");
-            removeAuthorization();
-          });
-      });
-    },
-
-    vision() {
-      const userToken = storage.get(VUE_APP_USER_TOKEN);
-      const timeStamp = getTimestamp();
-      const params = { userToken: userToken, timeStamp: timeStamp };
-      return new Promise(resolve => {
-        vision(params).then(res => {
-          const response = res.data;
-          resolve(response);
+        Logout().finally(() => {
+          removeAuthorization();
+          resolve();
         });
       });
     }

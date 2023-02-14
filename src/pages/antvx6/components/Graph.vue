@@ -1,47 +1,154 @@
 <template>
   <div class="antv-menu">
-    <a-tag color="blue">
-      基础图形
+    <a-tag style="margin: 10px 0;">
+      {{ $t("graph.tag1") }}
     </a-tag>
     <ul class="menu-list">
-      <li draggable="true" @drag="menuDrag('defaultOval')">
-        <i class="icon-oval" /> <strong>椭圆形</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.tuoyuanxing')"
+        @drag="menuDrag('defaultOval')"
+      >
+        <my-icon type="icon-tuoyuanxing" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultSquare')">
-        <i class="icon-square" /><strong>矩形</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.juxing')"
+        @drag="menuDrag('defaultSquare')"
+      >
+        <my-icon type="icon-xingzhuang-juxing" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultYSquare')">
-        <i class="icon-ysquare" /><strong>圆角矩形</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.yuanjiaojuxing')"
+        @drag="menuDrag('defaultYSquare')"
+      >
+        <my-icon type="icon-juxing1604" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultRhombus')">
-        <i class="icon-rhombus" /><strong>菱形</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.lingxing')"
+        @drag="menuDrag('defaultRhombus')"
+      >
+        <my-icon type="icon-tubiao" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultRhomboid')">
-        <i class="icon-rhomboid" /><strong>平行四边形</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.pingxingsibianxing')"
+        @drag="menuDrag('defaultRhomboid')"
+      >
+        <my-icon type="icon-pinghangsibianxing" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultCircle')">
-        <i class="icon-circle" /><strong>圆形</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.yuanxing')"
+        @drag="menuDrag('defaultCircle')"
+      >
+        <my-icon type="icon-24gl-circle" />
       </li>
     </ul>
     <a-divider />
-    <a-tag color="cyan">
-      扩展图形
+    <a-tag color="orange" style="margin-bottom: 10px;">
+      {{ $t("graph.tag2") }}
     </a-tag>
     <ul class="menu-list">
-      <li draggable="true" @drag="menuDrag('defaultNote')">
-        <a-icon type="file-text" /><strong>文档</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.qunzu')"
+        @drag="menuDrag('defaultGroup')"
+      >
+        <my-icon type="icon-group24" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultSuccess')">
-        <a-icon type="check-circle" /><strong>成功</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.chenggong')"
+        @drag="menuDrag('defaultSuccess')"
+      >
+        <a-icon type="check-circle" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultError')">
-        <a-icon type="close-circle" /><strong>失败</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.shibai')"
+        @drag="menuDrag('defaultError')"
+      >
+        <a-icon type="close-circle" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultMoney')">
-        <a-icon type="pay-circle" /><strong>财务</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.caiwu')"
+        @drag="menuDrag('defaultMoney')"
+      >
+        <a-icon type="pay-circle" />
       </li>
-      <li draggable="true" @drag="menuDrag('defaultWuliu')">
-        <a-icon type="pay-circle" /><strong>物流</strong>
+      <li
+        draggable="true"
+        :title="$t('graph.wuliu')"
+        @drag="menuDrag('defaultWuliu')"
+      >
+        <my-icon type="icon-wuliuqiache2" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.yuanzhuti')"
+        @drag="menuDrag('defaultYuanZhuTi')"
+      >
+        <my-icon type="icon-yuanzhuti" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.liucheng')"
+        @drag="menuDrag('defaultLiuCheng')"
+      >
+        <my-icon type="icon-liucheng" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.shujuku')"
+        @drag="menuDrag('defaultShuJuKu')"
+      >
+        <my-icon type="icon-database" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.yonghu')"
+        @drag="menuDrag('defaultYongHu')"
+      >
+        <my-icon type="icon-yonghu" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.wendang')"
+        @drag="menuDrag('defaultNote')"
+      >
+        <a-icon type="file-text" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.shipin')"
+        @drag="menuDrag('defaultVideo')"
+      >
+        <my-icon type="icon-shipin" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.yinpin')"
+        @drag="menuDrag('defaultMusic')"
+      >
+        <my-icon type="icon-yinpin" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.tupian')"
+        @drag="menuDrag('defaultImage')"
+      >
+        <my-icon type="icon-tupian1" />
+      </li>
+      <li
+        draggable="true"
+        :title="$t('graph.fengxian')"
+        @drag="menuDrag('defaultFengXian')"
+      >
+        <my-icon type="icon-fengxian" />
       </li>
     </ul>
   </div>
@@ -51,6 +158,7 @@
 export default {
   name: "MyGraph",
   props: {},
+  i18n: require("./i18n"),
   emits: ["menuDrag"],
   data() {
     return {};
@@ -70,26 +178,33 @@ export default {
   h3 {
     padding: 10px;
   }
-  li {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #555;
-    background: #fff;
-    margin: 5px 10px;
-    font-size: 12px;
+  .menu-list {
+    padding: 0;
+    margin: 0 auto;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    &:hover {
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-    }
-    i {
-      font-size: 18px;
-      margin-right: 10px;
-    }
-    strong {
-      flex: 1;
+    justify-content: space-evenly;
+    li {
+      padding: 10px 5px;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background: #fff;
+      margin: 5px 0;
+      width: 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      &:hover {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+      }
+      i {
+        font-size: 25px;
+        color: #000000;
+      }
     }
   }
 }

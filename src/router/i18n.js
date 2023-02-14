@@ -16,7 +16,19 @@ module.exports = {
       }
     },
     US: {
-      home: { name: "home" }
+      home: { name: "Home" },
+      dashboard: {
+        name: "Workbench"
+      },
+      flow: {
+        name: "Process management"
+      },
+      antvx6: {
+        name: "Process rendering"
+      },
+      antvShow: {
+        name: "Process display"
+      }
     },
     HK: {
       home: { name: "首頁" },

@@ -139,6 +139,15 @@ module.exports = {
         submit: "提交",
         cancel: "取消"
       },
+      form_rules: {
+        name: "請輸入目錄名稱",
+        namelen: "字符長度要求在2-15字內",
+        messages: "請輸入目錄描述",
+        messageslen: "字符長度要求在2-50字內",
+        directory: "請選擇所屬目錄",
+        input: "請輸入流程輸入",
+        output: "請輸入流程輸出"
+      },
       pushHandle:{
         success:"發布成功!",
         error:"請先完成流程圖繪製!"
@@ -209,6 +218,15 @@ module.exports = {
         dirname: "Directory name",
         submit: "Submit",
         cancel: "Cancel"
+      },
+      form_rules: {
+        name: "Please enter a directory name",
+        namelen: "The value must contain 2 to 15 characters",
+        messages: "Please enter a directory description",
+        messageslen: "The value must contain 2 to 50 characters",
+        directory: "Please select a directory",
+        input: "Please enter process input",
+        output: "Please enter process output"
       },
       pushHandle:{
         success:"Successful release!",

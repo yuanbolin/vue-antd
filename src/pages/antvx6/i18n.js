@@ -5,6 +5,10 @@
 module.exports = {
   messages: {
     CN: {
+      nodeModal:{
+        descriptionRequired: "请输入节点描述",
+        descriptionLength: "字符长度应在2到50之间",
+      },
       menu: {
         nodeStyleEdit: "节点样式编辑",
         nodeInfoEdit: "节点信息编辑",
@@ -37,6 +41,10 @@ module.exports = {
       }
     },
     HK: {
+      nodeModal:{
+        descriptionRequired: "請輸入節點描述",
+        descriptionLength: "字符長度應在2到50之間",
+      },
       menu: {
         nodeStyleEdit: "節點樣式編輯",
         nodeInfoEdit: "節點信息編輯",
@@ -69,6 +77,10 @@ module.exports = {
       }
     },
     US: {
+      nodeModal:{
+        descriptionRequired: "Please enter node description",
+        descriptionLength: "The character length should be between 2 and 50",
+      },
       menu: {
         nodeStyleEdit: "Node style editing",
         nodeInfoEdit: "Node information editing",

@@ -5,18 +5,18 @@
       <span class="name">{{ user.name }}</span>
     </div>
     <a-menu :class="['avatar-menu']" slot="overlay">
-<!--      <a-menu-item key="user" @click="personalCenter">-->
-<!--        <a-icon type="user" />-->
-<!--        <span>个人中心</span>-->
-<!--      </a-menu-item>-->
+      <!--      <a-menu-item key="user" @click="personalCenter">-->
+      <!--        <a-icon type="user" />-->
+      <!--        <span>个人中心</span>-->
+      <!--      </a-menu-item>-->
       <!--      <a-menu-item key="setting">-->
       <!--        <a-icon type="setting" />-->
       <!--        <span>设置</span>-->
       <!--      </a-menu-item>-->
-<!--      <a-menu-divider />-->
-      <a-menu-item key="exit" @click="logout">
+      <!--      <a-menu-divider />-->
+      <a-menu-item key="exit" @click="logoutHandle">
         <a-icon style="margin-right: 8px;" type="poweroff" />
-        <span>退出登录</span>
+        <span>{{ $t("exit.btn") }}</span>
       </a-menu-item>
     </a-menu>
   </a-dropdown>
@@ -27,25 +27,33 @@ import { mapGetters, mapActions } from "vuex";
 import avatar from "@/assets/img/avatar.png";
 export default {
   name: "HeaderAvatar",
+  i18n: require("./i18n"),
   data() {
     return {
       avatar
     };
   },
   computed: {
-    ...mapGetters("account", ["user"]),
-    ...mapActions("login", ["Logout"])
+    ...mapGetters("account", ["user"])
   },
   methods: {
+    ...mapActions("login", ["Logout"]),
     // 退出登录
-    logout() {
-      this.Logout.then(() => {
-        this.$router.push("/login");
+    logoutHandle() {
+      this.$confirm({
+        title: this.$t("exit.modalTitle"),
+        content: this.$t("exit.modalContent"),
+        onOk: () => {
+          this.Logout().then(() => {
+            this.$router.push("/login");
+          });
+        },
+        onCancel() {}
       });
     },
     // 前往个人中心
     personalCenter() {
-      this.$router.push("/personalCenter");
+      // this.$router.push("/personalCenter");
     }
   }
 };

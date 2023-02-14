@@ -2,23 +2,13 @@ import {
   SYSTEMTOKEN,
   USERTOKEN,
   LOGIN,
-  LOGINOUT,
-  VISION
+  LOGINOUT
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
 export function SystemToken(parameter) {
   return request(SYSTEMTOKEN, METHOD.GET, null, {
     headers: { Timestamp: parameter }
-  });
-}
-
-export function vision(parameter) {
-  return request(VISION, METHOD.GET, null, {
-    headers: {
-      Timestamp: parameter.timeStamp,
-      Authorization: parameter.userToken
-    }
   });
 }
 
@@ -51,7 +41,6 @@ export function Logout() {
 
 export default {
   SystemToken,
-  vision,
   UserToken,
   Login,
   Logout

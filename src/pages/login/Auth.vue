@@ -60,7 +60,6 @@ export default {
               },
               15 * 60 * 60
             );
-            console.log("进入首页");
             this.$router.push({ path: "/dashboard" });
             this.$message.success("登录成功！", 3);
           }

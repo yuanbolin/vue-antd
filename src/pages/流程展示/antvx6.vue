@@ -134,7 +134,7 @@ export default {
         if (node.data?.id) {
           this.showModal(node.data?.id);
         } else {
-          this.$message.warn("该节点未带有额外信息");
+          this.$message.warn(this.$t("nodeInfo"));
         }
       });
       this.formJSON(graph);

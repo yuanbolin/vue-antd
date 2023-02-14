@@ -1,5 +1,6 @@
 import storage from "store";
 import store from "../store";
+import { removeAuthorization } from "@/utils/request";
 import { messages } from "./i18n";
 //不需要token拦截的接口配置
 const tokenIgnore = {
@@ -64,6 +65,17 @@ const resp403 = {
 };
 
 const respError = {
+  onFulfilled(response, options) {
+    const { router } = options;
+    if (
+      response?.status === 200 &&
+      response.data?.msg === "authorization is invalid"
+    ) {
+      removeAuthorization();
+      router.replace({ path: "/login" });
+    }
+    return response;
+  },
   onRejected(error, options) {
     const { message } = options;
     const { response } = error;

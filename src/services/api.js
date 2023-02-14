@@ -7,7 +7,6 @@ const api = {
   USERTOKEN: `token/user`,
   LOGIN: `login/login`,
   LOGINOUT: `login/logout`,
-  VISION: `business_philosophy/vision`,
   //流程管理
   PROCESS: "process/get_tree",
   PROCESSADD: "process/add",

@@ -25,7 +25,7 @@ bootstrap({
   router,
   store,
   i18n,
-  message: Vue.prototype.$message,
+  message: Vue.prototype.$message
 });
 
 new Vue({

@@ -398,16 +398,19 @@ import { process } from "@/services";
 import SelectTree from "@/components/tree/SelectTree";
 const getParentKey = (key, tree) => {
   let parentKey = "0";
-  for (let i = 0; i < tree.length; i++) {
-    const node = tree[i];
-    if (node.children) {
-      if (node.children.some(item => item.id === key)) {
-        parentKey = node.id;
-      } else if (getParentKey(key, node.children)) {
-        parentKey = getParentKey(key, node.children);
+  function eachTree(arr) {
+    for (let i = 0; i < arr.length; i++) {
+      const node = arr[i];
+      if (node?.children) {
+        if (node.children.some(item => item.id === key)) {
+          parentKey = node.id;
+        } else {
+          eachTree(node.children);
+        }
       }
     }
   }
+  eachTree(tree);
   return parentKey;
 };
 
@@ -625,27 +628,22 @@ export default {
     this.getTreeData();
   },
   methods: {
-    showAddDrawer(obj, type, parentKey) {
+    showAddDrawer(obj, type) {
       //如果没有传parentkey,则主动从数据中获取parentkey
-      if (!parentKey) {
-        if (type.indexOf("Children") !== -1) {
-          const parentKey = obj.id;
-          if (type.indexOf(CatalogueType.DIRECTORY) !== -1) {
-            this.catalogueForm.directory = parentKey + "";
-          } else if (type.indexOf(CatalogueType.PROCESS) !== -1) {
-            this.infoForm.directory = parentKey + "";
-          }
-        } else {
-          const parentKey = getParentKey(obj.id, this.dataSource);
-          if (type.indexOf(CatalogueType.DIRECTORY) !== -1) {
-            this.catalogueForm.directory = parentKey + "";
-          } else if (type.indexOf(CatalogueType.PROCESS) !== -1) {
-            this.infoForm.directory = parentKey + "";
-          }
+      if (type.indexOf("Children") !== -1) {
+        const parentKey = obj.id;
+        if (type.indexOf(CatalogueType.DIRECTORY) !== -1) {
+          this.catalogueForm.directory = parentKey + "";
+        } else if (type.indexOf(CatalogueType.PROCESS) !== -1) {
+          this.infoForm.directory = parentKey + "";
         }
       } else {
+        console.log(obj.id, this.dataSource);
+        const parentKey = getParentKey(obj.id, this.dataSource);
         if (type.indexOf(CatalogueType.DIRECTORY) !== -1) {
-          this.catalogueForm.directory = "0";
+          this.catalogueForm.directory = parentKey + "";
+        } else if (type.indexOf(CatalogueType.PROCESS) !== -1) {
+          this.infoForm.directory = parentKey + "";
         }
       }
       if (
@@ -669,7 +667,14 @@ export default {
     },
     showEditDrawer(obj) {
       const parentKey = getParentKey(obj.id, this.dataSource);
+      console.log(obj.id, parentKey);
       if (obj.type.indexOf(CatalogueType.DIRECTORY) !== -1) {
+        if (this.treeData[0].id !== "0") {
+          this.treeData.unshift({
+            id: "0",
+            name: "根目录"
+          });
+        }
         this.chooseType = obj.type;
         this.catalogueForm = {
           ...obj,
@@ -679,6 +684,9 @@ export default {
           description: obj.description
         };
       } else if (obj.type.indexOf(CatalogueType.PROCESS) !== -1) {
+        if (this.treeData[0].id === "0") {
+          this.treeData.shift();
+        }
         this.chooseType = obj.type;
         this.infoForm = {
           ...obj,
@@ -686,20 +694,6 @@ export default {
           name: obj.name,
           description: obj.description
         };
-      }
-      if (
-        obj.type.indexOf(CatalogueType.DIRECTORY) !== -1 &&
-        this.treeData[0].id !== "0"
-      ) {
-        this.treeData.unshift({
-          id: "0",
-          name: "根目录"
-        });
-      } else if (
-        obj.type.indexOf(CatalogueType.PROCESS) !== -1 &&
-        this.treeData[0].id === "0"
-      ) {
-        this.treeData.shift();
       }
       this.$nextTick(() => {
         this.drawerVisible = true;
@@ -928,7 +922,7 @@ export default {
       this.selectedRows = [];
     },
     addNew() {
-      this.showAddDrawer(null, CatalogueType.DIRECTORY + "Add", true);
+      this.showAddDrawer({ id: null }, CatalogueType.DIRECTORY + "Add");
     },
     handleMenuClick(e) {
       if (e.key === "delete") {

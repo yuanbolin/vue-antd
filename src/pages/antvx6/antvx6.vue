@@ -140,7 +140,7 @@ export default {
         description: [
           {
             required: true,
-            message: "请输入节点描述",
+            message: this.$t("nodeModal.descriptionRequired"),
             whitespace: true,
             trigger: "blur"
           },
@@ -148,7 +148,7 @@ export default {
             min: 2,
             max: 50,
             whitespace: true,
-            message: "字符长度应在2到50之间",
+            message: this.$t("nodeModal.descriptionLength"),
             trigger: "change"
           }
         ]
@@ -199,10 +199,6 @@ export default {
      */
     activePage(val) {
       if (val.indexOf("/antvx6") !== -1 && this.graph) {
-        console.log(
-          document.getElementById("ChatBox").offsetWidth,
-          document.getElementById("ChatBox").offsetHeight
-        );
         this.graph.resize(
           document.getElementById("ChatBox").offsetWidth,
           document.getElementById("ChatBox").offsetHeight
@@ -240,7 +236,6 @@ export default {
     changePortsShow(val) {
       const container = document.getElementById("wrapper");
       const ports = container.querySelectorAll(".x6-port-body");
-      console.log("ports", ports);
       for (let i = 0, len = ports.length; i < len; i = i + 1) {
         ports[i].style.visibility = val ? "visible" : "hidden";
       }
@@ -303,23 +298,22 @@ export default {
           document.getElementById("main-content").offsetHeight - 40
         );
       });
-      this.parentResize(graph);
 
       // 节点鼠标事件
-      graph.on("node:mouseenter", ({ cell }) => {
-        console.log(cell);
-        const ports = cell.port.ports;
-        for (const portsKey in ports) {
-          ports[portsKey].attrs.circle.style.visibility="visible"
-          console.log(ports[portsKey])
+      graph.on("node:mouseenter", () => {
+        const container = document.getElementById("wrapper");
+        const ports = container.querySelectorAll(".x6-port-body");
+        for (let i = 0, len = ports.length; i < len; i = i + 1) {
+          ports[i].style.visibility = "visible";
         }
       });
-      graph.on("node:mouseleave", ({ cell }) => {
-        console.log(cell);
-        // const ports = cell.ports;
-        // for (let i = 0, len = ports.length; i < len; i = i + 1) {
-        //   ports[i].style.visibility = val ? "visible" : "hidden";
-        // }
+      graph.on("node:mouseleave", () => {
+        if (this.isPortsShow) return;
+        const container = document.getElementById("wrapper");
+        const ports = container.querySelectorAll(".x6-port-body");
+        for (let i = 0, len = ports.length; i < len; i = i + 1) {
+          ports[i].style.visibility = "hidden";
+        }
       });
 
       // 基类右击编辑
@@ -366,7 +360,6 @@ export default {
             if (item.ports) item.ports.groups = portsGroups;
             return item;
           });
-          console.log(jsonTemp);
           graph.fromJSON(jsonTemp);
         }
       }
@@ -474,94 +467,6 @@ export default {
         });
       }, 1000);
     },
-    /**
-     * 流程窗口大小变化时,节点位置和大小自适应
-     * @param graph
-     */
-    parentResize(graph) {
-      graph.on("node:change:size", ({ node, options }) => {
-        if (options.skipParentHandler) {
-          return;
-        }
-
-        const children = node.getChildren();
-        if (children && children.length) {
-          node.prop("originSize", node.getSize());
-        }
-      });
-
-      graph.on("node:change:position", ({ node, options }) => {
-        if (options.skipParentHandler) {
-          return;
-        }
-
-        const children = node.getChildren();
-        if (children && children.length) {
-          node.prop("originPosition", node.getPosition());
-        }
-
-        const parent = node.getParent();
-        if (parent && parent.isNode()) {
-          let originSize = parent.prop("originSize");
-          if (originSize == null) {
-            parent.prop("originSize", parent.getSize());
-          }
-          originSize = parent.prop("originSize");
-
-          let originPosition = parent.prop("originPosition");
-          if (originPosition == null) {
-            parent.prop("originPosition", parent.getPosition());
-          }
-          originPosition = parent.prop("originPosition");
-
-          let x = originPosition.x;
-          let y = originPosition.y;
-          let cornerX = originPosition.x + originSize.width;
-          let cornerY = originPosition.y + originSize.height;
-          let hasChange = false;
-
-          const children = parent.getChildren();
-          if (children) {
-            children.forEach(child => {
-              const bbox = child.getBBox();
-              const corner = bbox.getCorner();
-
-              if (bbox.x < x) {
-                x = bbox.x;
-                hasChange = true;
-              }
-
-              if (bbox.y < y) {
-                y = bbox.y;
-                hasChange = true;
-              }
-
-              if (corner.x > cornerX) {
-                cornerX = corner.x;
-                hasChange = true;
-              }
-
-              if (corner.y > cornerY) {
-                cornerY = corner.y;
-                hasChange = true;
-              }
-            });
-          }
-
-          if (hasChange) {
-            parent.prop(
-              {
-                position: { x, y },
-                size: { width: cornerX - x, height: cornerY - y }
-              },
-              // Note that we also pass a flag so that we know we shouldn't
-              // adjust the `originPosition` and `originSize` in our handlers.
-              { skipParentHandler: true }
-            );
-          }
-        }
-      });
-    },
     //历史记录操作-撤回
     undoHandle() {
       this.graph.history.undo();
@@ -597,7 +502,7 @@ export default {
       const nodeItem = {
         ...this.menuItem,
         ...points,
-        ports: configNodePorts()
+        ports: configNodePorts(this.isPortsShow ? "visible" : "hidden")
       };
       // 创建节点
       this.graph.addNode(nodeItem);
@@ -632,7 +537,10 @@ export default {
         cell.attrs.polygon ||
         cell.attrs.circle;
       this.form = {
-        labelText: cell.attrs.label.text || "",
+        labelText:
+          (cell.attrs.label?.textWrap && cell.attrs.label.textWrap.text) ||
+          cell.attrs.label.text ||
+          "",
         fontSize: cell.attrs.label.fontSize || 14,
         fontFill: cell.attrs.label.fill || "",
         fill: body.fill || "",
@@ -680,7 +588,13 @@ export default {
     changeNode(type, value) {
       switch (type) {
         case "labelText":
-          this.selectCell.attr("label/text", value);
+          this.selectCell.attr("label/textWrap", {
+            text: value,
+            width: -10, // 宽度减少 10px
+            height: "50%", // 高度为参照元素高度的一半
+            ellipsis: true, // 文本超出显示范围时，自动添加省略号
+            breakWord: true // 是否截断单词
+          });
           break;
         case "fontSize":
           this.selectCell.attr("label/fontSize", value);
@@ -817,12 +731,11 @@ export default {
           if (cells.length) {
             for (let i = 0; i < cells.length; i++) {
               let cell = cells[i];
-              const { id } = cell.getData();
-
-              if (id) {
+              let cellData = this.selectCell.getData();
+              if (cellData && cellData?.id) {
                 const p = new Promise(resolve => {
                   process
-                    .deleteNodeInfo({ nodeId: id })
+                    .deleteNodeInfo({ nodeId: cellData.id })
                     .then(({ data }) => {
                       resolve(true);
                       if (data.code === "1000") {
@@ -842,7 +755,6 @@ export default {
               }
             }
             Promise.all(promiseArr).then(res => {
-              console.log(res);
               if (res.length > 0 && res.includes(true)) {
                 this.form = {};
                 this.editDrawer = false;
@@ -858,9 +770,9 @@ export default {
               }
             });
           } else if (this.selectCell) {
-            const { id } = this.selectCell.getData();
-            if (id) {
-              process.deleteNodeInfo({ nodeId: id }).then(({ data }) => {
+            let cellData = this.selectCell.getData();
+            if (cellData && cellData?.id) {
+              process.deleteNodeInfo({ nodeId: cellData.id }).then(({ data }) => {
                 if (data.code === "1000") {
                   // process.deleteNodeInfo
                   this.graph.removeCells([this.selectCell]);
@@ -906,7 +818,6 @@ export default {
         })
         .then(({ data }) => {
           if (data.code === "1000") {
-            console.log("data", data);
             this.isChangeValue(false);
           } else {
             this.$message.error(data.msg);
@@ -937,7 +848,6 @@ export default {
     },
     //连线样式编辑事件
     updateEdgeValue(name, value, type) {
-      console.log(name, value, type);
       if (type === "edgeStroke") {
         this.form[name] = value.hex8;
         this.changeEdgeStroke(value.hex8);
@@ -959,7 +869,6 @@ export default {
           .getNodeInfo({ nodeId: id })
           .then(({ data }) => {
             if (data.code === "1000") {
-              console.log("data", data);
               if (data.data) {
                 this.infoForm = { ...data.data };
                 this.visible = true;

@@ -61,7 +61,6 @@ const AuthorityPlugin = {
                     : [];
                 this.$options.methods[key] = function() {
                   //--auth-inject
-                  console.log("authority", authority);
                   if (this.$auth(check, authority)) {
                     return method.apply(this, arguments);
                   } else {
