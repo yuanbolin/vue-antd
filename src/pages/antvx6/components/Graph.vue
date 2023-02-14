@@ -55,98 +55,98 @@
       <li
         draggable="true"
         :title="$t('graph.qunzu')"
-        @drag="menuDrag('defaultGroup')"
+        @drag="menuDrag('Group')"
       >
         <my-icon type="icon-group24" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.chenggong')"
-        @drag="menuDrag('defaultSuccess')"
+        @drag="menuDrag('Success')"
       >
         <a-icon type="check-circle" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.shibai')"
-        @drag="menuDrag('defaultError')"
+        @drag="menuDrag('Error')"
       >
         <a-icon type="close-circle" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.caiwu')"
-        @drag="menuDrag('defaultMoney')"
+        @drag="menuDrag('Money')"
       >
         <a-icon type="pay-circle" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.wuliu')"
-        @drag="menuDrag('defaultWuliu')"
+        @drag="menuDrag('Wuliu')"
       >
         <my-icon type="icon-wuliuqiache2" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.yuanzhuti')"
-        @drag="menuDrag('defaultYuanZhuTi')"
+        @drag="menuDrag('YuanZhuTi')"
       >
         <my-icon type="icon-yuanzhuti" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.liucheng')"
-        @drag="menuDrag('defaultLiuCheng')"
+        @drag="menuDrag('LiuCheng')"
       >
         <my-icon type="icon-liucheng" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.shujuku')"
-        @drag="menuDrag('defaultShuJuKu')"
+        @drag="menuDrag('ShuJuKu')"
       >
         <my-icon type="icon-database" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.yonghu')"
-        @drag="menuDrag('defaultYongHu')"
+        @drag="menuDrag('YongHu')"
       >
         <my-icon type="icon-yonghu" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.wendang')"
-        @drag="menuDrag('defaultNote')"
+        @drag="menuDrag('Note')"
       >
         <a-icon type="file-text" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.shipin')"
-        @drag="menuDrag('defaultVideo')"
+        @drag="menuDrag('Video')"
       >
         <my-icon type="icon-shipin" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.yinpin')"
-        @drag="menuDrag('defaultMusic')"
+        @drag="menuDrag('Music')"
       >
         <my-icon type="icon-yinpin" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.tupian')"
-        @drag="menuDrag('defaultImage')"
+        @drag="menuDrag('Image')"
       >
         <my-icon type="icon-tupian1" />
       </li>
       <li
         draggable="true"
         :title="$t('graph.fengxian')"
-        @drag="menuDrag('defaultFengXian')"
+        @drag="menuDrag('FengXian')"
       >
         <my-icon type="icon-fengxian" />
       </li>

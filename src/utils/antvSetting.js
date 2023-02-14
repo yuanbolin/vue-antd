@@ -311,7 +311,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultGroup",
+        type: "Group",
         parent: true
       },
       shape: "rect",
@@ -342,7 +342,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultSuccess"
+        type: "Success"
       },
       x: 50,
       y: 180,
@@ -382,7 +382,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultError"
+        type: "Error"
       },
       x: 50,
       y: 180,
@@ -422,7 +422,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultNote"
+        type: "Note"
       },
       x: 50,
       y: 180,
@@ -462,7 +462,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultMoney"
+        type: "Money"
       },
       x: 50,
       y: 180,
@@ -502,7 +502,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultWuliu"
+        type: "Wuliu"
       },
       x: 50,
       y: 180,
@@ -545,7 +545,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultYuanZhuTi"
+        type: "YuanZhuTi"
       },
       x: 50,
       y: 180,
@@ -588,7 +588,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultLiuCheng"
+        type: "LiuCheng"
       },
       x: 50,
       y: 180,
@@ -631,7 +631,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultShuJuKu"
+        type: "ShuJuKu"
       },
       x: 50,
       y: 180,
@@ -674,7 +674,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultYongHu"
+        type: "YongHu"
       },
       x: 50,
       y: 180,
@@ -717,7 +717,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultVideo"
+        type: "Video"
       },
       x: 50,
       y: 180,
@@ -760,7 +760,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultMusic"
+        type: "Music"
       },
       x: 50,
       y: 180,
@@ -803,7 +803,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultImage"
+        type: "Image"
       },
       x: 50,
       y: 180,
@@ -846,7 +846,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "defaultFengXian"
+        type: "FengXian"
       },
       x: 50,
       y: 180,
