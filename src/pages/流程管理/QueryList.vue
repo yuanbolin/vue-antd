@@ -628,6 +628,7 @@ export default {
     this.getTreeData();
   },
   methods: {
+    //打开新增抽屉窗口
     showAddDrawer(obj, type) {
       //如果没有传parentkey,则主动从数据中获取parentkey
       if (type.indexOf("Children") !== -1) {
@@ -664,6 +665,7 @@ export default {
         this.drawerVisible = true;
       });
     },
+    //打开编辑抽屉窗口
     showEditDrawer(obj) {
       const parentKey = getParentKey(obj.id, this.dataSource);
       if (obj.type.indexOf(CatalogueType.DIRECTORY) !== -1) {
@@ -720,6 +722,7 @@ export default {
         }
       }
     },
+    //信息提交,包含目录/流程的新增以及修改
     submitForm() {
       if (this.chooseType.indexOf(CatalogueType.DIRECTORY) !== -1) {
         this.$refs.catalogueForm.validate(valid => {

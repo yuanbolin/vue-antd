@@ -55,7 +55,7 @@
                     </div>
                   </a-card-meta>
                   <div class="project-item">
-                    <a class="group" href="/#/"
+                    <a class="group"
                       ><b>{{ $t("generated_time") }}</b> :
                       {{ formatTime(item.generated_time) }}</a
                     >

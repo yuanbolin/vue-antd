@@ -2,7 +2,7 @@ module.exports = {
   messages: {
     CN: {
       form: {
-        name: "目录名称",
+        name: "目录名称搜索",
         nameph: "请输入名称",
         search: "查询",
         reset: "重置",
@@ -91,7 +91,7 @@ module.exports = {
     },
     HK: {
       form: {
-        name: "目錄名稱",
+        name: "目錄名稱搜索",
         nameph: "請輸入名稱",
         search: "查詢",
         reset: "重置",
@@ -178,7 +178,7 @@ module.exports = {
     },
     US: {
       form: {
-        name: "Directory name",
+        name: "Directory Name search",
         nameph: "Please enter name",
         search: "Search",
         reset: "Reset",
