@@ -77,9 +77,9 @@ export default {
   },
   created() {
     this.getTree();
-    // this.getContent(this.$route.params.id);
   },
   methods: {
+    //获取左侧树形选择框所需数据
     getTree() {
       process
         .getAll({
