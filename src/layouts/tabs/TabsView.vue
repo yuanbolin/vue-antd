@@ -362,7 +362,6 @@ export default {
           this.loadCacheConfig(item.children, cacheAble);
         }
       });
-      console.log(this.excludeKeys);
     },
     ...mapMutations("setting", ["correctPageMinHeight", "setActivePage"])
   }

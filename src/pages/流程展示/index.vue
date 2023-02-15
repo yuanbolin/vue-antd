@@ -90,7 +90,6 @@ export default {
             if (data.data) {
               const dataSource = this.childrenHandle(data.data);
               this.treeData = dataSource;
-              console.log(this.treeData);
             } else {
               this.treeData = [];
             }

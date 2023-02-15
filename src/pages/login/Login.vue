@@ -76,7 +76,6 @@ export default {
                 loginResult => {
                   const { redirectUrl, authCode } = loginResult;
                   // 这里可以直接进行重定向
-                  console.log(redirectUrl);
                   window.location.href = redirectUrl;
                   // 也可以在不跳转页面的情况下，使用code进行授权
                   console.log(authCode);

@@ -5,6 +5,7 @@
       :style="`margin-top: ${multiPage ? 0 : -24}px`"
       :breadcrumb="breadcrumb"
       :title="pageTitle"
+      :avatar="avatar"
     >
       <slot name="action" slot="action"></slot>
       <slot slot="content" name="headerContent"></slot>
@@ -34,7 +35,7 @@ import { getI18nKey } from "@/utils/routerUtil";
 export default {
   name: "PageLayout",
   components: { PageHeader },
-  props: ["desc", "logo", "linkList", "extraImage"],
+  props: ["desc", "logo", "linkList", "extraImage", 'avatar'],
   data() {
     return {
       page: {},
@@ -113,7 +114,6 @@ export default {
       routes
         .filter(item => item.path.includes(":") || path.includes(item.path))
         .forEach(route => {
-          console.log("route", route);
           const path = route.path.length === 0 ? "/" : route.path;
           breadcrumb.push(this.$t(getI18nKey(path)));
         });

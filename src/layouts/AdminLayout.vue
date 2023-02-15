@@ -79,14 +79,12 @@ import SideMenu from "../components/menu/SideMenu";
 import Setting from "../components/setting/Setting";
 import { mapState, mapMutations, mapGetters } from "vuex";
 
-// const minHeight = window.innerHeight - 64 - 122
-
 export default {
   name: "AdminLayout",
   components: { Setting, SideMenu, Drawer, PageFooter, AdminHeader },
   data() {
     return {
-      minHeight: window.innerHeight - 64 - 122,
+      minHeight: window.innerHeight - 64 - 65,
       showSetting: false,
       drawerOpen: false
     };
@@ -99,9 +97,9 @@ export default {
   watch: {
     fixedTabs(val) {
       if (val) {
-        this.minHeight = window.innerHeight - 122;
+        this.minHeight = window.innerHeight - 65;
       } else {
-        this.minHeight = window.innerHeight - 64 - 122;
+        this.minHeight = window.innerHeight - 64 - 65;
       }
     },
     $route(val) {

@@ -59,7 +59,6 @@ export default {
   },
   methods: {
     onChange(value, label, extra) {
-      console.log(value, label, extra);
       this.$emit("change", value);
     }
   }

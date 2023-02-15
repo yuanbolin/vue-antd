@@ -7,6 +7,9 @@ const api = {
   USERTOKEN: `token/user`,
   LOGIN: `login/login`,
   LOGINOUT: `login/logout`,
+  //工作台
+  PROCESSCOUNT:"process/count_process",
+  PROCESSUNPUBLISHED:"process/get_unpublished_process",
   //流程管理
   PROCESS: "process/get_tree",
   PROCESSADD: "process/add",

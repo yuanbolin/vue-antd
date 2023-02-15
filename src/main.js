@@ -11,6 +11,8 @@ import MyIconComponent from "@/icons";
 import { initI18n } from "@/utils/i18nUtil";
 import bootstrap from "@/bootstrap";
 import "moment/locale/zh-cn";
+import "moment/locale/en-gb";
+import "moment/locale/zh-hk";
 
 Vue.component("my-icon", MyIconComponent);
 const router = initRouter(store.state.setting.asyncRoutes);

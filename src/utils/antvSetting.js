@@ -295,11 +295,6 @@ export const configNodeShape = type => {
       height: 80,
       zIndex: 10,attrs: {
         label: {
-          refX: 0.5,
-          refY: "100%",
-          refY2: 4,
-          textAnchor: "middle",
-          textVerticalAnchor: "top",
           fontSize: 16,
           fill: "#333"
         },
@@ -311,7 +306,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Group",
+        type: "extendGroup",
         parent: true
       },
       shape: "rect",
@@ -342,7 +337,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Success"
+        type: "extendSuccess"
       },
       x: 50,
       y: 180,
@@ -382,7 +377,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Error"
+        type: "extendError"
       },
       x: 50,
       y: 180,
@@ -422,7 +417,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Note"
+        type: "extendNote"
       },
       x: 50,
       y: 180,
@@ -462,7 +457,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Money"
+        type: "extendMoney"
       },
       x: 50,
       y: 180,
@@ -502,7 +497,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Wuliu"
+        type: "extendWuliu"
       },
       x: 50,
       y: 180,
@@ -545,7 +540,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "YuanZhuTi"
+        type: "extendYuanZhuTi"
       },
       x: 50,
       y: 180,
@@ -588,7 +583,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "LiuCheng"
+        type: "extendLiuCheng"
       },
       x: 50,
       y: 180,
@@ -631,7 +626,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "ShuJuKu"
+        type: "extendShuJuKu"
       },
       x: 50,
       y: 180,
@@ -674,7 +669,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "YongHu"
+        type: "extendYongHu"
       },
       x: 50,
       y: 180,
@@ -717,7 +712,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Video"
+        type: "extendVideo"
       },
       x: 50,
       y: 180,
@@ -760,7 +755,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Music"
+        type: "extendMusic"
       },
       x: 50,
       y: 180,
@@ -803,7 +798,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "Image"
+        type: "extendImage"
       },
       x: 50,
       y: 180,
@@ -846,7 +841,7 @@ export const configNodeShape = type => {
     },
     {
       data: {
-        type: "FengXian"
+        type: "extendFengXian"
       },
       x: 50,
       y: 180,

@@ -515,7 +515,8 @@ export default {
       if (
         cell.isNode() &&
         cell.data.type &&
-        cell.data.type.includes("default")
+        (cell.data.type.includes("default") ||
+          cell.data.type.includes("extend"))
       ) {
         this.contextmenuType = "node";
         this.menuVisible = true;
@@ -772,17 +773,19 @@ export default {
           } else if (this.selectCell) {
             let cellData = this.selectCell.getData();
             if (cellData && cellData?.id) {
-              process.deleteNodeInfo({ nodeId: cellData.id }).then(({ data }) => {
-                if (data.code === "1000") {
-                  // process.deleteNodeInfo
-                  this.graph.removeCells([this.selectCell]);
-                  this.form = {};
-                  this.editDrawer = false;
-                  this.$message.success(this.$t("handlerDel.success"), 3);
-                } else {
-                  this.$message.error(data.msg);
-                }
-              });
+              process
+                .deleteNodeInfo({ nodeId: cellData.id })
+                .then(({ data }) => {
+                  if (data.code === "1000") {
+                    // process.deleteNodeInfo
+                    this.graph.removeCells([this.selectCell]);
+                    this.form = {};
+                    this.editDrawer = false;
+                    this.$message.success(this.$t("handlerDel.success"), 3);
+                  } else {
+                    this.$message.error(data.msg);
+                  }
+                });
             } else {
               this.graph.removeCells([this.selectCell]);
               this.form = {};

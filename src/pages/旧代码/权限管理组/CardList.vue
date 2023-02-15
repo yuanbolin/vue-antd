@@ -137,11 +137,9 @@ export default {
     },
     resetSearchForm() {
       this.$refs.form.resetFields();
-      console.log(this.form.name);
     },
     //前往详情页
     toDetail(item) {
-      console.log(item);
       this.$router.push(`detail/${1}`);
     }
   }

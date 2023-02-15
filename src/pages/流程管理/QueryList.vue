@@ -372,20 +372,20 @@
       </div>
     </a-drawer>
     <a-modal v-model="visible" @ok="handleOk">
-      <a-descriptions title="流程信息" bordered>
-        <a-descriptions-item label="流程输入" :span="3">
+      <a-descriptions :title="$t('modal.title')" bordered>
+        <a-descriptions-item :label="$t('modal.input')" :span="3">
           {{ detailProcess.input }}
         </a-descriptions-item>
-        <a-descriptions-item label="流程输出" :span="3">
+        <a-descriptions-item :label="$t('modal.output')" :span="3">
           {{ detailProcess.output }}
         </a-descriptions-item>
-        <a-descriptions-item label="流程驱动类型" :span="3">
+        <a-descriptions-item :label="$t('modal.driveType_computed')" :span="3">
           {{ driveType_computed }}
         </a-descriptions-item>
-        <a-descriptions-item label="流程驱动规则" :span="3">
+        <a-descriptions-item :label="$t('modal.driveRule')" :span="3">
           {{ detailProcess.driveRule }}
         </a-descriptions-item>
-        <a-descriptions-item label="流程适用范围" :span="3">
+        <a-descriptions-item :label="$t('modal.scope')" :span="3">
           {{ detailProcess.scope }}
         </a-descriptions-item>
       </a-descriptions>
@@ -638,7 +638,6 @@ export default {
           this.infoForm.directory = parentKey + "";
         }
       } else {
-        console.log(obj.id, this.dataSource);
         const parentKey = getParentKey(obj.id, this.dataSource);
         if (type.indexOf(CatalogueType.DIRECTORY) !== -1) {
           this.catalogueForm.directory = parentKey + "";
@@ -667,7 +666,6 @@ export default {
     },
     showEditDrawer(obj) {
       const parentKey = getParentKey(obj.id, this.dataSource);
-      console.log(obj.id, parentKey);
       if (obj.type.indexOf(CatalogueType.DIRECTORY) !== -1) {
         if (this.treeData[0].id !== "0") {
           this.treeData.unshift({
@@ -866,11 +864,6 @@ export default {
     onClose() {
       this.drawerVisible = false;
     },
-    onPageChange(page, pageSize) {
-      this.pagination.current = page;
-      this.pagination.pageSize = pageSize;
-      this.getData();
-    },
     getTreeData() {
       process.getAll({ dirOnly: 1 }).then(({ data }) => {
         if (data.code === "1000") {
@@ -886,7 +879,6 @@ export default {
       });
     },
     detailRecord(obj) {
-      console.log(obj);
       this.detailProcess = obj;
       this.visible = true;
     },
@@ -923,11 +915,6 @@ export default {
     },
     addNew() {
       this.showAddDrawer({ id: null }, CatalogueType.DIRECTORY + "Add");
-    },
-    handleMenuClick(e) {
-      if (e.key === "delete") {
-        this.remove();
-      }
     },
     //树形表格展开/闭合
     openRow() {
@@ -992,6 +979,7 @@ export default {
               pagination.total = data.extension;
               this.pagination = pagination;
               this.dataSource = dataSource;
+              if (this.isOpen) this.openRow();
             } else {
               this.dataSource = [];
             }

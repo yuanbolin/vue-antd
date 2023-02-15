@@ -371,12 +371,9 @@ export default {
       this.$refs.catalogueForm.validate(valid => {
         if (valid) {
           if (this.chooseType.indexOf("Add") !== -1) {
-            console.log("ADDsubmit!");
-            console.log(JSON.parse(JSON.stringify(this.catalogueForm)));
             organization
               .addTree(JSON.parse(JSON.stringify(this.catalogueForm)))
               .then(res => {
-                console.log("add==>>", res);
                 if (res.data.code === "1000") {
                   //新增成功后清空表单数据关闭抽屉,随后重新请求列表接口刷新列表数据
                   this.$refs.catalogueForm.resetFields();
@@ -389,11 +386,9 @@ export default {
               });
           } else {
             if (this.chooseType.indexOf("Edit") !== -1) {
-              console.log("EDITsubmit!");
               organization
                 .editTree(JSON.parse(JSON.stringify(this.catalogueForm)))
                 .then(res => {
-                  console.log("edit==>>", res);
                   if (res.data.code === "1000") {
                     //修改成功后清空表单数据关闭抽屉,随后重新请求列表接口刷新列表数据
                     this.$refs.catalogueForm.resetFields();

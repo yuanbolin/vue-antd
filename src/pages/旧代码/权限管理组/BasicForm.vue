@@ -100,7 +100,6 @@ export default {
   computed: {},
   mounted() {
     this.getTreeData();
-    console.log(this.$route.params);
     if (this.$route.params.id) {
       this.type = "edit";
       this.form = {
@@ -204,7 +203,6 @@ export default {
     handleSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.form);
           if (this.type === "edit") {
             console.log("edit");
           } else {

@@ -43,10 +43,8 @@ export default {
             //处理路由
             let treeNav = [];
             const list = generator(res.data.authority);
-            console.log("list", list);
             //      经过字段格式化后的原始数组, 路由树形数组,  根级PID
             treeNav = listToTree(list, 0);
-            console.log("treeNav", treeNav);
             this.setRoutesConfig(treeNav);
             loadRoutes(treeNav);
             this.setUser({

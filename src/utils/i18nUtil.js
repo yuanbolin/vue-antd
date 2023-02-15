@@ -80,4 +80,24 @@ function mergeI18nFromRoutes(i18n, routes) {
   });
 }
 
-export { initI18n, mergeI18nFromRoutes, formatFullPath };
+/**
+ * @param lang 默认中文简体
+ * @returns {string}
+ */
+function getMomentLanguage(lang) {
+  let language = "zh-cn";
+  switch (lang) {
+    case "CN":
+      language = "zh-cn";
+      break;
+    case "US":
+      language = "en-gb";
+      break;
+    case "HK":
+      language = "zh-hk";
+      break;
+  }
+  return language;
+}
+
+export { initI18n, mergeI18nFromRoutes, formatFullPath, getMomentLanguage };

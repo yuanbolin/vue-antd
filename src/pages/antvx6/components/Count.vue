@@ -18,13 +18,11 @@ export default {
     const self = this;
     const node = this.getNode();
     const graph = this.getGraph();
-    console.log(node);
-    console.log(graph);
     // 监听数据改变事件
     node.on("change:data", ({ current }) => {
-      console.log(node);
       self.num = current.num;
     });
+    console.log(graph)
   },
   methods: {
     add() {

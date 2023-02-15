@@ -14,7 +14,6 @@
       }
     },
     mounted() {
-      console.log(this)
       // this.$page.alert = this.$page.alert ? this.$page.alert : {top: 100}
       // this.$page.alert.top += 20
       // this.top = this.$page.alert.top

@@ -69,6 +69,14 @@ module.exports = {
         input: "请输入流程输入",
         output: "请输入流程输出"
       },
+      modal:{
+        title:"流程信息",
+        input:"流程输入",
+        output:"流程输出",
+        driveType_computed:"流程驱动类型",
+        driveRule:"流程驱动规则",
+        scope:"流程适用范围",
+      },
       pushHandle:{
         success:"发布成功!",
         error:"请先完成流程图绘制!"
@@ -147,6 +155,14 @@ module.exports = {
         directory: "請選擇所屬目錄",
         input: "請輸入流程輸入",
         output: "請輸入流程輸出"
+      },
+      modal:{
+        title:"流程信息",
+        input:"流程輸入",
+        output:"流程輸出",
+        driveType_computed:"流程驅動類型",
+        driveRule:"流程驅動規則",
+        scope:"流程適用範圍",
       },
       pushHandle:{
         success:"發布成功!",
@@ -227,6 +243,14 @@ module.exports = {
         directory: "Please select a directory",
         input: "Please enter process input",
         output: "Please enter process output"
+      },
+      modal:{
+        title:"Process information",
+        input:"Process input",
+        output:"Process output",
+        driveType_computed:"Process-driven types",
+        driveRule:"Process-driven rules",
+        scope:"Scope of application of process",
       },
       pushHandle:{
         success:"Successful release!",
