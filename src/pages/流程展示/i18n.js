@@ -11,7 +11,8 @@ module.exports = {
         noCollapsed: "收起"
       },
       empty: "暂无流程内容",
-      nodeInfo:"该节点未带有额外信息"
+      nodeInfo:"该节点未带有额外信息",
+      loading:"加载中..."
     },
     HK: {
       menu: {
@@ -20,7 +21,8 @@ module.exports = {
         noCollapsed: "收起"
       },
       empty: "暫無流程內容",
-      nodeInfo:"該節點未帶有額外信息"
+      nodeInfo:"該節點未帶有額外信息",
+      loading:"加載中..."
     },
     US: {
       menu: {
@@ -29,7 +31,8 @@ module.exports = {
         noCollapsed: "close"
       },
       empty: "There is no process content",
-      nodeInfo:"This node carries no additional information"
+      nodeInfo:"This node carries no additional information",
+      loading:"Loading..."
     }
   }
 };

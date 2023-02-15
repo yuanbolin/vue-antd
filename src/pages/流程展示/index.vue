@@ -27,7 +27,7 @@
       ></search-tree>
     </a-layout-sider>
     <a-layout-content id="chatConent">
-      <a-spin tip="Loading..." :spinning="loading">
+      <a-spin :tip="$t('loading')" :spinning="loading">
         <div :style="{ height: height, background: '#fff' }">
           <antv-six :select-id="selectId" v-model="tempGroupJson"></antv-six>
           <div v-if="!tempGroupJson" class="emptyBox">
