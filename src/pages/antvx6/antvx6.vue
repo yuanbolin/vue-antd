@@ -1,6 +1,6 @@
 <template>
   <div class="all">
-    <div class="antv-content" :style="{ height: height }">
+    <div class="antv-content" :style="{ minHeight: height }">
       <!--      左侧图形列表-->
       <my-graph
         :is-change="isChange"

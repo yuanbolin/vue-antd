@@ -648,7 +648,7 @@ export default {
       }
       if (
         type.indexOf(CatalogueType.DIRECTORY) !== -1 &&
-        this.treeData[0].id !== "0"
+        (this.treeData.length === 0 || this.treeData[0].id !== "0")
       ) {
         this.treeData.unshift({
           id: "0",
@@ -656,7 +656,7 @@ export default {
         });
       } else if (
         type.indexOf(CatalogueType.PROCESS) !== -1 &&
-        this.treeData[0].id === "0"
+        (this.treeData.length > 0 && this.treeData[0].id === "0")
       ) {
         this.treeData.shift();
       }
@@ -669,7 +669,7 @@ export default {
     showEditDrawer(obj) {
       const parentKey = getParentKey(obj.id, this.dataSource);
       if (obj.type.indexOf(CatalogueType.DIRECTORY) !== -1) {
-        if (this.treeData[0].id !== "0") {
+        if (this.treeData.length === 0 || this.treeData[0].id !== "0") {
           this.treeData.unshift({
             id: "0",
             name: "根目录"
@@ -684,7 +684,7 @@ export default {
           description: obj.description
         };
       } else if (obj.type.indexOf(CatalogueType.PROCESS) !== -1) {
-        if (this.treeData[0].id === "0") {
+        if (this.treeData.length > 0 && this.treeData[0].id === "0") {
           this.treeData.shift();
         }
         this.chooseType = obj.type;

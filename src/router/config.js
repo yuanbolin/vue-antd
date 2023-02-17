@@ -103,7 +103,7 @@ const options = {
           meta: {
             icon: "project"
           },
-          component: () => import("@/pages/流程管理/QueryList")
+          component: () => import("@/pages/processManager/QueryList")
         },
         {
           name: "流程图绘制",
@@ -189,7 +189,7 @@ const options = {
           meta: {
             icon: "profile",
           },
-          component: () => import("@/pages/流程展示/index")
+          component: () => import("@/pages/antvSixShow/index")
         }
       ]
     }

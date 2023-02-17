@@ -55,7 +55,7 @@ const routerMap = {
     name: "流程管理",
     path: "flow",
     icon: "project",
-    component: () => import("@/pages/流程管理/QueryList")
+    component: () => import("@/pages/processManager/QueryList")
   },
   ANTVXSix: {
     path: "/antvx6/:id",
@@ -67,7 +67,7 @@ const routerMap = {
     name: "流程图展示",
     path: "/antvShow",
     icon: "profile",
-    component: () => import("@/pages/流程展示/index")
+    component: () => import("@/pages/antvSixShow/index")
   },
   exp403: {
     authority: "*",
