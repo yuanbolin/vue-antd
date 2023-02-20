@@ -1,9 +1,8 @@
 import axios from "axios";
 import storage from "store";
-const { VUE_APP_USER_TOKEN, VUE_APP_API_BASE_URL } = process.env;
+const { VUE_APP_USER_TOKEN } = process.env;
 import { getTimestamp } from "./util";
 axios.defaults.timeout = 240000;
-axios.defaults.baseURL = VUE_APP_API_BASE_URL;
 axios.defaults.xsrfHeaderName = VUE_APP_USER_TOKEN;
 axios.defaults.xsrfTokenName = VUE_APP_USER_TOKEN;
 

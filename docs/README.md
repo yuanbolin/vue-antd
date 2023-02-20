@@ -2,7 +2,7 @@
 title: 首页
 home: true
 heroImage: /logo.png
-heroText: Vue Antd Admin
+heroText: Vue Antd
 tagline: 开箱即用的中台前端/设计解决方案
 actionText: 快速上手 →
 actionLink: /start/use

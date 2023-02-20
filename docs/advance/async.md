@@ -34,7 +34,7 @@ registerName: {                               //路由组件注册名称，唯�
   component: () => import('@/pages/demo'),    //路由视图
   icon: 'permission',                         //路由的菜单icon，会注入到路由元数据meta中
   invisible: false,                           //是否隐藏菜单项，true 隐藏，false 不隐藏，会注入到路由元数据meta中。
-  authority: "form",                     
+  authority: "form,query",                     //页面功能权限，多个权限以英文逗号进行分割。
   page: {                                     //路由的页面数据，会注入到路由元数据meta中
     title: '演示页',                          //页面标题
     breadcrumb: ['首页', '演示页']            //页面面包屑
@@ -239,7 +239,7 @@ function loadRoutes(routesConfig) {
 :::
 
 ## 异步加载菜单
-Vue Antd Admin 的菜单，是根据路由配置自动生成的，默认获取根路由 `‘/’` 下所有子路由作为菜单配置。  
+Vue Antd 的菜单，是根据路由配置自动生成的，默认获取根路由 `‘/’` 下所有子路由作为菜单配置。  
 当你完成了异步路由的加载，菜单也会随之改变，无需你做其它额外的操作。主要代码如下：
 ```js
 // 初始化Admin后台菜单数据

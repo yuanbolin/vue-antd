@@ -107,7 +107,7 @@ const options = {
 启动服务，你将看到新增页面如下：
 ![newPage](../assets/new-page.png)
 如果你想把它配置为二级页面或更深层级的页面，只需为它配置一个父级路由，并为父级路由配置一个[视图组件](./layout.md#admin-的视图)，
-这里我们选择 [PageView](https://github.com/iczer/vue-antd-admin/blob/master/src/layouts/PageView.vue)，如下：
+这里我们选择 [PageView](https://e.coding.net/y1252432332/ziyanxiangmu/vue-antd-admin.git/blob/master/src/layouts/PageView.vue)，如下：
 ```js {10-21}
 const options = {
   routes: [
@@ -139,16 +139,16 @@ const options = {
 ```
 :::warning
 页面所有父级路由的组件必须配置为[视图组件](../develop/layout.md#admin-的视图)，否则页面的内容可能不会显示。  
-目前有 [PageView](https://github.com/iczer/vue-antd-admin/blob/master/src/layouts/PageView.vue)、
-[TabsView](https://github.com/iczer/vue-antd-admin/blob/master/src/layouts/tabs/TabsView.vue) 和
-[BlankView](https://github.com/iczer/vue-antd-admin/blob/master/src/layouts/BlankView.vue) 可选，
+目前有 [PageView](https://e.coding.net/y1252432332/ziyanxiangmu/vue-antd-admin.git/blob/master/src/layouts/PageView.vue)、
+[TabsView](https://e.coding.net/y1252432332/ziyanxiangmu/vue-antd-admin.git/blob/master/src/layouts/tabs/TabsView.vue) 和
+[BlankView](https://e.coding.net/y1252432332/ziyanxiangmu/vue-antd-admin.git/blob/master/src/layouts/BlankView.vue) 可选，
 你也可以自己创建视图组件。（[什么是视图组件？](../develop/layout.md#admin-的视图)）
 :::
 页面如下：
 ![newPage2](../assets/new-page-2.png)
 ## i18n国际化配置
-如果你想为页面增加i18n国际化配置，只需在页面同级文件夹下创建 i18nUtil.js 文件，然后在页面文件中引入并使用即可。  
-创建 i18nUtil.js 文件：
+如果你想为页面增加i18n国际化配置，只需在页面同级文件夹下创建 i18n.js 文件，然后在页面文件中引入并使用即可。  
+创建 i18n.js 文件：
 ```diff {9}                    
   ├── public
   ├── src
@@ -158,7 +158,7 @@ const options = {
   │   │   └── newPage        # 为新页面创建一个文件夹
   │   │       ├── NewPage.vue  # 新页面文件
   │   │       ├── index.less   # 页面样式文件
-+ │   │       ├── i18nUtil.js      # i18n 国际化配置文件
++ │   │       ├── i18n.js      # i18n 国际化配置文件
   │   │       └── index.js     # import 引导文件
   :   :
   │   └── main.js              # 应用入口js
@@ -166,7 +166,7 @@ const options = {
   ├── README.md                # README.md
   └── vue.config.js            # vue 配置文件
 ```
-i18nUtil.js 文件内容：
+i18n.js 文件内容：
 ```js
 module.exports = {
   messages: {
@@ -185,7 +185,7 @@ module.exports = {
   }
 }
 ```
-在 NewPage.vue 文件中引入 i18nUtil.js，并添加需要国际化的内容。如下修改：
+在 NewPage.vue 文件中引入 i18n.js，并添加需要国际化的内容。如下修改：
 ```vue {3,10,13-15}
 <template>
   <div class="new-page" :style="`min-height: ${pageMinHeight}px`">

@@ -3,7 +3,7 @@ title: 拦截器配置
 lang: zn-CN
 ---
 # 拦截器配置
-Vue Antd Admin 基于 aixos 封装了 http 通信功能，我们可以为 http 请求响应配置一些拦截器。拦截器统一配置在 /utils/axios-interceptors.js 文件中。
+Vue Antd 基于 aixos 封装了 http 通信功能，我们可以为 http 请求响应配置一些拦截器。拦截器统一配置在 /utils/axios-interceptors.js 文件中。
 ## 请求拦截器
 你可以为每个请求拦截器配置 `onFulfilled` 或 `onRejected` 两个钩子函数。
 ### onFulfilled

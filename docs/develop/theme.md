@@ -405,7 +405,7 @@ module.exports = {
 我们建议在开发中使用 `less变量` 而不是直接使用 `颜色值` 来设置颜色。这样做对主题色和主题模式切换很有帮助。
 :::
 ## 主题模式
-Vue Antd Admin 有三种主题模式，分别为：`light/亮色菜单模式`、`dark/暗色菜单模式` 和 `night/黑夜模式`。
+Vue Antd 有三种主题模式，分别为：`light/亮色菜单模式`、`dark/暗色菜单模式` 和 `night/黑夜模式`。
 
 light / 亮色菜单模式:
 ![light](../assets/mode-light.png)
@@ -430,7 +430,7 @@ module.exports = {
 ```
 
 ## 导航布局
-Vue Antd Admin 有两种导航布局，`side/侧边导航` 和 `head/顶部导航`。  
+Vue Antd 有两种导航布局，`side/侧边导航` 和 `head/顶部导航`。  
 默认为侧边导航，你可以在 src/config/config.js 中修改导航布局
 ```js {6}
 module.exports = {
@@ -447,7 +447,7 @@ module.exports = {
 }
 ```
 ## 动画
-Vue Antd Admin 内置了 [animate.css](https://animate.style) 动画库，在页面切换时会应用动画效果。你可以在 src/config/config.js 中配置动画效果或者禁用动画。
+Vue Antd 内置了 [animate.css](https://animate.style) 动画库，在页面切换时会应用动画效果。你可以在 src/config/config.js 中配置动画效果或者禁用动画。
 ```js {7-11}
 module.exports = {
   theme: {

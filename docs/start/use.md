@@ -8,7 +8,7 @@ lang: zh-CN
 ## 安装
 克隆本项目到本地
 ```bash
-$ git clone https://github.com/iczer/vue-antd-admin.git
+$ git clone https://e.coding.net/y1252432332/ziyanxiangmu/vue-antd-admin.git
 ```
 安装依赖
 ```bash
@@ -17,8 +17,8 @@ or
 $ npm install
 ```
 :::tip
-master 分支是 Vue Antd Admin 的标准版代码，此分支代码适合用于用于学习研究，不推荐在此分支做正式开发。
-我们在 basic 分支提供了 Vue Antd Admin 的基础版代码，正式开发请切换至此分支，以便于后续的版本更新。
+master 分支是 Vue Antd 的标准版代码，此分支代码适合用于用于学习研究，不推荐在此分支做正式开发。
+我们在 basic 分支提供了 Vue Antd 的基础版代码，正式开发请切换至此分支，以便于后续的版本更新。
 :::
 :::warning
 如果基于 `master分支` 进行开发，在版本更新时遇到的代码冲突问题请自行解决，我们不对基于 `master分支` 开发时遇到的问题提供技术支持。  
@@ -59,4 +59,4 @@ $ yarn serve
 or
 $ npm run serve
 ```
-启动成功后，会看到一个本地预览地址，通常是 http://localhost:8080 。接下来就可以修改代码，并实时预览修改结果啦！
+启动成功后，会看到一个本地预览地址，通常是 http://localhost:8000 。接下来就可以修改代码，并实时预览修改结果啦！

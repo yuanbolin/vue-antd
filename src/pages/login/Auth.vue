@@ -55,9 +55,7 @@ export default {
             setAuthorization(
               {
                 token: res.data.token
-              },
-              15 * 60 * 60
-            );
+              });
             this.$router.push({ path: "/dashboard" });
             this.$message.success("登录成功！", 3);
           }
