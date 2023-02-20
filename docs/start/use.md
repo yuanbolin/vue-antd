@@ -8,7 +8,7 @@ lang: zh-CN
 ## 安装
 克隆本项目到本地
 ```bash
-$ git clone https://e.coding.net/y1252432332/ziyanxiangmu/vue-antd-admin.git
+$ git clone https://github.com/yuanbolin/vue-antd.git
 ```
 安装依赖
 ```bash

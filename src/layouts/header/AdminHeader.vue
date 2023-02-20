@@ -41,7 +41,7 @@
           title="帮助文档"
           placement="bottom"
         >
-          <a href="https://iczer.gitee.io/vue-antd-admin-docs/" target="_blank">
+          <a href="#" target="_blank">
             <a-icon type="question-circle-o" />
           </a>
         </a-tooltip>

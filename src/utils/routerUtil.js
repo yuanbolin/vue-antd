@@ -278,7 +278,7 @@ function loadGuards(guards, options) {
 }
 
 /**
- * 格式化后端原始数据 生成 具有vue-antd-admin的数据
+ * 格式化后端原始数据 生成 具有vue-antd的数据
  * @param routerMap
  * @returns {*}
  */

@@ -7,7 +7,7 @@ module.exports = {
   ],
   themeConfig: {
     logo: '/logo.png',
-    repo: 'iczer/vue-antd-admin',
+    repo: 'yuanbolin/vue-antd',
     docsDir: 'docs',
     nav: [
       {text: '指南', link: '/'},
